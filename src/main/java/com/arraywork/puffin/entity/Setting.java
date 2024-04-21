@@ -5,7 +5,7 @@ import org.hibernate.annotations.Type;
 
 import com.arraywork.springhood.LongIdGenerator;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,10 +27,10 @@ public class Setting {
     @GeneratedValue(generator = "long-id-generator")
     private long id;
 
-    @Type(JsonType.class)
+    @Type(JsonStringType.class)
     private Administrator administrator;
 
-    @Type(JsonType.class)
+    @Type(JsonStringType.class)
     private Preference preference;
 
 }
