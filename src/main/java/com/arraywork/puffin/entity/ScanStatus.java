@@ -11,7 +11,7 @@ import lombok.Data;
 public class ScanStatus {
 
     private int totalFiles;
-    private int totalMovies;
+    private int totalVideos;
     private int deleted;
     private int inserted;
     private int processed;

@@ -11,7 +11,7 @@ import lombok.Data;
 public class Preference {
 
     private String library;
-    private String metafields;
+    private String[] metafields;
     private boolean codify;
 
 }
