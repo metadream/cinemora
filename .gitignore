@@ -1,0 +1,7 @@
+logs/
+target/
+avatar/
+data/
+.settings/
+.classpath
+.project

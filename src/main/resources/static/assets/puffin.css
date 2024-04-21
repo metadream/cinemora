@@ -1,0 +1,548 @@
+@font-face {
+  font-display: swap;
+  font-family: 'Monda';
+  src: local('Monda Regular'), local('Monda-Regular'), url(Monda.woff2) format('woff2');
+}
+
+:root {
+  --primaryColor: #fb0;
+  --menuColor: #666;
+  --ignoredColor: #bbb;
+  --lineColor: #ddd;
+  --placeholderColor: #eee;
+  --bgColor: #f6f6f6;
+  --fontFamily: Monda;
+}
+
+body {
+  background-color: var(--bgColor);
+}
+
+body.layout-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+body.layout-fit {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+main {
+  margin: auto;
+  max-width: 1000px;
+  padding: 30px;
+}
+
+header>main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+footer>main {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+footer img {
+  height: 32px;
+  filter: grayscale(100%) brightness(115%);
+}
+
+label {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+h3 {
+  margin: 0;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+video {
+  display: block;
+  outline: 0;
+  width: 100%;
+  aspect-ratio: 16/9;
+  margin-top: 15px;
+  border-radius: var(--borderRadius);
+  background: #000;
+  cursor: pointer;
+}
+
+table.list tr {
+  background: #fff;
+}
+
+table.list th {
+  text-align: left;
+  background: var(--placeholderColor);
+}
+
+table.list tr.metadata:hover {
+  cursor: pointer;
+  background: #f9f9f9;
+  transition: .3s all;
+}
+
+.headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.headline h3 {
+  padding-left: 15px;
+  line-height: 1.2;
+  border-left: var(--primaryColor) 3px solid;
+}
+
+th-button::part(button) {
+  color: var(--fontColor);
+}
+
+.buttons th-button:not(:first-child) {
+  margin-left: 10px;
+}
+
+.editor {
+  width: 580px
+}
+
+.editor th-field, .editor th-calendar, .editor th-select {
+  margin: 5px;
+  width: 280px;
+}
+
+.editor th-field.single-column {
+  width: 570px;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fixed-form {
+  display: flex;
+}
+
+.fixed-form>*:not(:first-child) {
+  margin: 5px;
+}
+
+.fixed-form .fields {
+  flex-direction: column;
+}
+
+.fixed-form>.starred {
+  width: 100px;
+  border-radius: var(--borderRadius);
+  border: #ccc 1px solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.fixed-form>.starred>div {
+  margin-bottom: 5px;
+}
+
+.fixed-form>.uploader {
+  position: relative;
+  width: 170px;
+}
+
+.fixed-form>.uploader>div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: var(--borderRadius);
+  background-color: #c99d9d;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.prefer {
+  display: flex;
+  flex-direction: column;
+}
+
+.prefer>* {
+  margin: 5px 0;
+}
+
+header {
+  height: 70px;
+  font-size: 1.2rem;
+  color: var(--placeholderColor);
+  background: var(--fontColor);
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+}
+
+header .logo img {
+  height: 26px;
+}
+
+.search-bar {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.search-text {
+  outline: none;
+  background: #444;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  width: 100%;
+  border: 0;
+  border-radius: var(--borderRadius);
+  padding: 5px 10px;
+  transition: all .3s;
+}
+
+.search-text:focus {
+  background: #555;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+menu {
+  position: relative;
+  padding: 0;
+  margin: 0 0 0 20px;
+}
+
+menu>a {
+  display: flex;
+  align-items: center;
+  line-height: 48px;
+}
+
+menu>a:hover {
+  text-decoration: none;
+}
+
+menu>a>span {
+  margin-left: 7px;
+}
+
+menu>div {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  z-index: 99;
+  right: 0;
+  padding: 8px 0;
+  background: #fff;
+  white-space: nowrap;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
+}
+
+menu:hover>div {
+  display: flex;
+}
+
+menu .tag-item {
+  padding: 3px 25px;
+  font-size: 1rem;
+  color: var(--menuColor);
+}
+
+footer {
+  text-align: center;
+  background: var(--placeholderColor);
+  color: var(--minorColor);
+}
+
+footer p:first-child {
+  color: var(--ignoredColor);
+}
+
+.covers {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px;
+}
+
+.covers a:hover {
+  text-decoration: none;
+}
+
+.covers .cover {
+  display: flex;
+  flex-direction: column;
+  background: var(--placeholderColor);
+  border-top-left-radius: var(--borderRadius);
+  border-top-right-radius: var(--borderRadius);
+  cursor: pointer;
+  color: inherit;
+  transition: all .3s;
+  margin: 10px;
+  width: 220px;
+  width: calc((100% - 80px) / 4);
+}
+
+.covers .cover:hover {
+  opacity: 0.8;
+}
+
+.covers .cover:hover .title {
+  color: var(--menuColor);
+}
+
+.covers .thumb {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-color: var(--placeholderColor);
+  border-top-left-radius: var(--borderRadius);
+  border-top-right-radius: var(--borderRadius);
+  padding-top: 66.67%;
+}
+
+.covers .thumb>.quality {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--primaryColor);
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0 5px;
+}
+
+.covers .thumb>.duration {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.covers .caption {
+  flex: 1;
+  color: inherit;
+  background: #fff;
+  border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+  padding: 10px;
+}
+
+.covers .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.paging {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.paging>* {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
+
+.paging>a {
+  min-width: 32px;
+  height: 32px;
+  padding: 5px;
+  background: var(--placeholderColor);
+  border-radius: var(--borderRadius);
+  transition: .3s all;
+}
+
+.paging>a:hover {
+  text-decoration: none;
+  background: var(--lineColor);
+}
+
+.paging>a.current {
+  color: var(--fontColor);
+  background: var(--primaryColor);
+}
+
+.notfound {
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+main.detail {
+  display: flex;
+}
+
+main.detail .thread {
+  flex: 2.5;
+}
+
+main.detail .metadata {
+  flex: 1;
+  margin-left: 30px;
+  padding: 20px;
+  background: #fff;
+  border-radius: var(--borderRadius);
+}
+
+main.detail .prop {
+  display: flex;
+  margin: 8px 0;
+}
+
+main.detail .prop>label {
+  width: 75px;
+  font-weight: 700;
+  margin-right: 15px;
+  text-align: right;
+}
+
+main.detail .prop>div {
+  flex: 1;
+}
+
+main.detail .tags a {
+  margin-right: 10px;
+}
+
+.tiny-title {
+  display: flex;
+  font-size: 0.85rem;
+  color: var(--ignoredColor);
+}
+
+.tiny-title>* {
+  margin-right: 10px;
+}
+
+.tiny-title>*.right {
+  flex: 1;
+  margin: 0;
+  text-align: right;
+}
+
+.front-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 45px;
+  border-radius: var(--borderRadius);
+  background: #fff;
+  box-shadow: 0 3px 30px 0 rgb(0 0 0 / 20%);
+}
+
+.front-panel>* {
+  margin: 5px 0;
+  width: 100%;
+}
+
+.front-panel th-button {
+  margin-top: 20px;
+}
+
+.front-panel th-button::part(button) {
+  width: 100%;
+}
+
+.metafields>* {
+  margin-right: 15px;
+  white-space: nowrap;
+}
+
+.error-panel {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.error-panel h1 {
+  font-weight: 700;
+  font-size: 10rem;
+  line-height: 1.2;
+  color: var(--lineColor);
+}
+
+@media (max-width: 800px) {
+  main.detail {
+    flex-direction: column;
+  }
+
+  main.detail .metadata {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+  .covers .cover {
+    width: calc((100% - 60px) / 3);
+  }
+
+  .thread .thumb {
+    width: calc((100% - 40px) / 4);
+  }
+}
+
+@media (max-width: 640px) {
+  nav {
+    display: none;
+  }
+
+  main {
+    padding: 20px;
+  }
+
+  .covers .cover {
+    width: calc((100% - 40px) / 2);
+  }
+
+  .thread .thumb {
+    width: calc((100% - 30px) / 3);
+  }
+}
+
+@media (max-width: 480px) {
+  .covers .cover {
+    width: 100%;
+  }
+
+  .thread .thumb {
+    width: calc((100% - 20px) / 2);
+  }
+}

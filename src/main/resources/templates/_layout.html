@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+  <script src="//cdn.unpkg.net/~metadream/thyme@0.0.12/dist/thyme.js"></script>
+  <link rel="icon" type="image/svg" href="/assets/favicon.svg"/>
+  <link rel="stylesheet" href="/assets/puffin.css"/>
+  <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">[[${appName}]]</title>
+</head>
+<body>
+
+<header>
+  <main>
+    <a href="/" class="logo"><img src="/assets/logo.png"/></a>
+    <div class="search-bar">
+      <input class="search-text" type="text" maxlength="30" placeholder="搜索..." onkeyup="search()"/>
+    </div>
+
+    <nav>
+      <menu><a href="/starred"><img src="/assets/circle.svg"/><span>精选</span></a></menu>
+
+      {{? hasMetafield('region') }}
+      <menu>
+        <a><img src="/assets/triangle.svg"/><span>地区</span></a>
+        <div>
+          {{~ Object.entries(region): entry }}
+          <a class="tag-item" href="/?region={{= entry[0] }}">{{= entry[1] }}</a>
+          {{~ }}
+        </div>
+      </menu>
+      {{? }}
+
+      {{? hasMetafield('quality') }}
+      <menu>
+        <a><img src="/assets/triangle.svg"/><span>画质</span></a>
+        <div>
+          {{~ Object.entries(quality): entry }}
+          <a class="tag-item" href="/?quality={{= entry[0] }}">{{= entry[1] }}</a>
+          {{~ }}
+        </div>
+      </menu>
+      {{? }}
+
+      {{? hasMetafield('censorship') }}
+      <menu>
+        <a><img src="/assets/triangle.svg"/><span>审查</span></a>
+        <div>
+          {{~ Object.entries(censorship): entry }}
+          <a class="tag-item" href="/?censorship={{= entry[0] }}">{{= entry[1] }}</a>
+          {{~ }}
+        </div>
+      </menu>
+      {{? }}
+
+      {{? hasMetafield('rating') }}
+      <menu>
+        <a><img src="/assets/triangle.svg"/><span>分级</span></a>
+        <div>
+          {{~ Object.entries(rating): entry }}
+          <a class="tag-item" href="/?rating={{= entry[0] }}">{{= entry[1] }}</a>
+          {{~ }}
+        </div>
+      </menu>
+      {{? }}
+    </nav>
+
+  </main>
+</header>
+
+<main layout:fragment="main"></main>
+
+<footer>
+  <main>
+    <p><img src="/assets/logo.png"/></p>
+    <p>Puffin是一款轻量级开源视频媒体系统，旨在帮助人们更好地组织、管理、观看本地视频文件，并对浏览器不支持的视频格式进行自动转码输出，广泛适用于电影电视、个人视频、MV、AV等场景。Puffin基于Java、FFMPEG、HLS等技术开发，没有收费许可、没有隐藏功能、没有附加条件，只为构建一个简单、便捷、高效的媒体管理平台供大众使用。欢迎任何有兴趣的人参与优化系统功能和改善用户体验。</p>
+    <p>🄯 Copyleft <a target="_blank" href="https://github.com/metadream/spring-puffin">Puffin Media System</a> is Licensed <a target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GPL 3.0</a></p>
+  </main>
+</footer>
+
+</body>
+</html>

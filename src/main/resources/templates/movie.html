@@ -1,0 +1,153 @@
+<html layout:decorate="~{_layout}">
+<head>
+  <title>[[${movie.title}]]</title>
+  <script src="/assets/hls@1.4.12.js"></script>
+</head>
+<body>
+
+<main layout:fragment="main">
+  <div class="thread">
+    <h3>{{= movie.title }}</h3>
+    <div class="tiny-title">
+      <span>{{= movie.rDate }}</span>
+      <span>{{= formatBytes(movie.videoSize) }}</span>
+      <span>{{= movie.videoWidth }}×{{= movie.videoHeight }}</span>
+      <span>{{= formatDuration(movie.duration) }}</span>
+      {{? movie.starred }}<span class="right"><img src="/assets/circle.svg"/></span>{{? }}
+    </div>
+
+    <video src="/video/{{=movie.id}}.mp4" poster="/cover/{{= movie.id }}" controlslist="nodownload"
+      controls muted autoplay autofocus></video>
+  </div>
+
+  <div class="metadata">
+    <div class="prop">
+      <label>编号:</label>
+      <div>{{= movie.code }}</div>
+    </div>
+
+    <div class="prop">
+      <label>发行日期:</label>
+      <div>{{= movie.rDate }}</div>
+    </div>
+
+    {{? hasMetafield('producer') }}
+    <div class="prop">
+      <label>制作商:</label>
+      <div><a href="/?producer={{= movie.producer }}">{{= movie.producer || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('director') }}
+    <div class="prop">
+      <label>导演:</label>
+      <div><a href="/?director={{= movie.director }}">{{= movie.director || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('region') }}
+    <div class="prop">
+      <label>地区:</label>
+      <div><a href="/?region={{= movie.region }}">{{= region[movie.region] || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('quality') }}
+    <div class="prop">
+      <label>画质:</label>
+      <div><a href="/?quality={{= movie.quality }}">{{= quality[movie.quality] || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('censorship') }}
+    <div class="prop">
+      <label>审查:</label>
+      <div><a href="/?censorship={{= movie.censorship }}">{{= censorship[movie.censorship] || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('rating') }}
+    <div class="prop">
+      <label>分级:</label>
+      <div><a href="/?rating={{= movie.rating }}">{{= rating[movie.rating] || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('series') }}
+    <div class="prop">
+      <label>系列:</label>
+      <div><a href="/?series={{= movie.series }}">{{= movie.series || '' }}</a></div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('genres') }}
+    <div class="prop">
+      <label>类型:</label>
+      <div class="tags">
+        {{? movie.genres }}{{~ movie.genres.split(/, /):genre }}
+        <a href="/?genres={{= genre }}">{{= genre }}</a>
+        {{~ }}{{? }}
+      </div>
+    </div>
+    {{? }}
+
+    {{? hasMetafield('starring') }}
+    <div class="prop">
+      <label>主演:</label>
+      <div class="tags">
+        {{? movie.starring }}{{~ movie.starring.split(/, /):star }}
+        <a href="/?starring={{= star }}">{{= star }}</a>
+        {{~ }}{{? }}
+      </div>
+    </div>
+    {{? }}
+  </div>
+</main>
+
+</body>
+</html>
+
+<script>
+const video = document.querySelector('video');
+video.setAttribute('preload', 'auto');
+
+document.addEventListener('keyup', function(e) {
+  switch(e.keyCode) {
+    case 37: video.currentTime -= 5; e.preventDefault(); break;
+    case 39: video.currentTime += 5; e.preventDefault(); break;
+    default: break;
+  }
+});
+
+video.on('error', function() {
+  if (this.transcoded) {
+    Thyme.error('不支持的视频格式');
+  } else {
+    transcode();
+    this.transcoded = true;
+  }
+});
+
+function transcode() {
+  const source = '/video/{{=movie.id}}.m3u8?playId={{=playId}}';
+  if(Hls.isSupported()) {
+    var hls = new Hls();
+    hls.loadSource(source);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) Thyme.error('视频转码发生错误');
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = source;
+    video.on('canplay', () => video.play());
+  }
+}
+
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+if (isSafari) {
+  window.onpagehide = () => navigator.sendBeacon('/video/{{=playId}}');
+} else {
+  window.onunload = () => navigator.sendBeacon('/video/{{=playId}}');
+}
+</script>
