@@ -28,7 +28,7 @@
     </tr>
   </table>
   <div class="notfound" th:if="${#lists.isEmpty(libraries)}">尚未添加媒体库</div>
-  
+
   <th-dialog>
     <div class="prefer" style="width:400px">
       <th-field label="媒体库名称" name="name" maxlength="20" required></th-field>
@@ -66,20 +66,5 @@ function editLibrary(library) {
   bindModel(dialog, library);
   dialog.querySelector('[name="path"]').disabled = true;
   dialog.open();
-}
-
-function bindModel(form, data) {
-  const fields = form.querySelectorAll('[name]:not([name=""])');
-  for (const field of fields) {
-    const { tagName, type, name } = field;
-
-    if (tagName === 'TH-FIELD' || (tagName === 'INPUT' && type === 'hidden')) {
-      field.value = data[name] || '';
-    } else if (tagName === 'SELECT') {
-      field.value = data[name].code;
-    } else if (type === 'checkbox') {
-      field.checked = data[name];
-    }
-  }
 }
 </script>
