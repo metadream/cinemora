@@ -1,17 +1,5 @@
 # Puffin
 
-/**
- * Global Model Attributes
- * @author AiChen
- * @copyright ArrayWork Inc.
- * @since 2024/04/22
- */
-
-- https://w.zerg.cc
-- Language: java
-- Framework: springboot
-- Deployed on: local
-
 #### vi /etc/systemd/system/spring-puffin.service
 ```
 [Unit]

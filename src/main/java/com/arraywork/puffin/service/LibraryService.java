@@ -27,7 +27,8 @@ import jakarta.annotation.Resource;
 /**
  * 媒体库服务
  * @author AiChen
- * @created 2024/04/22
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/22
  */
 @Service
 public class LibraryService {
@@ -49,7 +50,6 @@ public class LibraryService {
 
     // 获取媒体库列表
     public List<Library> getLibraries() {
-        System.out.println(libraryRepo.findAll());
         return libraryRepo.findAll();
     }
 

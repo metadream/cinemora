@@ -7,15 +7,18 @@ import com.arraywork.puffin.entity.MediaInfo;
 /**
  * FFMPEG服务
  * @author AiChen
- * @created 2024/04/22
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/22
  */
 @Service
 public class FfmpegService {
 
+    // 获取媒体信息
     public MediaInfo getMediaInfo(String mediaPath) {
         return new MediaInfo();
     }
 
+    // 视频截图
     public void screenshot(String videoPath, String outputPath, int duration) {}
 
 }

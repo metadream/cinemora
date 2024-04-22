@@ -3,7 +3,8 @@ package com.arraywork.puffin.entity;
 /**
  * 扫描状态
  * @author AiChen
- * @created 2024/04/21
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/21
  */
 public class ScanStatus {
 

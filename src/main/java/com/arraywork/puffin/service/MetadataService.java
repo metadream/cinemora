@@ -16,7 +16,8 @@ import jakarta.annotation.Resource;
 /**
  * 元数据服务
  * @author AiChen
- * @created 2024/04/22
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/22
  */
 @Service
 public class MetadataService {

@@ -8,9 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.arraywork.springhood.BaseApplication;
 
 /**
- * Puffin Application
+ * 应用启动类
  * @author AiChen
- * @created 2024/04/21
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/21
  */
 @SpringBootApplication
 public class PuffinApplication extends BaseApplication {

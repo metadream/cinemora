@@ -15,7 +15,8 @@ import jakarta.persistence.criteria.Root;
 /**
  * 查询元数据
  * @author AiChen
- * @created 2024/04/22
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/22
  */
 public class MetadataSpec implements Specification<Metadata> {
 

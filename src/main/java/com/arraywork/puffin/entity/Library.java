@@ -25,9 +25,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * 媒体库
+ * 媒体库实体
  * @author AiChen
- * @created 2024/04/22
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/22
  */
 @Entity
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) // 序列化时忽略懒加载的属性
@@ -52,13 +53,6 @@ public class Library {
     @Size(max = 100, message = "媒体库路径不能超过 {max} 个字符")
     private String path;
 
-    //// 元数据
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "library_id")
-    @OrderBy("lastModified DESC")
-    private List<Metadata> metadatas;
-
     // 是否重命名文件
     private boolean allowRenameFile;
 
@@ -69,5 +63,12 @@ public class Library {
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime creationTime;
+
+    //// 元数据
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "library_id")
+    @OrderBy("lastModified DESC")
+    private List<Metadata> metadatas;
 
 }

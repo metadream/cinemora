@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.arraywork.puffin.entity.Library;
 
 /**
- * Library Repository
+ * 媒体库持久化
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/02/21

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.arraywork.puffin.entity.Metadata;
 
 /**
- * Metadata Repository
+ * 元数据持久化
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/02/21

@@ -21,9 +21,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * 用户
+ * 用户实体
  * @author AiChen
- * @created 2024/04/21
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/21
  */
 @Entity
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) // 序列化时忽略懒加载的属性

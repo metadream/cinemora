@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 地区
+ * 地区枚举
  * @author AiChen
- * @created 2024/04/21
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/21
  */
 @AllArgsConstructor
 @Getter

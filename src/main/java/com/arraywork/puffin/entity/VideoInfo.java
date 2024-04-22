@@ -5,7 +5,8 @@ import lombok.Data;
 /**
  * 视频信息
  * @author AiChen
- * @created 2024/04/21
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/21
  */
 @Data
 public class VideoInfo {
