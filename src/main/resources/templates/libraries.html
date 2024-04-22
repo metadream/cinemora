@@ -1,0 +1,85 @@
+<html layout:decorate="~{_layout}">
+<head><title>媒体库</title></head>
+<body>
+
+<main layout:fragment="main">
+  <div class="headline">
+    <h3>媒体库</h3>
+    <div class="buttons">
+      <th-button onclick="scanAll()" id="scanBtn">扫描所有媒体库</th-button>
+      <th-button onclick="dialog.open()">添加媒体库</th-button>
+    </div>
+  </div>
+
+  <table class="list" th:unless="${#lists.isEmpty(libraries)}">
+    <tr>
+      <th width="15%">名称</th>
+      <th>路径</th>
+      <th width="10%">文件重命名</th>
+      <th width="10%">匿名访问</th>
+      <th width="10%"></th>
+    </tr>
+    <tr class="metadata" th:each="library: ${libraries}" th:onclick='editLibrary([[${library}]])'>
+      <td>[[${library.name}]]</td>
+      <td>[[${library.path}]]</td>
+      <td><div th:if="${library.allowRenameFile}"><img src="/assets/circle.svg"/></div></td>
+      <td><div th:if="${library.allowAnonymous}"><img src="/assets/circle.svg"/></div></td>
+      <td><a href="">扫描</a></td>
+    </tr>
+  </table>
+  <div class="notfound" th:if="${#lists.isEmpty(libraries)}">尚未添加媒体库</div>
+  
+  <th-dialog>
+    <div class="prefer" style="width:400px">
+      <th-field label="媒体库名称" name="name" maxlength="20" required></th-field>
+      <th-field label="媒体库路径" name="path" maxlength="100" required></th-field>
+      <p></p><div>
+        <label><input type="checkbox" name="allowRenameFile" value="true"/>使用“编号_标题”对媒体文件重命名</label>
+        <div class="tiny-title">勾选此项后，修改元数据编号或标题时将会同步修改媒体文件名</div>
+      </div><div>
+        <label><input type="checkbox" name="allowAnonymous" value="true"/>允许匿名访问此媒体库</label>
+        <div class="tiny-title">勾选此项后，用户无需使用账号登录即可访问媒体库</div>
+      </div>
+    </div>
+  </th-dialog>
+</main>
+
+</body>
+</html>
+
+<script>
+const dialog = document.querySelector('th-dialog');
+dialog.buttons = [{
+  label: '取消'
+}, {
+  label: '保存',
+  primary: true,
+  onclick: async function(dlg) {
+    const data = Thyme.form.getJsonObject(dlg);
+    if (!data) return;
+    await Thyme.http.put('/library', data);
+    location.reload();
+  }
+}];
+
+function editLibrary(library) {
+  bindModel(dialog, library);
+  dialog.querySelector('[name="path"]').disabled = true;
+  dialog.open();
+}
+
+function bindModel(form, data) {
+  const fields = form.querySelectorAll('[name]:not([name=""])');
+  for (const field of fields) {
+    const { tagName, type, name } = field;
+
+    if (tagName === 'TH-FIELD' || (tagName === 'INPUT' && type === 'hidden')) {
+      field.value = data[name] || '';
+    } else if (tagName === 'SELECT') {
+      field.value = data[name].code;
+    } else if (type === 'checkbox') {
+      field.checked = data[name];
+    }
+  }
+}
+</script>

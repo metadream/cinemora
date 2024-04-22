@@ -6,13 +6,11 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
-import com.arraywork.puffin.basedata.Metafield;
 import com.arraywork.springhood.LongIdGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,23 +41,19 @@ public class Library {
     @GeneratedValue(generator = "long-id-generator")
     private long id;
 
+    // 媒体库名称
+    @NotBlank(message = "媒体库名称不能为空")
+    @Size(max = 20, message = "媒体库名称不能超过 {max} 个字符")
+    private String name;
+
     // 媒体库路径
     @Column(updatable = false)
     @NotBlank(message = "媒体库路径不能为空")
     @Size(max = 100, message = "媒体库路径不能超过 {max} 个字符")
     private String path;
 
-    // 媒体库名称
-    @NotBlank(message = "媒体库名称不能为空")
-    @Size(max = 20, message = "媒体库名称不能超过 {max} 个字符")
-    private String name;
-
-    // 元字段
-    @Type(JsonStringType.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
-    private Metafield[] metafields;
-
     //// 元数据
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "library_id")
     @OrderBy("lastModified DESC")

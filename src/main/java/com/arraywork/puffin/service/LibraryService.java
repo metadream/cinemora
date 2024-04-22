@@ -49,12 +49,13 @@ public class LibraryService {
 
     // 获取媒体库列表
     public List<Library> getLibraries() {
+        System.out.println(libraryRepo.findAll());
         return libraryRepo.findAll();
     }
 
     // 保存媒体库
     @Transactional(rollbackFor = Exception.class)
-    public Library saveLibrary(Library library) {
+    public Library save(Library library) {
         return libraryRepo.save(library);
     }
 

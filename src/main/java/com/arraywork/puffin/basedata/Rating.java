@@ -17,6 +17,6 @@ public enum Rating {
     RESTRICTED("限制级"),
     ADULT("成人级");
 
-    private final String text;
+    private final String label;
 
 }

@@ -106,7 +106,7 @@ table.list tr.metadata:hover {
 
 .headline h3 {
   padding-left: 15px;
-  line-height: 1.2;
+  line-height: 1;
   border-left: var(--primaryColor) 3px solid;
 }
 
@@ -212,7 +212,7 @@ header .logo img {
 
 .search-bar {
   flex: 1;
-  margin-left: 20px;
+  margin: 0 15px 0 30px;
 }
 
 .search-text {
@@ -483,9 +483,9 @@ main.detail .tags a {
   width: 100%;
 }
 
-.metafields>* {
-  margin-right: 15px;
-  white-space: nowrap;
+.front-panel h2 {
+  text-align: center;
+  margin: -10px 0 20px;
 }
 
 .error-panel {

@@ -19,6 +19,6 @@ public enum Quality {
     SD("标清"),
     ETC("其他");
 
-    private final String text;
+    private final String label;
 
 }

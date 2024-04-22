@@ -34,6 +34,6 @@ public enum Region {
     OC("欧美"),
     ETC("其他");
 
-    private final String text;
+    private final String label;
 
 }

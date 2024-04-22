@@ -16,6 +16,6 @@ public enum Censorship {
     REDUCED("消码"),
     UNCENSORED("无码");
 
-    private final String text;
+    private final String label;
 
 }

@@ -13,5 +13,6 @@ import com.arraywork.puffin.entity.User;
 public interface UserRepo extends JpaRepository<User, Long> {
 
     User findByIsSuperTrue();
+    User findByUsername(String username);
 
 }

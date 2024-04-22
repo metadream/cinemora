@@ -10,26 +10,11 @@
 </head>
 
 <body class="layout-center">
-  <div class="front-panel" style="width:490px">
+  <div class="front-panel" style="width:400px">
+    <h2>初始化</h2>
     <th-field label="管理员账号" name="username" maxlength="20" required></th-field>
     <th-field label="管理员密码" type="password" name="password" maxlength="20" required></th-field>
-    <th-field label="媒体库路径" name="library" maxlength="100" required></th-field>
-
-    <div style="margin-top:20px">
-      可选元数据属性<br>
-      <span class="tiny-title">勾选项将作为媒体元数据的附加属性，对媒体进行多维度分类、查询。</span>
-    </div>
-    <div class="metafields">
-      {{~ Object.entries(METAFIELDS): entry }}
-      <label><input type="checkbox" name="metafields" value="{{= entry[0] }}"/>{{= entry[1] }}</label>
-      {{~ }}
-    </div>
-
-    <div>
-      <label><input type="checkbox" name="codify" value="1"/>使用编号对媒体文件重命名</label>
-      <div class="tiny-title">勾选此项后，修改元数据编号时将会同步修改媒体文件名</div>
-    </div>
-    <th-button onclick="init(this)">初始化</th-button>
+    <th-button onclick="init(this)">确定</th-button>
   </div>
 </body>
 </html>
@@ -39,10 +24,10 @@ async function init(btn) {
   const data = Thyme.form.getJsonObject('.front-panel');
   if (!data) return;
 
+  btn.loading = true;
   try {
-    btn.loading = true;
     await Thyme.http.post('/init', data);
-    location.href = '/metadata?init';
+    location.href = '/libraries';
   } finally {
     btn.loading = false;
   }

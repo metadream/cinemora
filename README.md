@@ -1,4 +1,11 @@
-# Wormhole
+# Puffin
+
+/**
+ * Global Model Attributes
+ * @author AiChen
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/22
+ */
 
 - https://w.zerg.cc
 - Language: java
