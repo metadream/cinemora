@@ -32,7 +32,7 @@ public enum Region {
     BR("巴西"),
     AS("亚洲"),
     OC("欧美"),
-    OT("其他");
+    ETC("其他");
 
     private final String text;
 

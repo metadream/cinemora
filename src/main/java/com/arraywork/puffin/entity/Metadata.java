@@ -12,6 +12,8 @@ import com.arraywork.springhood.LongIdGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
@@ -66,15 +68,19 @@ public class Metadata {
     private String director;
 
     // 地区
+    @Enumerated(value = EnumType.STRING)
     private Region region;
 
     // 质量
+    @Enumerated(value = EnumType.STRING)
     private Quality quality;
 
     // 审查
+    @Enumerated(value = EnumType.STRING)
     private Censorship censorship;
 
     // 分级
+    @Enumerated(value = EnumType.STRING)
     private Rating rating;
 
     // 题材
