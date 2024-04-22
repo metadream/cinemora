@@ -11,4 +11,4 @@ import com.arraywork.puffin.entity.Metadata;
  * @copyright ArrayWork Inc.
  * @since 2024/02/21
  */
-public interface MetadataRepo extends JpaRepository<Metadata, Long>, JpaSpecificationExecutor<Metadata> {}
+public interface MetadataRepo extends JpaRepository<Metadata, String>, JpaSpecificationExecutor<Metadata> {}

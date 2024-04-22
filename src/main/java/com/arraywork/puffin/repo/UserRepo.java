@@ -10,7 +10,7 @@ import com.arraywork.puffin.entity.User;
  * @copyright ArrayWork Inc.
  * @since 2024/02/21
  */
-public interface UserRepo extends JpaRepository<User, Long> {
+public interface UserRepo extends JpaRepository<User, String> {
 
     User findByIsSuperTrue();
     User findByUsername(String username);

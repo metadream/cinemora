@@ -29,7 +29,7 @@ public class MetadataService {
 
     // 保存元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata saveMetadata(long libId, Metadata metadata) {
+    public Metadata saveMetadata(String libId, Metadata metadata) {
         Library library = libraryRepo.getReferenceById(libId);
         library.getMetadatas().add(metadata);
         return metadata;
@@ -37,7 +37,7 @@ public class MetadataService {
 
     // 删除元数据
     @Transactional(rollbackFor = Exception.class)
-    public void deleteMetadata(long metaId, boolean deleteMediaFile) {
+    public void deleteMetadata(String metaId, boolean deleteMediaFile) {
         Metadata metadata = metadataRepo.getReferenceById(metaId);
         Assert.notNull(metadata, "记录不存在或已被删除");
         metadataRepo.delete(metadata);

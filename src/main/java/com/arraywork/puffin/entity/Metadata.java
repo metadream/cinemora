@@ -3,7 +3,6 @@ package com.arraywork.puffin.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -11,8 +10,7 @@ import com.arraywork.puffin.basedata.Censorship;
 import com.arraywork.puffin.basedata.Quality;
 import com.arraywork.puffin.basedata.Rating;
 import com.arraywork.puffin.basedata.Region;
-import com.arraywork.springhood.LongIdGenerator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.arraywork.springhood.NanoIdGenerator;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
@@ -32,16 +30,17 @@ import lombok.Data;
  * @since 2024/04/21
  */
 @Entity
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) // 序列化时忽略懒加载的属性
-@DynamicInsert // 如果字段值为null则不会加入到insert语句中（此处的作用是为了使初始化空实体对象时产生带默认值的空数据行）
+// @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) //
+// 序列化时忽略懒加载的属性
+// @DynamicInsert // 如果字段值为null则不会加入到insert语句中（此处的作用是为了使初始化空实体对象时产生带默认值的空数据行）
 @Data
 public class Metadata {
 
     @Id
-    @Column(length = 20, insertable = false, updatable = false)
-    @GenericGenerator(name = "long-id-generator", type = LongIdGenerator.class)
-    @GeneratedValue(generator = "long-id-generator")
-    private long id;
+    @Column(length = 24, insertable = false, updatable = false)
+    @GenericGenerator(name = "nano-id-generator", type = NanoIdGenerator.class)
+    @GeneratedValue(generator = "nano-id-generator")
+    private String id;
 
     // 编号
     @Column(unique = true)

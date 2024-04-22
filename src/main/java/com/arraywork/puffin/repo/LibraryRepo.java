@@ -10,4 +10,4 @@ import com.arraywork.puffin.entity.Library;
  * @copyright ArrayWork Inc.
  * @since 2024/02/21
  */
-public interface LibraryRepo extends JpaRepository<Library, Long> {}
+public interface LibraryRepo extends JpaRepository<Library, String> {}

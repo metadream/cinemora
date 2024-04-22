@@ -61,7 +61,7 @@ public class LibraryService {
 
     // 删除媒体库
     @Transactional(rollbackFor = Exception.class)
-    public void deleteLibrary(long id) {
+    public void deleteLibrary(String id) {
         Library library = libraryRepo.getReferenceById(id);
         libraryRepo.delete(library); // TODO 联级删除元数据测试
     }
@@ -79,7 +79,7 @@ public class LibraryService {
     }
 
     // 扫描单个媒体库
-    public void scanById(long id) {
+    public void scanById(String id) {
         if (!SCAN_STATUS.completed) return;
         SCAN_STATUS.reset();
 
