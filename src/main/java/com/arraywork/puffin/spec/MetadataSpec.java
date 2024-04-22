@@ -27,7 +27,7 @@ public class MetadataSpec implements Specification<Metadata> {
         List<Predicate> predicates = new ArrayList<Predicate>();
 
         predicates.add(
-            cb.equal(cb.function("JSON_ARRAY", String.class, root.get("producers"), cb.literal("$.[]")), "bbb"));
+            cb.equal(cb.function("JSON_EXTRACT", String.class, root.get("producers"), cb.literal("$[*]")), "bbb"));
 
         Predicate[] p = new Predicate[predicates.size()];
         return cb.and(predicates.toArray(p));

@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.arraywork.puffin.basedata.Quality;
 import com.arraywork.puffin.entity.Library;
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.entity.ScanStatus;
 import com.arraywork.puffin.repo.LibraryRepo;
 import com.arraywork.puffin.repo.MetadataRepo;
+import com.arraywork.puffin.spec.MetadataSpec;
 import com.arraywork.springhood.util.CommonUtils;
 
 import jakarta.annotation.Resource;
@@ -163,22 +165,22 @@ public class LibraryService {
     }
 
     // @PostConstruct
-    // public void test() {
-    // System.out.println("--------------------");
-    // Metadata metadata = new Metadata();
-    //
-    // metadata.setCode("asdfs");
-    // metadata.setTitle("警方撒旦卡了发动机是");
-    // metadata.setPath("/dfad/s/fdsafds");
-    // metadata.setQuality(Quality.HD);
-    //
-    // TODO json array query
-    // String[] aa = { "aa", "bbb", "ccc", "dddddddddddddddddd" };
-    // metadata.setProducers(aa);
-    // metadataRepo.save(metadata);
-    //
-    // List<Metadata> list = metadataRepo.findAll(new MetadataSpec());
-    // System.out.println(list);
-    // }
+    public void test() {
+        System.out.println("--------------------");
+        Metadata metadata = new Metadata();
+
+        metadata.setCode("asdfs");
+        metadata.setTitle("警方撒旦卡了发动机是");
+        metadata.setPath("/dfad/s/fdsafds");
+        metadata.setQuality(Quality.HD);
+
+        // TODO json array query
+        String[] aa = { "aa", "bbb", "ccc", "dddddddddddddddddd" };
+        metadata.setProducers(aa);
+        metadataRepo.save(metadata);
+
+        List<Metadata> list = metadataRepo.findAll(new MetadataSpec());
+        System.out.println(list);
+    }
 
 }

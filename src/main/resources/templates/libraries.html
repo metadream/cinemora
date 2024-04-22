@@ -13,18 +13,21 @@
 
   <table class="list" th:unless="${#lists.isEmpty(libraries)}">
     <tr>
-      <th width="15%">名称</th>
+      <th width="20%">名称</th>
       <th>路径</th>
-      <th width="10%">文件重命名</th>
-      <th width="10%">匿名访问</th>
-      <th width="10%"></th>
+      <th width="12%">文件重命名</th>
+      <th width="12%">匿名访问</th>
+      <th width="12%"></th>
     </tr>
     <tr class="metadata" th:each="library: ${libraries}" th:onclick='editLibrary([[${library}]])'>
       <td>[[${library.name}]]</td>
       <td>[[${library.path}]]</td>
       <td><div th:if="${library.allowRenameFile}"><img src="/assets/circle.svg"/></div></td>
       <td><div th:if="${library.allowAnonymous}"><img src="/assets/circle.svg"/></div></td>
-      <td><a href="">扫描</a></td>
+      <td>
+        <a onclick="deleteLibrary()">删除</a>
+        <a onclick="scanLibrary()">扫描</a>
+      </td>
     </tr>
   </table>
   <div class="notfound" th:if="${#lists.isEmpty(libraries)}">尚未添加媒体库</div>
@@ -67,5 +70,17 @@ function editLibrary(library) {
   bindModel(dialog, library);
   dialog.querySelector('[name="path"]').disabled = true;
   dialog.open();
+}
+
+function deleteLibrary() {
+  event.preventDefault();
+  event.stopPropagation();
+  console.log('------------delete')
+}
+
+function scanLibrary() {
+  event.preventDefault();
+  event.stopPropagation();
+  console.log("------------scan")
 }
 </script>
