@@ -1,20 +1,26 @@
 package com.arraywork.puffin.entity;
 
-import lombok.Data;
-
 /**
  * 扫描状态
  * @author AiChen
  * @created 2024/04/21
  */
-@Data
 public class ScanStatus {
 
-    private int totalFiles;
-    private int totalVideos;
-    private int deleted;
-    private int inserted;
-    private int processed;
-    private boolean completed;
+    public int totalFiles;
+    public int totalMedias;
+    public int deleted;
+    public int inserted;
+    public int processed;
+    public boolean completed;
+
+    public void reset() {
+        totalFiles = 0;
+        totalMedias = 0;
+        deleted = 0;
+        inserted = 0;
+        processed = 0;
+        completed = false;
+    }
 
 }

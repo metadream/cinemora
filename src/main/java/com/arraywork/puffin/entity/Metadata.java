@@ -61,10 +61,10 @@ public class Metadata {
     // 发行日期
     private LocalDate releaseDate;
 
-    // private long videoSize;
-    // private int videoWidth;
-    // private int videoHeight;
-    // private int duration;
+    private long videoSize;
+    private int videoWidth;
+    private int videoHeight;
+    private int duration;
 
     // 出品方
     @Type(JsonStringType.class)

@@ -13,7 +13,7 @@ public class MediaInfo {
     private long size;
     private int duration;
     private int bitRate;
-    private VideoInfo videoInfo;
-    private AudioInfo audioInfo;
+    private VideoInfo video;
+    private AudioInfo audio;
 
 }
