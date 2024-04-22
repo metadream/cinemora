@@ -171,6 +171,7 @@ public class LibraryService {
     // metadata.setPath("/dfad/s/fdsafds");
     // metadata.setQuality(Quality.HD);
     //
+    // TODO json array query
     // String[] aa = { "aa", "bbb", "ccc", "dddddddddddddddddd" };
     // metadata.setProducers(aa);
     // metadataRepo.save(metadata);
