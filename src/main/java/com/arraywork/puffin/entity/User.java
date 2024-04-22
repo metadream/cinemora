@@ -26,9 +26,9 @@ import lombok.Data;
  * @created 2024/04/21
  */
 @Entity
-@Data
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) // 序列化时忽略懒加载的属性
 @DynamicInsert // 如果字段值为null则不会加入到insert语句中（此处的作用是为了使初始化空实体对象时产生带默认值的空数据行）
+@Data
 public class User {
 
     @Id

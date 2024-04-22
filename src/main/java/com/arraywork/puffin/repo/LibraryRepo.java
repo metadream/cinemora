@@ -1,4 +1,4 @@
-package com.arraywork.puffin.repository;
+package com.arraywork.puffin.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

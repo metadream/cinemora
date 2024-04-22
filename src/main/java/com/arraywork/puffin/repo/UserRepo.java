@@ -1,4 +1,4 @@
-package com.arraywork.puffin.repository;
+package com.arraywork.puffin.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +10,8 @@ import com.arraywork.puffin.entity.User;
  * @copyright ArrayWork Inc.
  * @since 2024/02/21
  */
-public interface UserRepo extends JpaRepository<User, Long> {}
+public interface UserRepo extends JpaRepository<User, Long> {
+
+    User findByIsSuperTrue();
+
+}
