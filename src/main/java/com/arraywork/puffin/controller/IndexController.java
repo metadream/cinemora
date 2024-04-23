@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.arraywork.puffin.entity.User;
-import com.arraywork.puffin.service.UserService;
+import com.arraywork.puffin.entity.Preference;
+import com.arraywork.puffin.service.PreferenceService;
 
 import jakarta.annotation.Resource;
 
@@ -22,13 +22,13 @@ import jakarta.annotation.Resource;
 public class IndexController {
 
     @Resource
-    private UserService userService;
+    private PreferenceService preferenceService;
 
     // 首页
     @GetMapping("/")
     public String index() {
-        boolean hasSuperUser = userService.hasSuperUser();
-        return hasSuperUser ? "index" : "redirect:init";
+        Preference preference = preferenceService.getPreference();
+        return preference != null ? "index" : "redirect:init";
     }
 
     // 初始化页面
@@ -40,9 +40,8 @@ public class IndexController {
     // 初始化接口
     @PostMapping("/init")
     @ResponseBody
-    public User init(@Validated @RequestBody User user) {
-        user.setSuper(true);
-        return userService.saveUser(user);
+    public Preference init(@Validated @RequestBody Preference preference) {
+        return preferenceService.init(preference);
     }
 
 }

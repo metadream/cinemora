@@ -14,6 +14,7 @@ import com.arraywork.springhood.NanoIdGenerator;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -50,21 +51,16 @@ public class Metadata {
 
     // 标题
     @NotBlank(message = "标题不能为空")
-    @Size(max = 100, message = "标题不能超过 {max} 个字符")
+    @Size(max = 120, message = "标题不能超过 {max} 个字符")
     private String title;
 
     // 路径
     @NotBlank(message = "路径不能为空")
-    @Size(max = 100, message = "路径不能超过 {max} 个字符")
-    private String path;
+    @Size(max = 120, message = "路径不能超过 {max} 个字符")
+    private String filepath;
 
     // 发行日期
     private LocalDate releaseDate;
-
-    private long videoSize;
-    private int videoWidth;
-    private int videoHeight;
-    private int duration;
 
     // 出品方
     @Type(JsonStringType.class)
@@ -86,13 +82,21 @@ public class Metadata {
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] genres;
 
-    // 地区
+    // 标签
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
-    private Region[] regions;
+    private String[] tags;
+
+    // 系列
+    @Size(max = 60, message = "系列名不能超过 {max} 个字符")
+    private String series;
+
+    // 地区
+    @Enumerated(value = EnumType.STRING)
+    private Region regions;
 
     // 画质
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = Quality.Converter.class)
     private Quality quality;
 
     // 审查
@@ -103,12 +107,13 @@ public class Metadata {
     @Enumerated(value = EnumType.STRING)
     private Rating rating;
 
-    // 系列
-    @Size(max = 50, message = "系列不能超过 {max} 个字符")
-    private String series;
+    // 媒体信息
+    @Type(JsonStringType.class)
+    @Column(columnDefinition = "JSON DEFAULT (JSON_OBJECT())")
+    private MediaInfo mediaInfo;
 
     // 封面地址
-    @Size(max = 50, message = "封面地址不能超过 {max} 个字符")
+    @Size(max = 60, message = "封面地址不能超过 {max} 个字符")
     private String coverUrl;
 
     // 是否标星

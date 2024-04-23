@@ -2,12 +2,12 @@ package com.arraywork.puffin.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.arraywork.puffin.entity.Library;
+import com.arraywork.puffin.entity.Preference;
 
 /**
- * 媒体库持久化
+ * 偏好持久化
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/02/21
  */
-public interface LibraryRepo extends JpaRepository<Library, String> {}
+public interface PreferenceRepo extends JpaRepository<Preference, String> {}

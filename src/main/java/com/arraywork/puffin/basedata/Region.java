@@ -31,9 +31,7 @@ public enum Region {
     DK("丹麦"),
     AU("澳大利亚"),
     BR("巴西"),
-    AS("亚洲"),
-    OC("欧美"),
-    ETC("其他");
+    XX("其他");
 
     private final String label;
 
