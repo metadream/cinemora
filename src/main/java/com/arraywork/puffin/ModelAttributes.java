@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.arraywork.puffin.basedata.Censorship;
+import com.arraywork.puffin.basedata.Metafield;
 import com.arraywork.puffin.basedata.Quality;
 import com.arraywork.puffin.basedata.Rating;
 import com.arraywork.puffin.basedata.Region;
@@ -25,6 +26,12 @@ public class ModelAttributes {
     @ModelAttribute("appName")
     public String appName() {
         return appName;
+    }
+
+    // 元字段枚举
+    @ModelAttribute("Metafields")
+    public Metafield[] Metafields() {
+        return Metafield.values();
     }
 
     // 地区枚举

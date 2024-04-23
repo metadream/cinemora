@@ -27,14 +27,7 @@ public class PreferenceController {
     @PutMapping("/preference")
     @ResponseBody
     public Preference preference(@Validated @RequestBody Preference preference) {
-        return preferenceService.savePreference(preference);
-    }
-
-    // 更新密码
-    @PutMapping("/password")
-    @ResponseBody
-    public Preference password(@Validated @RequestBody Preference preference) {
-        return preferenceService.savePassword(preference);
+        return preferenceService.save(preference);
     }
 
 }

@@ -2,17 +2,15 @@ package com.arraywork.puffin.entity;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.puffin.basedata.Metafield;
-import com.arraywork.springhood.NanoIdGenerator;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
@@ -26,14 +24,14 @@ import lombok.Data;
  * @since 2024/04/21
  */
 @Entity
+@DynamicInsert
 @Data
 public class Preference {
 
+    public static final String ID = "EYDXJNRJA5ZB6EIXEDCFLF1C";
+
     @Id
-    @Column(length = 24, insertable = false, updatable = false)
-    @GenericGenerator(name = "nano-id-generator", type = NanoIdGenerator.class)
-    @GeneratedValue(generator = "nano-id-generator")
-    private String id;
+    private String id = ID;
 
     // 用户名
     @Column(unique = true, updatable = false)

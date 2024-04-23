@@ -60,9 +60,9 @@ public class Metadata {
     private String filepath;
 
     // 发行日期
-    private LocalDate releaseDate;
+    private LocalDate issueDate;
 
-    // 出品方
+    // 制作方
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private String[] producers;

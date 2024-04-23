@@ -1,5 +1,9 @@
 # Puffin
 
+## TODO
+- 初始化拦截器排除静态资源
+- springhood框架的安全拦截器未排除静态资源？
+
 #### vi /etc/systemd/system/spring-puffin.service
 ```
 [Unit]

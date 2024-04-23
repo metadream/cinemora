@@ -13,7 +13,17 @@ import lombok.Getter;
 @Getter
 public enum Metafield {
 
-    RATING("分级");
+    REGION("地区"),
+    QUALITY("画质"),
+    CENSORSHIP("审查"),
+    RATING("分级"),
+    PRODUCERS("制作方"),
+    DIRECTORS("导演"),
+    STARRING("主演"),
+    GENRES("题材"),
+    SERIES("系列"),
+    TAGS("标签"),
+    ISSUE_DATE("发行日期");
 
     private final String label;
 
