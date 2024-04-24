@@ -1,11 +1,10 @@
 package com.arraywork.puffin.metafield;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.arraywork.puffin.entity.Metafield;
+import com.arraywork.springfield.util.JsonUtils;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
 import jakarta.annotation.Resource;
@@ -26,13 +25,13 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
     // 实现JPA实体到数据库的转换
     @Override
     public String convertToDatabaseColumn(List<Metafield> attributes) {
-        return Arrays.toString(attributes.stream().map(v -> v.getName()).toArray());
+        return JsonUtils.stringify(attributes.stream().map(v -> v.getName()).toArray());
     }
 
     // 实现JPA数据库到实体的转换
     @Override
     public List<Metafield> convertToEntityAttribute(String dbData) {
-        return convert(dbData.split(","));
+        return convert(JsonUtils.parse(dbData, String[].class));
     }
 
     // 实现StdConverter反序列化方法

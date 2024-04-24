@@ -17,8 +17,6 @@ import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
@@ -100,9 +98,9 @@ public class Metadata {
     private String series;
 
     // 地区
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = Region.Converter.class)
     @MetaColumn(label = "地区")
-    private Region regions;
+    private Region region;
 
     // 画质
     @Convert(converter = Quality.Converter.class)
@@ -110,12 +108,12 @@ public class Metadata {
     private Quality quality;
 
     // 审查
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = Censorship.Converter.class)
     @MetaColumn(label = "审查")
     private Censorship censorship;
 
     // 分级
-    @Enumerated(value = EnumType.STRING)
+    @Convert(converter = Rating.Converter.class)
     @MetaColumn(label = "分级")
     private Rating rating;
 

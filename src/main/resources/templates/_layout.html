@@ -20,18 +20,9 @@
 
     <nav>
       <menu><a href="/starred"><img src="/assets/circle.svg"/><span>精选</span></a></menu>
-      <menu>
-        <a><img src="/assets/triangle.svg"/><span>地区</span></a>
-        <div><a class="tag-item" th:each="item: ${regions}" th:href="|/?region=${item}|">[[${item.label}]]</a></div>
-      </menu><menu>
-        <a><img src="/assets/triangle.svg"/><span>画质</span></a>
-        <div><a class="tag-item" th:each="item: ${qualities}" th:href="|/?quality=${item}|">[[${item.label}]]</a></div>
-      </menu><menu>
-        <a><img src="/assets/triangle.svg"/><span>审查</span></a>
-        <div><a class="tag-item" th:each="item: ${censorships}" th:href="|/?censorship=${item}|">[[${item.label}]]</a></div>
-      </menu><menu>
-        <a><img src="/assets/triangle.svg"/><span>分级</span></a>
-        <div><a class="tag-item" th:each="item: ${ratings}" th:href="|/?rating=${item}|">[[${item.label}]]</a></div>
+      <menu th:each="metafield: ${metafields}" th:if="${metafield.enums != null}">
+        <a><img src="/assets/triangle.svg"/><span>[[${metafield.label}]]</span></a>
+        <div><a class="tag-item" th:each="enum: ${metafield.enums}" th:href="|/?${metafield.name}=${enum.code}|">[[${enum.label}]]</a></div>
       </menu>
     </nav>
   </main>

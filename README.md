@@ -1,6 +1,7 @@
 # Puffin
 
 ## TODO
+- cache preference
  String key = "bbb";
         predicates.add(cb.like(root.get("producers"), cb.literal("%\"" + key + "\"%")));
 

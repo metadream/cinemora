@@ -1,6 +1,4 @@
-package com.arraywork.puffin.entity;
-
-import com.arraywork.puffin.metafield.MetaFieldEnum;
+package com.arraywork.puffin.metafield;
 
 import lombok.Data;
 
@@ -15,6 +13,6 @@ public class Metafield {
 
     private String name;
     private String label;
-    private MetaFieldEnum[] values;
+    private MetaFieldEnum[] enums;
 
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.arraywork.puffin.entity.Metadata;
-import com.arraywork.puffin.entity.Metafield;
 
 /**
  * 元字段管理器
@@ -35,8 +34,8 @@ public class MetafieldManager {
             metafield.setLabel(annotation.label());
 
             if (field.getType().isEnum()) {
-                MetaFieldEnum[] values = (MetaFieldEnum[]) field.getType().getEnumConstants();
-                metafield.setValues(values);
+                MetaFieldEnum[] enums = (MetaFieldEnum[]) field.getType().getEnumConstants();
+                metafield.setEnums(enums);
             }
             metafields.add(metafield);
         }

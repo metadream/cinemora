@@ -1,6 +1,8 @@
 package com.arraywork.puffin.enums;
 
 import com.arraywork.puffin.metafield.MetaFieldEnum;
+import com.arraywork.springfield.databind.GenericEnum;
+import com.arraywork.springfield.databind.GenericEnumConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,28 +15,31 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Region implements MetaFieldEnum {
+public enum Region implements MetaFieldEnum, GenericEnum<String> {
 
-    CN("中国"),
-    JP("日本"),
-    KR("韩国"),
-    IN("印度"),
-    TH("泰国"),
-    US("美国"),
-    CA("加拿大"),
-    RU("俄罗斯"),
-    GB("英国"),
-    FR("法国"),
-    DE("德国"),
-    IT("意大利"),
-    ES("西班牙"),
-    IE("爱尔兰"),
-    SE("瑞典"),
-    DK("丹麦"),
-    AU("澳大利亚"),
-    BR("巴西"),
-    XX("其他");
+    CN("cn", "中国"),
+    JP("jp", "日本"),
+    KR("kr", "韩国"),
+    IN("in", "印度"),
+    TH("th", "泰国"),
+    US("us", "美国"),
+    CA("ca", "加拿大"),
+    RU("ru", "俄罗斯"),
+    GB("gb", "英国"),
+    FR("fr", "法国"),
+    DE("de", "德国"),
+    IT("it", "意大利"),
+    ES("es", "西班牙"),
+    IE("ie", "爱尔兰"),
+    SE("se", "瑞典"),
+    DK("dk", "丹麦"),
+    AU("au", "澳大利亚"),
+    BR("br", "巴西"),
+    XX("xx", "其他");
 
+    private final String code;
     private final String label;
+
+    public static class Converter extends GenericEnumConverter<Region, String> {}
 
 }

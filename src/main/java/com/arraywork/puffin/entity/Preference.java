@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.arraywork.puffin.metafield.Metafield;
 import com.arraywork.puffin.metafield.MetafieldConverter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
