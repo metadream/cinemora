@@ -1,8 +1,8 @@
 # Puffin
 
 ## TODO
-- 初始化拦截器排除静态资源
-- springhood框架的安全拦截器未排除静态资源？
+ String key = "bbb";
+        predicates.add(cb.like(root.get("producers"), cb.literal("%\"" + key + "\"%")));
 
 #### vi /etc/systemd/system/spring-puffin.service
 ```

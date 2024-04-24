@@ -1,0 +1,20 @@
+package com.arraywork.puffin.entity;
+
+import com.arraywork.puffin.metafield.MetaFieldEnum;
+
+import lombok.Data;
+
+/**
+ * 元字段信息
+ * @author AiChen
+ * @copyright ArrayWork Inc.
+ * @since 2024/04/24
+ */
+@Data
+public class Metafield {
+
+    private String name;
+    private String label;
+    private MetaFieldEnum[] values;
+
+}

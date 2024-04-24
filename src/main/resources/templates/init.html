@@ -21,7 +21,8 @@
     </div>
     <div class="metafields">
       <label th:each="metafield: ${Metafields}">
-        <input type="checkbox" name="metafields" th:value="${metafield}"/>[[${metafield.label}]]
+        <input type="checkbox" name="metafields" th:value="${metafield.name}"/>
+        <span>[[${metafield.label}]]</span>
       </label>
     </div>
     <p></p><div>

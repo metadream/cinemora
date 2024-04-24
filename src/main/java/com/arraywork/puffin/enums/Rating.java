@@ -1,4 +1,6 @@
-package com.arraywork.puffin.basedata;
+package com.arraywork.puffin.enums;
+
+import com.arraywork.puffin.metafield.MetaFieldEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Rating {
+public enum Rating implements MetaFieldEnum {
 
     UNIVERSAL("普适级"),
     GUIDANCE("指导级"),

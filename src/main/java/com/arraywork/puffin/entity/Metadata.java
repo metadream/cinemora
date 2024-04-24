@@ -6,10 +6,11 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import com.arraywork.puffin.basedata.Censorship;
-import com.arraywork.puffin.basedata.Quality;
-import com.arraywork.puffin.basedata.Rating;
-import com.arraywork.puffin.basedata.Region;
+import com.arraywork.puffin.enums.Censorship;
+import com.arraywork.puffin.enums.Quality;
+import com.arraywork.puffin.enums.Rating;
+import com.arraywork.puffin.enums.Region;
+import com.arraywork.puffin.metafield.MetaColumn;
 import com.arraywork.springfield.NanoIdGenerator;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
@@ -60,51 +61,62 @@ public class Metadata {
     private String filepath;
 
     // 发行日期
+    @MetaColumn(label = "发行日期")
     private LocalDate issueDate;
 
     // 制作方
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
+    @MetaColumn(label = "制作方")
     private String[] producers;
 
     // 导演
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
+    @MetaColumn(label = "导演")
     private String[] directors;
 
     // 主演
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
+    @MetaColumn(label = "主演")
     private String[] starring;
 
     // 题材
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
+    @MetaColumn(label = "题材")
     private String[] genres;
 
     // 标签
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
+    @MetaColumn(label = "标签")
     private String[] tags;
 
     // 系列
     @Size(max = 60, message = "系列名不能超过 {max} 个字符")
+    @MetaColumn(label = "系列")
     private String series;
 
     // 地区
     @Enumerated(value = EnumType.STRING)
+    @MetaColumn(label = "地区")
     private Region regions;
 
     // 画质
     @Convert(converter = Quality.Converter.class)
+    @MetaColumn(label = "画质")
     private Quality quality;
 
     // 审查
     @Enumerated(value = EnumType.STRING)
+    @MetaColumn(label = "审查")
     private Censorship censorship;
 
     // 分级
     @Enumerated(value = EnumType.STRING)
+    @MetaColumn(label = "分级")
     private Rating rating;
 
     // 媒体信息

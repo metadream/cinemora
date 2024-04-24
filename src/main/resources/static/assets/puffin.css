@@ -97,6 +97,11 @@ table.list tr.metadata:hover {
   transition: .3s all;
 }
 
+.metafields {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .metafields>* {
   margin-right: 10px;
 }

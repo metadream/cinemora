@@ -1,14 +1,15 @@
 package com.arraywork.puffin;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.arraywork.puffin.basedata.Censorship;
-import com.arraywork.puffin.basedata.Metafield;
-import com.arraywork.puffin.basedata.Quality;
-import com.arraywork.puffin.basedata.Rating;
-import com.arraywork.puffin.basedata.Region;
+import com.arraywork.puffin.entity.Metafield;
+import com.arraywork.puffin.metafield.MetafieldManager;
+
+import jakarta.annotation.Resource;
 
 /**
  * 模板全局属性
@@ -19,6 +20,9 @@ import com.arraywork.puffin.basedata.Region;
 @ControllerAdvice
 public class ModelAttributes {
 
+    @Resource
+    private MetafieldManager metafieldManager;
+
     @Value("${puffin.app.name}")
     private String appName;
 
@@ -28,34 +32,10 @@ public class ModelAttributes {
         return appName;
     }
 
-    // 元字段枚举
+    // 所有元字段
     @ModelAttribute("Metafields")
-    public Metafield[] Metafields() {
-        return Metafield.values();
-    }
-
-    // 地区枚举
-    @ModelAttribute("regions")
-    public Region[] regions() {
-        return Region.values();
-    }
-
-    // 画质枚举
-    @ModelAttribute("qualities")
-    public Quality[] qualities() {
-        return Quality.values();
-    }
-
-    // 审查枚举
-    @ModelAttribute("censorships")
-    public Censorship[] censorships() {
-        return Censorship.values();
-    }
-
-    // 分级枚举
-    @ModelAttribute("ratings")
-    public Rating[] ratings() {
-        return Rating.values();
+    public List<Metafield> Metafields() {
+        return metafieldManager.getMetafields();
     }
 
 }

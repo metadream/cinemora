@@ -1,18 +1,18 @@
 package com.arraywork.puffin.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.arraywork.puffin.basedata.Metafield;
+import com.arraywork.puffin.metafield.MetafieldConverter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -44,19 +44,16 @@ public class Preference {
     @Size(max = 60, message = "密码不能超过 {max} 个字符")
     private String password;
 
-    // 密码
-    @Transient
-    private String oldPassword;
-
     // 媒体库路径
     @NotBlank(message = "媒体库路径不能为空")
     @Size(max = 120, message = "媒体库路径不能超过 {max} 个字符")
     private String library;
 
     // 元字段
-    @Type(JsonStringType.class)
+    @JsonDeserialize(converter = MetafieldConverter.class)
+    @Convert(converter = MetafieldConverter.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
-    private Metafield[] metafields;
+    private List<Metafield> metafields;
 
     // 同步重命名文件
     private boolean syncRenameFile;
