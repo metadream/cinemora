@@ -10,7 +10,7 @@ import com.arraywork.puffin.basedata.Censorship;
 import com.arraywork.puffin.basedata.Quality;
 import com.arraywork.puffin.basedata.Rating;
 import com.arraywork.puffin.basedata.Region;
-import com.arraywork.springhood.NanoIdGenerator;
+import com.arraywork.springfield.NanoIdGenerator;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;

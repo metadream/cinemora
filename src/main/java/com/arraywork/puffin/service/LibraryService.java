@@ -16,7 +16,7 @@ import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.entity.ScanStatus;
-import com.arraywork.springhood.util.CommonUtils;
+import com.arraywork.springfield.util.CommonUtils;
 
 import jakarta.annotation.Resource;
 

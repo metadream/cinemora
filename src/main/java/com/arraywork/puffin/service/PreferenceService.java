@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.repo.PreferenceRepo;
-import com.arraywork.springhood.external.BCryptEncoder;
+import com.arraywork.springfield.external.BCryptEncoder;
 
 import jakarta.annotation.Resource;
 

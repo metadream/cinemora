@@ -1,7 +1,7 @@
 package com.arraywork.puffin.basedata;
 
-import com.arraywork.springhood.databind.GenericEnum;
-import com.arraywork.springhood.databind.GenericEnumConverter;
+import com.arraywork.springfield.databind.GenericEnum;
+import com.arraywork.springfield.databind.GenericEnumConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -20,8 +20,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.arraywork.springhood</groupId>
-            <artifactId>springhood</artifactId>
+            <groupId>com.arraywork.springfield</groupId>
+            <artifactId>spring-field</artifactId>
             <version>0.0.1</version>
         </dependency>
 
