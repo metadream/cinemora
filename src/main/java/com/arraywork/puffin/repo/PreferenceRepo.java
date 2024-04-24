@@ -10,4 +10,4 @@ import com.arraywork.puffin.entity.Preference;
  * @copyright ArrayWork Inc.
  * @since 2024/02/21
  */
-public interface PreferenceRepo extends JpaRepository<Preference, String> {}
+public interface PreferenceRepo extends JpaRepository<Preference, Long> {}

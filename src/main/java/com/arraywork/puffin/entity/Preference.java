@@ -28,10 +28,8 @@ import lombok.Data;
 @Data
 public class Preference {
 
-    public static final String ID = "EYDXJNRJA5ZB6EIXEDCFLF1C";
-
     @Id
-    private String id = ID;
+    private long id = Long.MAX_VALUE;
 
     // 用户名
     @Column(unique = true, updatable = false)

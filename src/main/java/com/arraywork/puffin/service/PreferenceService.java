@@ -32,7 +32,7 @@ public class PreferenceService {
 
     // 获取偏好
     public Preference getPreference() {
-        Optional<Preference> optional = preferenceRepo.findById(Preference.ID);
+        Optional<Preference> optional = preferenceRepo.findById(Long.MAX_VALUE);
         return optional.orElse(null);
     }
 
