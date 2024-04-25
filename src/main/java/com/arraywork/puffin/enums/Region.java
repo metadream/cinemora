@@ -1,8 +1,8 @@
 package com.arraywork.puffin.enums;
 
 import com.arraywork.puffin.metafield.MetafieldEnum;
-import com.arraywork.springfield.databind.GenericEnum;
-import com.arraywork.springfield.databind.GenericEnumConverter;
+import com.arraywork.springforce.databind.GenericEnum;
+import com.arraywork.springforce.databind.GenericEnumConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

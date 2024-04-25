@@ -4,7 +4,7 @@
 同时删除硬盘上的文件（不可恢复）
 文件路径：xxxx/xxx/xxx/dxx.mp4
 
-- spring-field comments 整理
+- spring-force 整理
 
 #### vi /etc/systemd/system/spring-puffin.service
 ```

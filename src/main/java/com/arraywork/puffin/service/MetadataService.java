@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.repo.MetadataRepo;
 import com.arraywork.puffin.spec.MetadataSpec;
-import com.arraywork.springfield.util.Assert;
-import com.arraywork.springfield.util.Pagination;
+import com.arraywork.springforce.util.Assert;
+import com.arraywork.springforce.util.Pagination;
 
 import jakarta.annotation.Resource;
 

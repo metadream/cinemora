@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.arraywork.springfield.util.JsonUtils;
+import com.arraywork.springforce.util.JsonUtils;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
 import jakarta.annotation.Resource;

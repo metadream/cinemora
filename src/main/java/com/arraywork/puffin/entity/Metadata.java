@@ -12,7 +12,7 @@ import com.arraywork.puffin.enums.Quality;
 import com.arraywork.puffin.enums.Rating;
 import com.arraywork.puffin.enums.Region;
 import com.arraywork.puffin.metafield.MetaColumn;
-import com.arraywork.springfield.NanoIdGenerator;
+import com.arraywork.springforce.NanoIdGenerator;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;

@@ -5,8 +5,8 @@ import java.io.File;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import com.arraywork.springfield.filewatch.DirectoryWatcher;
-import com.arraywork.springfield.filewatch.FileSystemListener;
+import com.arraywork.springforce.filewatch.DirectoryWatcher;
+import com.arraywork.springforce.filewatch.FileSystemListener;
 
 /**
  *

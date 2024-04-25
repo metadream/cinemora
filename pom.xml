@@ -20,8 +20,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.arraywork.springfield</groupId>
-            <artifactId>spring-field</artifactId>
+            <groupId>com.arraywork.springforce</groupId>
+            <artifactId>spring-force</artifactId>
             <version>0.0.1</version>
         </dependency>
 
