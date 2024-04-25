@@ -33,7 +33,7 @@ public class Preference {
     private long id = Long.MAX_VALUE;
 
     // 用户名
-    @Column(unique = true, updatable = false)
+    @Column(unique = true)
     @NotBlank(message = "用户名不能为空")
     @Size(max = 20, message = "用户名不能超过 {max} 个字符")
     private String username;

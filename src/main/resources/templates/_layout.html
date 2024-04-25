@@ -20,7 +20,7 @@
 
     <nav>
       <menu><a href="/starred"><img src="/assets/circle.svg"/><span>精选</span></a></menu>
-      <menu th:each="metafield: ${metafields}" th:if="${metafield.enums != null}">
+      <menu th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}">
         <a><img src="/assets/triangle.svg"/><span>[[${metafield.label}]]</span></a>
         <div><a class="tag-item" th:each="enum: ${metafield.enums}" th:href="|/?${metafield.name}=${enum.code}|">[[${enum.label}]]</a></div>
       </menu>

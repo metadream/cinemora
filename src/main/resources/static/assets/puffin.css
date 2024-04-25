@@ -506,6 +506,11 @@ main.detail .tags a {
   box-shadow: 0 3px 30px 0 rgb(0 0 0 / 20%);
 }
 
+.front-panel.preference {
+  padding: 10px;
+  box-shadow: unset;
+}
+
 .front-panel>* {
   margin: 5px 0;
   width: 100%;

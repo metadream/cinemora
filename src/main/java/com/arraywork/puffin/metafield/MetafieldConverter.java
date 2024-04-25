@@ -25,7 +25,10 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
     // 实现JPA实体到数据库的转换
     @Override
     public String convertToDatabaseColumn(List<Metafield> attributes) {
-        return JsonUtils.stringify(attributes.stream().map(v -> v.getName()).toArray());
+        if (attributes != null) {
+            return JsonUtils.stringify(attributes.stream().map(v -> v.getName()).toArray());
+        }
+        return "[]";
     }
 
     // 实现JPA数据库到实体的转换

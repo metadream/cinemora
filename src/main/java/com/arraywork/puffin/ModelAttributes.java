@@ -1,6 +1,5 @@
 package com.arraywork.puffin;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -37,17 +36,23 @@ public class ModelAttributes {
         return appName;
     }
 
-    // 所有元字段（首字母大写）
+    // 所有元字段实体
     @ModelAttribute("Metafields")
     public List<Metafield> Metafields() {
         return metafieldManager.getMetafields();
     }
 
-    // 已选元字段（首字母小写）
+    // 已选元字段名称
     @ModelAttribute("metafields")
-    public List<Metafield> metafields() {
+    public List<String> metafields() {
         Preference preference = preferenceService.getPreference();
-        return preference != null ? preference.getMetafields() : new ArrayList<>();
+        return preference.getMetafields().stream().map(v -> v.getName()).toList();
+    }
+
+    // 偏好设置
+    @ModelAttribute("preference")
+    public Preference preference() {
+        return preferenceService.getPreference();
     }
 
 }
