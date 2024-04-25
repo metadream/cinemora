@@ -1,7 +1,7 @@
 <div class="pager" th:if="${pagination.hasContent}">
   <div>
-    第 <b th:text="${pagination.pageNumber}"></b>/<b th:text="${pagination.totalPages}"></b> 页
-    共 <b th:text="${pagination.totalRecords}"></b> 条记录
+    <span>第 <b th:text="${pagination.pageNumber}"></b>/<b th:text="${pagination.totalPages}"></b> 页</span>
+    <span>共 <b th:text="${pagination.totalRecords}"></b> 条记录</span>
   </div>
 
   <div>
