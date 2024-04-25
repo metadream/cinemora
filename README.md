@@ -1,9 +1,6 @@
 # Puffin
 
 ## TODO
-- 文件监控:启动时扫描所有
-- body min-height:100vh
-
 同时删除硬盘上的文件（不可恢复）
 文件路径：xxxx/xxx/xxx/dxx.mp4
 
