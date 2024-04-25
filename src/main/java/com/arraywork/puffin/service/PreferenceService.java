@@ -53,9 +53,9 @@ public class PreferenceService {
     public Preference save(Preference entity) {
         // 检查路径是否存在且为目录
         String library = entity.getLibrary();
-        File file = new File(library);
-        Assert.isTrue(file.exists(), "媒体库路径不存在");
-        Assert.isTrue(file.isDirectory(), "媒体库路径必须为目录");
+        File entry = new File(library);
+        Assert.isTrue(entry.exists(), "媒体库路径不存在");
+        Assert.isTrue(entry.isDirectory(), "媒体库路径必须为目录");
 
         // 修改密码
         Preference preference = getPreference();
@@ -66,7 +66,9 @@ public class PreferenceService {
         }
 
         // 监听媒体库目录
-        watcher.start(library);
+        if (!library.equals(preference.getLibrary())) {
+            watcher.start(library);
+        }
         return preferenceRepo.save(entity);
     }
 
