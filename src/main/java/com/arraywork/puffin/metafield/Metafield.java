@@ -13,6 +13,6 @@ public class Metafield {
 
     private String name;
     private String label;
-    private MetaFieldEnum[] enums;
+    private MetafieldEnum[] enums;
 
 }

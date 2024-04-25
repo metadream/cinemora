@@ -1,6 +1,6 @@
 package com.arraywork.puffin.enums;
 
-import com.arraywork.puffin.metafield.MetaFieldEnum;
+import com.arraywork.puffin.metafield.MetafieldEnum;
 import com.arraywork.springfield.databind.GenericEnum;
 import com.arraywork.springfield.databind.GenericEnumConverter;
 
@@ -15,7 +15,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Quality implements MetaFieldEnum, GenericEnum<String> {
+public enum Quality implements MetafieldEnum, GenericEnum<String> {
 
     FK("4K", "4K"),
     UHD("UHD", "超高清"),

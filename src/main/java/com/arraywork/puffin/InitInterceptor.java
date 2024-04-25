@@ -46,7 +46,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(this).addPathPatterns("/**")
-            .excludePathPatterns(initUrl, "/preference", "/error", "/assets/**");
+            .excludePathPatterns(initUrl, "/preference", "/assets/**");
     }
 
 }

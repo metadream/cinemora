@@ -1,6 +1,6 @@
 package com.arraywork.puffin.enums;
 
-import com.arraywork.puffin.metafield.MetaFieldEnum;
+import com.arraywork.puffin.metafield.MetafieldEnum;
 import com.arraywork.springfield.databind.GenericEnum;
 import com.arraywork.springfield.databind.GenericEnumConverter;
 
@@ -15,7 +15,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Rating implements MetaFieldEnum, GenericEnum<Integer> {
+public enum Rating implements MetafieldEnum, GenericEnum<Integer> {
 
     UNIVERSAL(0, "普适级"),
     GUIDANCE(1, "指导级"),

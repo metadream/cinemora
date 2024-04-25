@@ -1,6 +1,6 @@
 package com.arraywork.puffin.enums;
 
-import com.arraywork.puffin.metafield.MetaFieldEnum;
+import com.arraywork.puffin.metafield.MetafieldEnum;
 import com.arraywork.springfield.databind.GenericEnum;
 import com.arraywork.springfield.databind.GenericEnumConverter;
 
@@ -15,7 +15,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Censorship implements MetaFieldEnum, GenericEnum<Integer> {
+public enum Censorship implements MetafieldEnum, GenericEnum<Integer> {
 
     UNCENSORED(0, "无码"),
     REDUCED(1, "消码"),

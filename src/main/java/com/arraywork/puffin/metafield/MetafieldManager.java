@@ -34,7 +34,7 @@ public class MetafieldManager {
             metafield.setLabel(annotation.label());
 
             if (field.getType().isEnum()) {
-                MetaFieldEnum[] enums = (MetaFieldEnum[]) field.getType().getEnumConstants();
+                MetafieldEnum[] enums = (MetafieldEnum[]) field.getType().getEnumConstants();
                 metafield.setEnums(enums);
             }
             metafields.add(metafield);
