@@ -35,10 +35,12 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
         throws ServletException, IOException {
 
-        Preference preference = preferenceService.getPreference();
-        if (preference == null) {
-            response.sendRedirect(initUrl);
-            return false;
+        if (!isRestErrorRequest(request)) {
+            Preference preference = preferenceService.getPreference();
+            if (preference == null) {
+                response.sendRedirect(initUrl);
+                return false;
+            }
         }
         return true;
     }
@@ -47,6 +49,10 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(this).addPathPatterns("/**")
             .excludePathPatterns(initUrl, "/preference", "/assets/**");
+    }
+
+    private boolean isRestErrorRequest(HttpServletRequest request) {
+        return "PUT".equals(request.getMethod()) && "/error".equals(request.getRequestURI());
     }
 
 }
