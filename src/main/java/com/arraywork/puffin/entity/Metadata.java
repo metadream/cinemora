@@ -3,6 +3,7 @@ package com.arraywork.puffin.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -19,6 +20,7 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -32,7 +34,7 @@ import lombok.Data;
 @Entity
 // @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) //
 // 序列化时忽略懒加载的属性
-// @DynamicInsert // 如果字段值为null则不会加入到insert语句中（此处的作用是为了使初始化空实体对象时产生带默认值的空数据行）
+@DynamicInsert
 @Data
 public class Metadata {
 
@@ -58,8 +60,8 @@ public class Metadata {
     @Size(max = 120, message = "路径不能超过 {max} 个字符")
     private String filepath;
 
-    // 发行日期
-    @MetaColumn(label = "发行日期")
+    // 发行日
+    @MetaColumn(label = "发行日")
     private LocalDate issueDate;
 
     // 制作方
@@ -131,5 +133,9 @@ public class Metadata {
 
     // 媒体文件更新时间
     private LocalDateTime lastModified;
+
+    // 关键词搜索条件
+    @Transient
+    private String keyword;
 
 }

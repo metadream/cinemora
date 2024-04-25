@@ -106,6 +106,33 @@ table.list tr.metadata:hover {
   margin-right: 10px;
 }
 
+.pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--ignoredColor);
+  padding: 0 15px;
+  margin-top: 15px;
+}
+
+.pager a, .pager span {
+  margin-left: 10px;
+}
+
+.pager a.active {
+  color: var(--danger-color);
+}
+
+.pager b {
+  margin: 0;
+  font-weight: 400;
+}
+
+.pager .noresult {
+  flex: 1;
+  text-align: center;
+}
+
 .headline {
   display: flex;
   justify-content: space-between;

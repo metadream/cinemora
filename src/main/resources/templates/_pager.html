@@ -1,0 +1,24 @@
+<div class="pager" th:if="${pagination.hasContent}">
+  <div>
+    第 <b th:text="${pagination.pageNumber}"></b>/<b th:text="${pagination.totalPages}"></b> 页
+    共 <b th:text="${pagination.totalRecords}"></b> 条记录
+  </div>
+
+  <div>
+    <a th:onclick="turnPage(1)">首页</a>
+    <a th:if="${pagination.hasPrevious}" th:onclick="turnPage([[${pagination.pageNumber-1}]])">上一页</a>
+
+    <th:block th:each="n: ${pagination.pageSet}">
+      <span th:if="${n == 0}">...</span>
+      <a th:unless="${n == 0}" th:text="${n}" th:onclick="turnPage([[${n}]])"
+         th:class="${n == pagination.pageNumber ? 'active' : ''}"></a>
+    </th:block>
+
+    <a th:if="${pagination.hasNext}" th:onclick="turnPage([[${pagination.pageNumber+1}]])">下一页</a>
+    <a th:onclick="turnPage([[${pagination.totalPages}]])">末页</a>
+  </div>
+</div>
+
+<div class="pager" th:unless="${pagination.hasContent}">
+  <div class="noresult"><i>找不到相关记录</i></div>
+</div>

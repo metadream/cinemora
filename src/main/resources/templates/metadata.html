@@ -1,0 +1,249 @@
+<html layout:decorate="~{_layout}">
+<head><title>元数据</title></head>
+<body>
+
+<main layout:fragment="main">
+  <div class="headline">
+    <h3>元数据</h3>
+    <div class="buttons">
+      <th-button onclick="scanLibrary()" id="scanBtn">扫描媒体库</th-button>
+      <th-button onclick="openSettings()">偏好设置</th-button>
+    </div>
+  </div>
+
+  <table class="list">
+    <tr>
+      <th width="13%">编号</th>
+      <th>标题</th>
+      <th width="10%" style="text-align:right">大小</th>
+      <th width="4%"></th>
+    </tr>
+    <tr class="metadata" th:each="metadata: ${pagination.content}">
+      <td>[[${metadata.code}]]</td>
+      <td>[[${metadata.title}]]</td>
+      <td style="text-align:right">[[${metadata.mediaInfo?.size}]]</td>
+      <td style="text-align:center"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
+    </tr>
+  </table>
+  
+  <div th:replace="_pager"></div>
+</main>
+
+</body>
+</html>
+
+<script>
+const preferences = {{= JSON.stringify(preferences) }};
+const $scanBtn = document.querySelector('#scanBtn');
+if ($scanBtn.disabled) polling();
+if (location.search === '?init') {
+  history.replaceState({}, "", "/metadata");
+  Thyme.info('正在进行初始化扫描...');
+  startScan();
+}
+
+function openEditor(movie) {
+  const producerField = {{= hasMetafield('producer')}}
+    ? `<th-field label="制作商" name="producer" maxlength="30" value="${movie.producer || ''}"></th-field>` : '';
+  const directorField = {{= hasMetafield('director')}}
+    ? `<th-field label="导演" name="director" maxlength="20" value="${movie.director || ''}"></th-field>` : '';
+  const regionField = {{= hasMetafield('region')}} ? `
+    <th-select label="地区" name="region">
+      <option></option>
+      {{~ Object.keys(region):key }}
+        <option value="{{= key }}" ${movie.region=='{{=key}}'?'selected':''}>{{= region[key] }}</option>
+      {{~ }}
+    </th-select>
+  ` : '';
+  const qualityField = {{= hasMetafield('quality')}} ? `
+    <th-select label="画质" name="quality">
+      <option></option>
+      {{~ Object.keys(quality):key }}
+        <option value="{{= key }}" ${movie.quality=='{{=key}}'?'selected':''}>{{= quality[key] }}</option>
+      {{~ }}
+    </th-select>
+  ` : '';
+  const censorshipField =  {{= hasMetafield('censorship')}} ? `
+    <th-select label="审查" name="censorship">
+      <option></option>
+      {{~ Object.keys(censorship):key }}
+        <option value="{{= key }}" ${movie.censorship=='{{=key}}'?'selected':''}>{{= censorship[key] }}</option>
+      {{~ }}
+    </th-select>
+  ` : '';
+  const ratingField = {{= hasMetafield('rating')}} ? `
+    <th-select label="分级" name="rating">
+      <option></option>
+      {{~ Object.keys(rating):key }}
+        <option value="{{= key }}" ${movie.rating=='{{=key}}'?'selected':''}>{{= rating[key] }}</option>
+      {{~ }}
+    </th-select>
+  ` : '';
+  const seriesField = {{= hasMetafield('series')}}
+    ? `<th-field label="系列" name="series" maxlength="50" value="${movie.series || ''}"></th-field>` : '';
+  const genresField = {{= hasMetafield('genres')}}
+    ? `<th-field class="single-column" label="类型" name="genres" maxlength="100" placeholder="多种类型以逗号分隔" value="${movie.genres || ''}"></th-field>` : '';
+  const starringField = {{= hasMetafield('starring')}}
+    ? `<th-field class="single-column" label="主演" name="starring" maxlength="100" placeholder="多名主演以逗号分隔" value="${movie.starring || ''}"></th-field>` : '';
+
+  const dialog = Thyme.util.createElement(`<th-dialog>
+    <div class="editor">
+      <div class="fixed-form">
+        <div class="fields">
+          <th-field label="编号" name="code" maxlength="20" value="${movie.code}" required></th-field>
+          <th-calendar label="发行日" name="rDate" value="${movie.rDate}"></th-calendar>
+          <input type="hidden" name="id" value="${movie.id}"/>
+          <input type="hidden" name="videoSize" value="${movie.videoSize}"/>
+          <input type="hidden" name="videoWidth" value="${movie.videoWidth}"/>
+          <input type="hidden" name="videoHeight" value="${movie.videoHeight}"/>
+          <input type="hidden" name="duration" value="${movie.duration}"/>
+        </div>
+        <div class="starred">
+          <div>收藏</div>
+          <th-switch name="starred" ${movie.starred?'checked':''}></th-switch>
+        </div>
+        <div class="uploader">
+          <div onclick="document.querySelector('#file').click()" style="background-image:url('/cover/${movie.id}')">
+            <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
+            <span>上传封面</span>
+          </div>
+        </div>
+      </div>
+      <div class="fields">
+        ${producerField} ${directorField} ${regionField}
+        ${qualityField} ${censorshipField} ${ratingField} ${seriesField}
+        <th-field class="single-column" label="标题" name="title" value="${movie.title}" required></th-field>
+        ${genresField} ${starringField}
+        <th-field class="single-column" label="视频路径" name="videoPath" value="${movie.videoPath}" disabled></th-field>
+      </div>
+    </div>
+  </th-dialog>`);
+
+  document.body.append(dialog);
+  dialog.buttons = [{
+    label: '取消'
+  }, {
+    label: '保存',
+    primary: true,
+    onclick: async function(dlg) {
+      const data = Thyme.form.getJsonObject(dlg);
+      if (!data) return;
+
+      data.coverImageData = window.coverImageData;
+      await Thyme.http.put('/metadata', data);
+      location.reload();
+    }
+  }];
+  dialog.open(true);
+}
+
+function openSettings() {
+  const dialog = Thyme.util.createElement(`<th-dialog>
+    <div class="prefer" style="width:400px">
+      <th-field label="管理员账号" name="username" maxlength="20" placeholder="无需修改则留空"></th-field>
+      <th-field label="管理员密码" type="password" name="password" maxlength="20" placeholder="无需修改则留空"></th-field>
+      <th-field label="媒体库路径" name="library" maxlength="100" value="${preferences.library}" required></th-field>
+      <input type="hidden" name="origLibrary" value="${preferences.library}"/>
+
+      <div style="margin-top:20px">可选元数据属性<br>
+        <span class="tiny-title">勾选项将作为媒体元数据的附加属性，对媒体进行多维度分类、查询。</span>
+      </div>
+      <div class="metafields">
+        {{~ Object.entries(METAFIELDS): entry }}
+        <label><input type="checkbox" name="metafields" value="{{= entry[0] }}"
+        ${preferences.metafields.includes('{{= entry[0] }}') ? 'checked' : ''}/>{{= entry[1] }}</label>
+        {{~ }}
+      </div>
+      <div>
+        <label><input type="checkbox" name="codify" value="1" ${preferences.codify ? 'checked' : ''}/>使用编号对媒体文件重命名</label>
+        <div class="tiny-title">勾选此项后，修改元数据编号时将会同步修改媒体文件名</div>
+      </div>
+    </div>
+  </th-dialog>`);
+
+  document.body.append(dialog);
+  dialog.buttons = [{
+    label: '取消'
+  }, {
+    label: '保存',
+    primary: true,
+    onclick: async (dlg) => {
+      const data = Thyme.form.getJsonObject(dlg);
+      if (!data) return;
+      await Thyme.http.put('/settings', data);
+
+      dlg.hide();
+      if (data.library === data.origLibrary) {
+        location.reload();
+      } else {
+        Thyme.info('媒体库路径变更，正在重新扫描...');
+        startScan();
+      }
+    }
+  }];
+  dialog.open(true);
+}
+
+function preview(image) {
+  if (!image) return;
+  const reader = new FileReader();
+  reader.readAsDataURL(image);
+  reader.onload = function() {
+    const container = document.querySelector('.uploader>div');
+    container.style.backgroundImage = `url(${this.result})`;
+    window.coverImageData = this.result;
+  }
+}
+
+function scanLibrary() {
+  Thyme.confirm('扫描媒体库过程可能较长，期间请不要执行更新操作，<br>但可以访问或关闭页面等待后台处理。确定继续吗？', cfm => {
+    cfm.hide();
+    startScan();
+  });
+}
+
+async function startScan() {
+  $scanBtn.disabled = true;
+  await Thyme.http.post('/scan');
+  polling();
+}
+
+function polling() {
+  if (this.timer) return;
+
+  this.timer = setInterval((func = () => {
+    Thyme.http.get('/status').then(res => {
+      if (!res) return stopPolling();
+
+      $scanBtn.innerHTML = `正在扫描... ${res.processed}/${res.totalMovies}`;
+      if (res.completed === true) {
+        stopPolling();
+        Thyme.alert(`<b>扫描完成！</b><br><br>
+          - 共扫描 ${res.totalFiles} 个文件<br>
+          - 发现 ${res.totalMovies} 个媒体文件<br>
+          - 新增 ${res.inserted} 条元数据<br>
+          - 删除 ${res.deleted} 条元数据<br>`, alert => {
+          alert.hide();
+          location.reload();
+        });
+      }
+    });
+    return func;
+  })(), 500);
+}
+
+function stopPolling() {
+  $scanBtn.disabled = false;
+  $scanBtn.innerHTML = '扫描媒体库';
+  if (this.timer) {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+}
+
+function turnPage(pageIndex) {
+  const params = new URLSearchParams(location.search);
+  params.set('p', pageIndex);
+  location.href = '?' + params.toString();
+}
+</script>

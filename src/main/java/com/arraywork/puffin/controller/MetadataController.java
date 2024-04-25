@@ -1,9 +1,11 @@
 package com.arraywork.puffin.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.arraywork.puffin.service.PreferenceService;
+import com.arraywork.puffin.entity.Metadata;
+import com.arraywork.puffin.service.MetadataService;
 
 import jakarta.annotation.Resource;
 
@@ -17,11 +19,12 @@ import jakarta.annotation.Resource;
 public class MetadataController {
 
     @Resource
-    private PreferenceService preferenceService;
+    private MetadataService metadataService;
 
     // 元数据页面
     @GetMapping("/metadata")
-    public String metadata() {
+    public String metadata(Model model, String page, Metadata condition) {
+        model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
         return "metadata";
     }
 
