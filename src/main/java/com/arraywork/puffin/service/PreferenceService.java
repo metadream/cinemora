@@ -1,5 +1,6 @@
 package com.arraywork.puffin.service;
 
+import java.io.File;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -8,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.repo.PreferenceRepo;
 import com.arraywork.springfield.external.BCryptEncoder;
+import com.arraywork.springfield.filewatch.DirectoryWatcher;
+import com.arraywork.springfield.util.Assert;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 
 /**
@@ -22,6 +26,8 @@ public class PreferenceService {
 
     @Resource
     private BCryptEncoder bCryptEncoder;
+    @Resource
+    private DirectoryWatcher watcher;
     @Resource
     private PreferenceRepo preferenceRepo;
 
@@ -41,8 +47,21 @@ public class PreferenceService {
     public Preference save(Preference preference) {
         preference.setPassword(bCryptEncoder.encode(preference.getPassword()));
 
-        // TODO 校验路径是否存在
+        // 检查路径是否存在且为目录
+        String library = preference.getLibrary();
+        File file = new File(library);
+        Assert.isTrue(file.exists(), "媒体库路径不存在");
+        Assert.isTrue(file.isDirectory(), "媒体库路径必须为目录");
+
+        // 监听媒体库目录
+        watcher.start(library);
+
         return preferenceRepo.save(preference);
+    }
+
+    @PreDestroy
+    public void onDestroyed() {
+        watcher.stop();
     }
 
 }
