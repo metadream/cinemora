@@ -17,6 +17,12 @@ import com.arraywork.springfield.filewatch.FileSystemListener;
 public class LibraryListener implements FileSystemListener {
 
     @Override
+    public void onStarted(File file) {
+        System.out.print("Started: ");
+        System.out.println(file);
+    }
+
+    @Override
     public void onAdded(File file) {
         System.out.print("Added: ");
         System.out.println(file);
