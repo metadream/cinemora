@@ -100,7 +100,6 @@ public class LibraryService {
                 // TODO 如何避免重复新增？
                 Metadata metadata = new Metadata();
                 metadata.setTitle(filename.replaceAll("\\.[^\\.]+$", ""));
-                metadata.setLastModified(CommonUtils.toLocalDateTime(file.lastModified()));
                 metadata.setPath(file.getPath());
                 metadatas.add(metadata);
 

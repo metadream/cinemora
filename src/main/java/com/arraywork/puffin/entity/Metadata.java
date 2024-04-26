@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.puffin.enums.Censorship;
 import com.arraywork.puffin.enums.Quality;
@@ -131,6 +132,7 @@ public class Metadata {
     private boolean starred;
 
     // 媒体文件更新时间
+    @UpdateTimestamp
     private LocalDateTime lastModified;
 
     // 关键词搜索条件
