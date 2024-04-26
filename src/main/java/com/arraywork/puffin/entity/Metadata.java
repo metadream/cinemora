@@ -32,8 +32,6 @@ import lombok.Data;
  * @since 2024/04/21
  */
 @Entity
-// @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" }) //
-// 序列化时忽略懒加载的属性
 @DynamicInsert
 @Data
 public class Metadata {
@@ -56,9 +54,10 @@ public class Metadata {
     private String title;
 
     // 路径
+    @Column(unique = true)
     @NotBlank(message = "路径不能为空")
     @Size(max = 120, message = "路径不能超过 {max} 个字符")
-    private String filepath;
+    private String path;
 
     // 发行日
     @MetaColumn(label = "发行日")

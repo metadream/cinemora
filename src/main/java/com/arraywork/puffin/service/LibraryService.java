@@ -67,7 +67,7 @@ public class LibraryService {
         while (iterator.hasNext()) {
             Metadata metadata = iterator.next();
             String id = metadata.getId();
-            String filepath = metadata.getFilepath();
+            String filepath = metadata.getPath();
 
             // 如果不以媒体库路径开头，说明媒体库路径已更改
             if (!filepath.startsWith(library)) {
@@ -101,7 +101,7 @@ public class LibraryService {
                 Metadata metadata = new Metadata();
                 metadata.setTitle(filename.replaceAll("\\.[^\\.]+$", ""));
                 metadata.setLastModified(CommonUtils.toLocalDateTime(file.lastModified()));
-                metadata.setFilepath(file.getPath());
+                metadata.setPath(file.getPath());
                 metadatas.add(metadata);
 
                 SCAN_STATUS.totalMedias++;
@@ -119,7 +119,7 @@ public class LibraryService {
             if (coverFile.exists()) continue;
 
             // 更新媒体信息
-            String filepath = metadata.getFilepath();
+            String filepath = metadata.getPath();
             MediaInfo mediaInfo = ffmpeg.getMediaInfo(filepath);
             if (mediaInfo.getDuration() > 0 && mediaInfo.getVideo() != null) {
                 metadata.setMediaInfo(mediaInfo);
