@@ -2,7 +2,7 @@
 <head><title>元数据</title></head>
 <body>
 
-<main layout:fragment="main">
+<main layout:fragment="main" th:with="Numbers=${T(com.arraywork.springforce.util.Numbers)}">
   <div class="headline">
     <h3>元数据</h3>
     <div class="buttons">
@@ -28,7 +28,7 @@
         th:with="enum=${metadata[metafield.name]}">
         <span th:if="${enum}">[[${enum.label}]]</span>
       </td>
-      <td style="text-align:right">[[${metadata.mediaInfo?.size}]]</td>
+      <td style="text-align:right">[[${Numbers.formatBytes(metadata.fileSize)}]]</td>
       <td style="text-align:center"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
     </tr>
   </table>
