@@ -17,7 +17,7 @@
     <th-field label="媒体库路径" name="library" maxlength="120" required></th-field>
     
     <p></p><div>可选元数据属性<br>
-      <span class="tiny-title">勾选项将作为媒体元数据的附加属性，对媒体进行多维度分类或查询。</span>
+      <span class="tiny-title">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
     </div>
     <div class="metafields">
       <label th:each="metafield: ${Metafields}">
@@ -26,8 +26,12 @@
       </label>
     </div>
     <p></p><div>
-      <label><input type="checkbox" name="syncRenameFile" value="true"/>使用“编号_标题”对文件进行重命名</label>
-      <div class="tiny-title">勾选此项后，修改元数据时将同步修改硬盘中的实体文件名。</div>
+      <label><input type="checkbox" name="autoGenerateCode" value="true"/>自动生成元数据编号</label>
+      <div class="tiny-title">勾选此项后，保存元数据时将自动对无编号的记录生成随机编号。</div>
+    </div>
+    <p></p><div>
+      <label><input type="checkbox" name="autoRenameFile" value="true"/>自动使用“编号_标题”对文件重命名</label>
+      <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
     </div>
     <th-button onclick="init(this)">确定</th-button>
   </div>
@@ -41,8 +45,8 @@ async function init(btn) {
   data.metafields = data.metafields?.split(',');
   btn.loading = true;
   try {
-    await Thyme.http.put('/preference', data);
-    location.href = '/metadata?init';
+    await Thyme.http.post('/preference', data);
+    location.href = '/metadata';
   } finally {
     btn.loading = false;
   }

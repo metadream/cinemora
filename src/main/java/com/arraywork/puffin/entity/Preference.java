@@ -54,8 +54,11 @@ public class Preference {
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private List<Metafield> metafields;
 
-    // 同步重命名文件
-    private boolean syncRenameFile;
+    // 自动生成编号
+    private boolean autoGenerateCode;
+
+    // 自动重命名文件
+    private boolean autoRenameFile;
 
     // 最后更新时间
     @UpdateTimestamp

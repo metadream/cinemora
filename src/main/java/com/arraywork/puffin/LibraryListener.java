@@ -16,9 +16,10 @@ import com.arraywork.springforce.filewatch.FileSystemListener;
 @Component
 public class LibraryListener implements FileSystemListener {
 
+    // TODO 一个文件处理一个事务；过滤视频文件
     @Override
-    public void onStarted(File file) {
-        System.out.print("Started: ");
+    public void onStarted(File file, int count, int total) {
+        System.out.print("Started[" + count + "/" + total + "]: ");
         System.out.println(file);
     }
 

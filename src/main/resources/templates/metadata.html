@@ -21,8 +21,8 @@
       <th width="10%" style="text-align:right">大小</th>
       <th width="4%"></th>
     </tr>
-    <tr class="metadata" th:each="metadata: ${pagination.content}">
-      <td>[[${metadata.code}]]</td>
+    <tr class="metadata" th:each="metadata: ${pagination.content}" th:onclick="openMetadata([[${metadata}]])">
+      <td><a th:href="@{|/${metadata.code}|}">[[${metadata.code}]]</a></td>
       <td>[[${metadata.title}]]</td>
       <td th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}" 
         th:with="enum=${metadata[metafield.name]}">
@@ -35,14 +35,48 @@
   
   <div th:replace="~{_pager}"></div>
 
+  <th-dialog id="metadata-dialog">
+    <div class="editor">
+      <div class="fixed-form">
+        <div class="fields">
+          <th-field label="编号" name="code" maxlength="20" value="${movie.code}" required></th-field>
+          <th-calendar label="发行日期" name="rDate" value="${movie.rDate}"></th-calendar>
+          <input type="hidden" name="id" value="${movie.id}"/>
+          <input type="hidden" name="videoSize" value="${movie.videoSize}"/>
+          <input type="hidden" name="videoWidth" value="${movie.videoWidth}"/>
+          <input type="hidden" name="videoHeight" value="${movie.videoHeight}"/>
+          <input type="hidden" name="duration" value="${movie.duration}"/>
+        </div>
+        <div class="starred">
+          <div>收藏</div>
+          <th-switch name="starred" ${movie.starred?'checked':''}></th-switch>
+        </div>
+        <div class="uploader">
+          <div onclick="document.querySelector('#file').click()" style="background-image:url('/cover/${movie.id}')">
+            <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
+            <span>上传封面</span>
+          </div>
+        </div>
+      </div>
+      <div class="fields">
+        ${producerField} ${directorField} ${regionField}
+        ${qualityField} ${censorshipField} ${ratingField} ${seriesField}
+        <th-field class="single-column" label="标题" name="title" value="${movie.title}" required></th-field>
+        ${genresField} ${starringField}
+        <th-field class="single-column" label="视频路径" name="videoPath" value="${movie.videoPath}" disabled></th-field>
+      </div>
+    </div>
+  </th-dialog>
+
   <th-dialog id="preference-dialog">
     <div class="front-panel preference" style="width:450px">
       <th-field label="管理员账号" name="username" th:value="${preference.username}" maxlength="20" required></th-field>
       <th-field label="管理员密码" name="password" placeholder="无需修改密码则留空" type="password" maxlength="20"></th-field>
-      <th-field label="媒体库路径" name="library" th:value="${preference.library}" maxlength="120" required></th-field>
-      
+      <th-field label="媒体库路径" name="library" th:value="${preference.library}" maxlength="120" required
+        th:data-value="${preference.library}"></th-field>
+
       <p></p><div>可选元数据属性<br>
-        <span class="tiny-title">勾选项将作为媒体元数据的附加属性，对媒体进行多维度分类或查询。</span>
+        <span class="tiny-title">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
       </div>
       <div class="metafields">
         <label th:each="metafield: ${Metafields}">
@@ -52,8 +86,14 @@
         </label>
       </div>
       <p></p><div>
-        <label><input type="checkbox" name="syncRenameFile" value="true" th:checked="${preference.syncRenameFile}"/>使用“编号_标题”对文件进行重命名</label>
-        <div class="tiny-title">勾选此项后，修改元数据时将同步修改硬盘中的实体文件名。</div>
+        <label><input type="checkbox" name="autoGenerateCode" value="true"
+         th:checked="${preference.autoGenerateCode}"/>自动生成元数据编号</label>
+        <div class="tiny-title">勾选此项后，保存元数据时将自动对无编号的记录生成随机编号。</div>
+      </div>
+      <p></p><div>
+        <label><input type="checkbox" name="autoRenameFile" value="true"
+         th:checked="${preference.autoRenameFile}"//>自动使用“编号_标题”对文件重命名</label>
+        <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
       </div>
     </div>
   </th-dialog>
@@ -63,7 +103,24 @@
 </html>
 
 <script>
+const metadataDialog = document.querySelector('#metadata-dialog');
 const preferenceDialog = document.querySelector('#preference-dialog');
+
+metadataDialog.buttons = [{
+  label: '取消'
+}, {
+  label: '保存',
+  primary: true,
+  onclick: async function(dlg) {
+    const data = Thyme.form.getJsonObject(dlg);
+    if (!data) return;
+
+    data.coverImageData = window.coverImageData;
+    await Thyme.http.put('/metadata', data);
+    location.reload();
+  }
+}];
+
 preferenceDialog.buttons = [{
   label: '取消'
 }, {
@@ -72,7 +129,6 @@ preferenceDialog.buttons = [{
   onclick: async (dlg) => {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
-    
     data.metafields = data.metafields?.split(',');
     data.password = data.password || '********';
     await Thyme.http.put('/preference', data);
@@ -80,6 +136,11 @@ preferenceDialog.buttons = [{
     location.reload();
   }
 }];
+
+function openMetadata(metadata) {
+  console.log(metadata);
+  metadataDialog.open();
+}
 
 function turnPage(n) {
   const params = new URLSearchParams(location.search);

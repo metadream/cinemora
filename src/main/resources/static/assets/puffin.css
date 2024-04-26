@@ -96,7 +96,11 @@ table.list th {
   background: var(--placeholderColor);
 }
 
-table.list tr.metadata:hover {
+tr.metadata a {
+  color: #206676;
+}
+
+tr.metadata:hover {
   cursor: pointer;
   background: #f9f9f9;
   transition: .3s all;

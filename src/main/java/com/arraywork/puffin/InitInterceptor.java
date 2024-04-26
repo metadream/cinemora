@@ -52,7 +52,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
     }
 
     private boolean isRestErrorRequest(HttpServletRequest request) {
-        return "PUT".equals(request.getMethod()) && "/error".equals(request.getRequestURI());
+        return "POST".equals(request.getMethod()) && "/error".equals(request.getRequestURI());
     }
 
 }

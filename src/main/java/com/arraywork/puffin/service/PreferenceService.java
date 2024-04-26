@@ -47,15 +47,24 @@ public class PreferenceService {
         return optional.orElse(null);
     }
 
+    // 初始化偏好
+    @Transactional(rollbackFor = Exception.class)
+    @CachePut(value = "preference", key = "'#preference'")
+    public Preference init(Preference entity) {
+        String library = entity.getLibrary();
+        checkLibraryPath(library);
+
+        entity.setPassword(bCryptEncoder.encode(entity.getPassword()));
+        watcher.start(library);
+        return preferenceRepo.save(entity);
+    }
+
     // 保存偏好
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "preference", key = "'#preference'")
     public Preference save(Preference entity) {
-        // 检查路径是否存在且为目录
         String library = entity.getLibrary();
-        File entry = new File(library);
-        Assert.isTrue(entry.exists(), "媒体库路径不存在");
-        Assert.isTrue(entry.isDirectory(), "媒体库路径必须为目录");
+        checkLibraryPath(library);
 
         // 修改密码
         Preference preference = getPreference();
@@ -64,14 +73,21 @@ public class PreferenceService {
         } else {
             entity.setPassword(bCryptEncoder.encode(entity.getPassword()));
         }
-
-        // 监听媒体库目录
-        if (!library.equals(preference.getLibrary())) {
+        // 变更监听目录
+        if (!library.equals(entity.getLibrary())) {
             watcher.start(library);
         }
         return preferenceRepo.save(entity);
     }
 
+    // 校验媒体库路径
+    private void checkLibraryPath(String path) {
+        File entry = new File(path);
+        Assert.isTrue(entry.exists(), "媒体库路径不存在");
+        Assert.isTrue(entry.isDirectory(), "媒体库路径必须为目录");
+    }
+
+    // 停止监听进程
     @PreDestroy
     public void onDestroyed() {
         watcher.stop();

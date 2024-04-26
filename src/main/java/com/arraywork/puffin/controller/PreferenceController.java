@@ -2,6 +2,7 @@ package com.arraywork.puffin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,9 +25,16 @@ public class PreferenceController {
     private PreferenceService preferenceService;
 
     // 保存偏好
+    @PostMapping("/preference")
+    @ResponseBody
+    public Preference init(@Validated @RequestBody Preference preference) {
+        return preferenceService.init(preference);
+    }
+
+    // 保存偏好
     @PutMapping("/preference")
     @ResponseBody
-    public Preference preference(@Validated @RequestBody Preference preference) {
+    public Preference save(@Validated @RequestBody Preference preference) {
         return preferenceService.save(preference);
     }
 
