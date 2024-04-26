@@ -38,7 +38,7 @@ public class MetadataService {
         Metadata metadata = new Metadata();
         metadata.setCode("3333");
         metadata.setTitle("阿斯捷克洛夫的萨");
-        metadata.setPath("/fdsjakl/fdsafads");
+        metadata.setFilePath("/fdsjakl/fdsafads");
         metadataRepo.save(metadata);
     }
 
@@ -55,11 +55,17 @@ public class MetadataService {
         return new Pagination<Metadata>(pageInfo);
     }
 
+    // 新增元数据
+    @Transactional(rollbackFor = Exception.class)
+    public Metadata add(Metadata metadata) {
+        return metadataRepo.save(metadata);
+    }
+
     // 保存元数据
     @Transactional(rollbackFor = Exception.class)
     public Metadata save(Metadata entity) {
         Metadata metadata = metadataRepo.getReferenceById(entity.getId());
-        entity.setPath(metadata.getPath());
+        entity.setFilePath(metadata.getFilePath());
         entity.setMediaInfo(metadata.getMediaInfo());
 
         // TODO 上传封面
@@ -75,7 +81,7 @@ public class MetadataService {
 
         // 同时删除媒体文件
         if (syncDeleteFile) {
-            File file = new File(metadata.getPath());
+            File file = new File(metadata.getFilePath());
             if (file.exists() && file.isFile()) {
                 file.delete();
             }

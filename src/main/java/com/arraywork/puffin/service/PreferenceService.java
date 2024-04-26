@@ -3,12 +3,15 @@ package com.arraywork.puffin.service;
 import java.io.File;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.arraywork.puffin.LibraryListener;
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.repo.PreferenceRepo;
 import com.arraywork.springforce.external.BCryptEncoder;
@@ -28,12 +31,17 @@ import jakarta.annotation.Resource;
 @EnableCaching
 public class PreferenceService {
 
+    private static DirectoryWatcher watcher;
+
     @Resource
     private BCryptEncoder bCryptEncoder;
     @Resource
-    private DirectoryWatcher watcher;
-    @Resource
     private PreferenceRepo preferenceRepo;
+
+    @Autowired @Lazy
+    public PreferenceService(LibraryListener listener) {
+        watcher = new DirectoryWatcher(3, 1, listener);
+    }
 
     // 登录
     public boolean login(Preference user) {
@@ -48,8 +56,7 @@ public class PreferenceService {
     }
 
     // 初始化偏好
-    @Transactional(rollbackFor = Exception.class)
-    @CachePut(value = "preference", key = "'#preference'")
+    @Transactional(rollbackFor = Exception.class) @CachePut(value = "preference", key = "'#preference'")
     public Preference init(Preference entity) {
         String library = entity.getLibrary();
         checkLibraryPath(library);
@@ -60,8 +67,7 @@ public class PreferenceService {
     }
 
     // 保存偏好
-    @Transactional(rollbackFor = Exception.class)
-    @CachePut(value = "preference", key = "'#preference'")
+    @Transactional(rollbackFor = Exception.class) @CachePut(value = "preference", key = "'#preference'")
     public Preference save(Preference entity) {
         String library = entity.getLibrary();
         checkLibraryPath(library);
@@ -74,7 +80,7 @@ public class PreferenceService {
             entity.setPassword(bCryptEncoder.encode(entity.getPassword()));
         }
         // 变更监听目录
-        if (!library.equals(entity.getLibrary())) {
+        if (!library.equals(preference.getLibrary())) {
             watcher.start(library);
         }
         return preferenceRepo.save(entity);

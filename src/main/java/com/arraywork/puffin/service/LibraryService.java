@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.entity.ScanStatus;
@@ -67,7 +66,7 @@ public class LibraryService {
         while (iterator.hasNext()) {
             Metadata metadata = iterator.next();
             String id = metadata.getId();
-            String filepath = metadata.getPath();
+            String filepath = metadata.getFilePath();
 
             // 如果不以媒体库路径开头，说明媒体库路径已更改
             if (!filepath.startsWith(library)) {
@@ -100,7 +99,7 @@ public class LibraryService {
                 // TODO 如何避免重复新增？
                 Metadata metadata = new Metadata();
                 metadata.setTitle(filename.replaceAll("\\.[^\\.]+$", ""));
-                metadata.setPath(file.getPath());
+                metadata.setFilePath(file.getPath());
                 metadatas.add(metadata);
 
                 SCAN_STATUS.totalMedias++;
@@ -118,15 +117,15 @@ public class LibraryService {
             if (coverFile.exists()) continue;
 
             // 更新媒体信息
-            String filepath = metadata.getPath();
-            MediaInfo mediaInfo = ffmpeg.getMediaInfo(filepath);
-            if (mediaInfo.getDuration() > 0 && mediaInfo.getVideo() != null) {
-                metadata.setMediaInfo(mediaInfo);
-            }
-
-            // 截取封面
-            ffmpeg.screenshot(filepath, coverFile.getPath(), mediaInfo.getDuration());
-            CommonUtils.delay(100);
+            // String filepath = metadata.getFilePath();
+            // MediaInfo mediaInfo = ffmpeg.getMediaInfo(filepath);
+            // if (mediaInfo.getDuration() > 0 && mediaInfo.getVideo() != null) {
+            // metadata.setMediaInfo(mediaInfo);
+            // }
+            //
+            // // 截取封面
+            // ffmpeg.screenshot(filepath, coverFile.getPath(), mediaInfo.getDuration());
+            // CommonUtils.delay(100);
             SCAN_STATUS.processed++;
         }
     }
