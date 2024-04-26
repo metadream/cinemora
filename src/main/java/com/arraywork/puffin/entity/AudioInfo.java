@@ -11,9 +11,9 @@ import lombok.Data;
 @Data
 public class AudioInfo {
 
-    private String codec;
+    private String decoder;
     private int channels;
-    private int sampleRate;
     private int bitRate;
+    private int samplingRate;
 
 }

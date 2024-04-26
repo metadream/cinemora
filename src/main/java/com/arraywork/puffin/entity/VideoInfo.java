@@ -11,11 +11,10 @@ import lombok.Data;
 @Data
 public class VideoInfo {
 
-    private String codec;
-    private String aspectRatio;
+    private String decoder;
     private int width;
     private int height;
-    private int frameRate;
     private int bitRate;
+    private float frameRate;
 
 }

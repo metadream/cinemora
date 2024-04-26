@@ -11,9 +11,8 @@ import lombok.Data;
 @Data
 public class MediaInfo {
 
-    private long size;
-    private int duration;
-    private int bitRate;
+    private long duration;
+    private String format;
     private VideoInfo video;
     private AudioInfo audio;
 

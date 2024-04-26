@@ -77,6 +77,12 @@
             <artifactId>hypersistence-utils-hibernate-63</artifactId>
             <version>3.7.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-all-deps</artifactId>
+            <version>3.5.0</version>
+        </dependency>
     </dependencies>
 
     <build>

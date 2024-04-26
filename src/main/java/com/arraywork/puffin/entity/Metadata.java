@@ -54,12 +54,6 @@ public class Metadata {
     @Size(max = 120, message = "标题不能超过 {max} 个字符")
     private String title;
 
-    // 路径
-    @Column(unique = true)
-    @NotBlank(message = "路径不能为空")
-    @Size(max = 120, message = "路径不能超过 {max} 个字符")
-    private String path;
-
     // 发行日
     @MetaColumn(label = "发行日")
     private LocalDate issueDate;
@@ -124,6 +118,15 @@ public class Metadata {
     @Column(columnDefinition = "JSON DEFAULT (JSON_OBJECT())")
     private MediaInfo mediaInfo;
 
+    // 文件路径
+    @Column(unique = true)
+    @NotBlank(message = "路径不能为空")
+    @Size(max = 120, message = "路径不能超过 {max} 个字符")
+    private String filePath;
+
+    // 文件大小
+    private long fileSize;
+
     // 封面地址
     @Size(max = 60, message = "封面地址不能超过 {max} 个字符")
     private String coverUrl;
@@ -131,7 +134,7 @@ public class Metadata {
     // 是否标星
     private boolean starred;
 
-    // 媒体文件更新时间
+    // 更新时间
     @UpdateTimestamp
     private LocalDateTime lastModified;
 
