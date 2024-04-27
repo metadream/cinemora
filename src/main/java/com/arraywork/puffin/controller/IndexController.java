@@ -1,6 +1,7 @@
 package com.arraywork.puffin.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.arraywork.puffin.entity.Preference;
@@ -19,6 +20,12 @@ public class IndexController {
 
     @Resource
     private PreferenceService preferenceService;
+
+    // 首页
+    @GetMapping("/")
+    public String index(Model model) {
+        return "index";
+    }
 
     // 初始化页面
     @GetMapping("/init")

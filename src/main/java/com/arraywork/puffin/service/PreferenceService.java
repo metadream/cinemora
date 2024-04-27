@@ -37,7 +37,7 @@ public class PreferenceService {
     }
 
     // 获取偏好
-    @Cacheable(value = "preference", key = "'#preference'")
+    @Cacheable(value = "preference", key = "#Long.MAX_VALUE") // TODO 是否有效
     public Preference getPreference() {
         Optional<Preference> optional = preferenceRepo.findById(Long.MAX_VALUE);
         return optional.orElse(null);
@@ -46,34 +46,35 @@ public class PreferenceService {
     // 初始化偏好
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "preference", key = "'#preference'")
-    public Preference init(Preference entity) {
-        String library = entity.getLibrary();
+    public Preference init(Preference prefs) {
+        String library = prefs.getLibrary();
         checkLibraryPath(library);
 
-        entity.setPassword(bCryptEncoder.encode(entity.getPassword()));
-        libraryService.scan(library);
-        return preferenceRepo.save(entity);
+        prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
+        libraryService.scan(library);  // TODO 先保存or先扫描 的区别
+        return preferenceRepo.save(prefs);
     }
 
     // 保存偏好
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "preference", key = "'#preference'")
-    public Preference save(Preference entity) {
-        String library = entity.getLibrary();
+    public Preference save(Preference prefs) {
+        String library = prefs.getLibrary();
         checkLibraryPath(library);
 
         // 修改密码
-        Preference preference = getPreference();
-        if ("********".equals(entity.getPassword())) {
-            entity.setPassword(preference.getPassword());
+        Preference _prefs = getPreference();
+        if ("********".equals(prefs.getPassword())) { // TODO 密码传null是否会保持原密码
+            prefs.setPassword(_prefs.getPassword());
         } else {
-            entity.setPassword(bCryptEncoder.encode(entity.getPassword()));
+            prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
         }
+
         // 变更监听目录
-        if (!library.equals(preference.getLibrary())) {
+        if (!library.equals(_prefs.getLibrary())) {
             libraryService.scan(library);
         }
-        return preferenceRepo.save(entity);
+        return preferenceRepo.save(prefs);
     }
 
     // 校验媒体库路径

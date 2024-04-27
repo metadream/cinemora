@@ -45,7 +45,7 @@ public class ModelAttributes {
     // 已选元字段名称
     @ModelAttribute("metafields")
     public List<String> metafields() {
-        Preference prfc = preferenceService.getPreference();
+        Preference prfc = preference();
         return prfc != null ? prfc.getMetafields().stream().map(v -> v.getName()).toList() : null;
     }
 

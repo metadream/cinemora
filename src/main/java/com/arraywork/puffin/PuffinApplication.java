@@ -5,6 +5,7 @@ import java.io.File;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.arraywork.springforce.BaseApplication;
 
@@ -15,6 +16,7 @@ import com.arraywork.springforce.BaseApplication;
  * @since 2024/04/21
  */
 @SpringBootApplication
+@EnableAsync
 @EnableCaching
 public class PuffinApplication extends BaseApplication {
 

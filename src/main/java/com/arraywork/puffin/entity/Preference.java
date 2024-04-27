@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * 偏好实体
+ * 偏好设置
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/04/21
@@ -33,25 +33,19 @@ public class Preference {
     private long id = Long.MAX_VALUE;
 
     // 用户名
-    @Column(unique = true)
-    @NotBlank(message = "用户名不能为空")
-    @Size(max = 20, message = "用户名不能超过 {max} 个字符")
+    @Column(unique = true) @NotBlank(message = "用户名不能为空") @Size(max = 20, message = "用户名不能超过 {max} 个字符")
     private String username;
 
     // 密码
-    @NotBlank(message = "密码不能为空")
-    @Size(max = 60, message = "密码不能超过 {max} 个字符")
+    @NotBlank(message = "密码不能为空") @Size(max = 60, message = "密码不能超过 {max} 个字符")
     private String password;
 
     // 媒体库路径
-    @NotBlank(message = "媒体库路径不能为空")
-    @Size(max = 120, message = "媒体库路径不能超过 {max} 个字符")
+    @NotBlank(message = "媒体库路径不能为空") @Size(max = 120, message = "媒体库路径不能超过 {max} 个字符")
     private String library;
 
     // 元字段
-    @JsonDeserialize(converter = MetafieldConverter.class)
-    @Convert(converter = MetafieldConverter.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
+    @JsonDeserialize(converter = MetafieldConverter.class) @Convert(converter = MetafieldConverter.class) @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     private List<Metafield> metafields;
 
     // 自动生成编号

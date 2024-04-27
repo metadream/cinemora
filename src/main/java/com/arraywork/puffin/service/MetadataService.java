@@ -1,7 +1,6 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -10,10 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.repo.MetadataRepo;
 import com.arraywork.puffin.spec.MetadataSpec;
 import com.arraywork.springforce.util.Assert;
+import com.arraywork.springforce.util.Digest;
 import com.arraywork.springforce.util.Pagination;
 
 import jakarta.annotation.Resource;
@@ -28,24 +29,14 @@ import jakarta.annotation.Resource;
 public class MetadataService {
 
     @Resource
+    private FfmpegService ffmpegService;
+    @Resource // @Lazy
+    private PreferenceService prefsService;
+    @Resource
     private MetadataRepo metadataRepo;
 
     @Value("${puffin.page-size}")
-    protected int pageSize;
-
-    // @PostConstruct
-    public void init() {
-        Metadata metadata = new Metadata();
-        metadata.setCode("3333");
-        metadata.setTitle("阿斯捷克洛夫的萨");
-        metadata.setFilePath("/fdsjakl/fdsafads");
-        metadataRepo.save(metadata);
-    }
-
-    // 获取所有元数据
-    public List<Metadata> getMetadatas() {
-        return metadataRepo.findAll();
-    }
+    private int pageSize;
 
     // 查询分页元数据
     public Pagination<Metadata> getMetadatas(String page, Metadata condition) {
@@ -55,32 +46,56 @@ public class MetadataService {
         return new Pagination<Metadata>(pageInfo);
     }
 
-    // 新增元数据
+    // 根据文件创建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata add(Metadata metadata) {
-        return metadataRepo.save(metadata);
+    public Metadata create(File file) {
+        MediaInfo mediaInfo = ffmpegService.getMediaInfo(file);
+
+        if (mediaInfo != null && mediaInfo.getVideo() != null) {
+            Metadata metadata = new Metadata();
+            metadata.setTitle(file.getName());
+            metadata.setFilePath(file.getPath());
+            metadata.setFileSize(file.length());
+            metadata.setMediaInfo(mediaInfo);
+
+            try {
+                boolean autoGenerateCode = prefsService.getPreference().isAutoGenerateCode();
+                if (autoGenerateCode) {
+                    metadata.setCode(Digest.nanoId(9)); // TODO 全数字id
+                }
+                if (file.getName().equals("333.avi")) {
+                    int a = 1 / 0;
+                }
+                return metadataRepo.save(metadata);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     // 保存元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata save(Metadata entity) {
-        Metadata metadata = metadataRepo.getReferenceById(entity.getId());
-        entity.setFilePath(metadata.getFilePath());
-        entity.setMediaInfo(metadata.getMediaInfo());
+    public Metadata save(Metadata metadata) {
+        Metadata _metadata = metadataRepo.getReferenceById(metadata.getId());
+        metadata.setFilePath(_metadata.getFilePath()); // TODO 测试是否需要重复设置
+        metadata.setMediaInfo(_metadata.getMediaInfo());
 
         // TODO 上传封面
-        return metadataRepo.save(entity);
+        return metadataRepo.save(metadata);
     }
 
     // 删除元数据
     @Transactional(rollbackFor = Exception.class)
-    public void delete(String id, boolean syncDeleteFile) {
+    public void delete(String id, boolean autoDeleteFile) {
         Metadata metadata = metadataRepo.findById(id).orElse(null);
         Assert.notNull(metadata, "记录不存在或已被删除");
         metadataRepo.delete(metadata);
 
-        // 同时删除媒体文件
-        if (syncDeleteFile) {
+        // TODO 删除封面
+
+        // 删除文件
+        if (autoDeleteFile) {
             File file = new File(metadata.getFilePath());
             if (file.exists() && file.isFile()) {
                 file.delete();
