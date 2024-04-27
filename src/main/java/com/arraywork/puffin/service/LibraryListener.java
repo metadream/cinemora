@@ -33,7 +33,7 @@ public class LibraryListener implements FileSystemListener {
         scanStatus.error = null;
 
         try {
-            CommonUtils.delay(500);
+            CommonUtils.delay(100);
             metadataService.create(file);
             scanStatus.result = "成功";
             scanStatus.success++;

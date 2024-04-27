@@ -30,6 +30,8 @@ public class PreferenceService {
     @Resource
     private LibraryService libraryService;
     @Resource
+    private MetadataService metadataService;
+    @Resource
     private PreferenceRepo prefsRepo;
 
     // 登录
@@ -48,11 +50,9 @@ public class PreferenceService {
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "preference", key = "'#preference'")
     public Preference init(Preference prefs) {
-        String library = prefs.getLibrary();
-        checkLibraryPath(library);
-
+        checkLibrary(prefs);
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
-        libraryService.scan(library);
+        libraryService.scan(prefs.getLibrary());
         return prefsRepo.save(prefs);
     }
 
@@ -60,8 +60,7 @@ public class PreferenceService {
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "preference", key = "'#preference'")
     public Preference save(Preference prefs) {
-        String library = prefs.getLibrary();
-        checkLibraryPath(library);
+        checkLibrary(prefs);
 
         // 修改密码
         Preference _prefs = getPreference();
@@ -72,17 +71,21 @@ public class PreferenceService {
         }
 
         // 变更监听目录
+        String library = prefs.getLibrary();
         if (!library.equals(_prefs.getLibrary())) {
+            metadataService.purge(library);
             libraryService.scan(library);
         }
         return prefsRepo.save(prefs);
     }
 
     // 校验媒体库路径
-    private void checkLibraryPath(String path) {
-        File entry = new File(path);
+    private void checkLibrary(Preference prefs) {
+        String library = prefs.getLibrary();
+        File entry = new File(library);
         Assert.isTrue(entry.exists(), "媒体库路径不存在");
         Assert.isTrue(entry.isDirectory(), "媒体库路径必须为目录");
+        prefs.setLibrary(library.replaceAll("[/\\\\]+$", ""));
     }
 
 }

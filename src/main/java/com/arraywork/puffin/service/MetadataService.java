@@ -1,6 +1,8 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -102,6 +104,28 @@ public class MetadataService {
             File file = new File(metadata.getFilePath());
             if (file.exists() && file.isFile()) {
                 file.delete();
+            }
+        }
+    }
+
+    // 清空路径对应文件不存在的元数据
+    @Transactional(rollbackFor = Exception.class)
+    public void purge(String library) {
+        List<Metadata> metadatas = metadataRepo.findAll();
+        Iterator<Metadata> iterator = metadatas.iterator();
+
+        // 此方式迭代可正确删除集合中的元素
+        while (iterator.hasNext()) {
+            Metadata metadata = iterator.next();
+            File file = new File(metadata.getFilePath());
+
+            // 如果原始文件不存在、或者不是媒体库下的文件则删除
+            if (!file.exists() || !file.getParent().equals(library)) {
+                metadataRepo.delete(metadata);
+
+                // 删除封面文件
+                File coverFile = new File(metadata.getCoverUrl());
+                if (coverFile.exists()) coverFile.delete();
             }
         }
     }
