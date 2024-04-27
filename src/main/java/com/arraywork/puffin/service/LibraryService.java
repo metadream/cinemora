@@ -2,7 +2,6 @@ package com.arraywork.puffin.service;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +26,6 @@ public class LibraryService implements FileSystemListener {
 
     @Resource
     private MetadataService metadataService;
-
-    @Value("${puffin.dir.cover}")
-    private String coverDir;
 
     // 异步启动目录监视器
     @Async
