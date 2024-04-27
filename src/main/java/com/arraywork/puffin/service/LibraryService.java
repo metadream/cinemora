@@ -8,15 +8,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.entity.ScanStatus;
+import com.arraywork.springforce.filewatch.DirectoryWatcher;
+import com.arraywork.springforce.filewatch.FileSystemListener;
 import com.arraywork.springforce.util.CommonUtils;
+import com.arraywork.springforce.util.Digest;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 
 /**
@@ -26,22 +32,79 @@ import jakarta.annotation.Resource;
  * @since 2024/04/22
  */
 @Service
-public class LibraryService {
+public class LibraryService implements FileSystemListener {
 
     private static final ScanStatus SCAN_STATUS = new ScanStatus();
     private static final String[] VIDEO_FORMATS = { "3g2", "3gp", "asf", "avi", "dat", "flv", "m2ts", "m4v",
         "mkv", "mod", "mov", "mp4", "mpeg", "mpg", "mts", "oga", "ogg", "ogv", "qt", "rm", "rmvb", "ts", "vob",
         "webm", "wmv" };
 
+    private DirectoryWatcher watcher = new DirectoryWatcher(3, 1, this);
+
     @Resource
-    private FfmpegService ffmpeg;
-    @Resource
+    private FfmpegService ffmpegService;
+    @Resource @Lazy
     private PreferenceService preferenceService;
     @Resource
     private MetadataService metadataService;
 
     @Value("${puffin.folder.cover}")
     private String coverFolder;
+
+    public void scan(String dir) {
+        watcher.start(dir);
+    }
+
+    // TODO 成功/失败计数
+    @Override
+    public void onStarted(File file, int count, int total) {
+        System.out.print("Started[" + count + "/" + total + "]: ");
+        System.out.println(file);
+
+        onAdded(file);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void onAdded(File file) {
+        System.out.print("Added: ");
+        System.out.println(file);
+
+        CommonUtils.delay(1000);
+
+        MediaInfo mediaInfo = ffmpegService.getMediaInfo(file);
+        if (mediaInfo != null && mediaInfo.getVideo() != null) {
+            Metadata metadata = new Metadata();
+            metadata.setTitle(file.getName());
+            metadata.setFilePath(file.getPath());
+            metadata.setFileSize(file.length());
+            metadata.setMediaInfo(mediaInfo);
+
+            boolean autoGenerateCode = preferenceService.getPreference().isAutoGenerateCode();
+            if (autoGenerateCode) {
+                metadata.setCode(Digest.nanoId(9));
+            }
+            metadataService.add(metadata);
+        }
+    }
+
+    @Override
+    public void onModified(File file) {
+        System.out.print("Modified: ");
+        System.out.println(file);
+    }
+
+    @Override
+    public void onDeleted(File file) {
+        System.out.print("Deleted: ");
+        System.out.println(file);
+    }
+
+    // 停止监听进程
+    @PreDestroy
+    public void onDestroyed() {
+        watcher.stop();
+    }
 
     // 扫描媒体库
     @Transactional(rollbackFor = Exception.class)
