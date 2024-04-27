@@ -7,10 +7,8 @@ import org.springframework.stereotype.Service;
 import com.arraywork.puffin.entity.AudioInfo;
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.VideoInfo;
-import com.arraywork.springforce.util.Assert;
 
 import ws.schild.jave.EncoderException;
-import ws.schild.jave.InputFormatException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 import ws.schild.jave.info.VideoSize;
@@ -25,35 +23,48 @@ import ws.schild.jave.info.VideoSize;
 public class FfmpegService {
 
     // 获取媒体信息
-    public MediaInfo getMediaInfo(File file) throws InputFormatException, EncoderException {
-        Assert.isTrue(file != null && file.exists(), "File not exists: " + file);
-        MultimediaInfo mInfo = new MultimediaObject(file).getInfo();
-        ws.schild.jave.info.VideoInfo vInfo = mInfo.getVideo();
-        Assert.isTrue(mInfo.getDuration() > 0 & vInfo != null, "File is not a video: " + file);
+    public MediaInfo getMediaInfo(File file) {
+        MediaInfo mediaInfo = null;
+        try {
+            MultimediaInfo mInfo = new MultimediaObject(file).getInfo();
 
-        // 获取视频信息
-        VideoInfo video = new VideoInfo();
-        video.setDecoder(vInfo.getDecoder());
-        video.setBitRate(vInfo.getBitRate());
-        video.setFrameRate(vInfo.getFrameRate());
-        VideoSize vSize = vInfo.getSize();
-        video.setWidth(vSize.getWidth());
-        video.setHeight(vSize.getHeight());
+            // 获取媒体信息
+            if (mInfo.getFormat() != null && mInfo.getDuration() > 0) {
+                mediaInfo = new MediaInfo();
+                mediaInfo.setDuration(mInfo.getDuration());
+                mediaInfo.setFormat(mInfo.getFormat());
 
-        // 获取音频信息
-        AudioInfo audio = new AudioInfo();
-        ws.schild.jave.info.AudioInfo aInfo = mInfo.getAudio();
-        audio.setDecoder(aInfo.getDecoder());
-        audio.setChannels(aInfo.getChannels());
-        audio.setBitRate(aInfo.getBitRate());
-        audio.setSamplingRate(aInfo.getSamplingRate());
+                // 获取音频信息
+                ws.schild.jave.info.AudioInfo aInfo = mInfo.getAudio();
+                if (aInfo != null) {
+                    AudioInfo audio = new AudioInfo();
+                    audio.setDecoder(aInfo.getDecoder());
+                    audio.setChannels(aInfo.getChannels());
+                    audio.setBitRate(aInfo.getBitRate());
+                    audio.setSamplingRate(aInfo.getSamplingRate());
+                    mediaInfo.setAudio(audio);
+                }
 
-        // 获取媒体信息
-        MediaInfo mediaInfo = new MediaInfo();
-        mediaInfo.setDuration(mInfo.getDuration());
-        mediaInfo.setFormat(mInfo.getFormat());
-        mediaInfo.setAudio(audio);
-        mediaInfo.setVideo(video);
+                // 获取视频信息
+                ws.schild.jave.info.VideoInfo vInfo = mInfo.getVideo();
+                if (vInfo != null) {
+                    VideoInfo video = new VideoInfo();
+                    video.setDecoder(vInfo.getDecoder());
+                    video.setBitRate(vInfo.getBitRate());
+                    video.setFrameRate(vInfo.getFrameRate());
+
+                    // 视频尺寸
+                    VideoSize vSize = vInfo.getSize();
+                    if (vSize != null) {
+                        video.setWidth(vSize.getWidth());
+                        video.setHeight(vSize.getHeight());
+                    }
+                    mediaInfo.setVideo(video);
+                }
+            }
+        } catch (EncoderException e) {
+            mediaInfo = null;
+        }
         return mediaInfo;
     }
 
