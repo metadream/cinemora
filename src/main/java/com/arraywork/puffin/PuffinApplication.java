@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 import com.arraywork.springforce.BaseApplication;
 
@@ -14,6 +15,7 @@ import com.arraywork.springforce.BaseApplication;
  * @since 2024/04/21
  */
 @SpringBootApplication
+@EnableCaching
 public class PuffinApplication extends BaseApplication {
 
     // 初始化（静态块最先执行）
