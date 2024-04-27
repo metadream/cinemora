@@ -37,7 +37,7 @@ public class PreferenceService {
     }
 
     // 获取偏好
-    @Cacheable(value = "preference", key = "#Long.MAX_VALUE") // TODO 是否有效
+    @Cacheable(value = "preference", key = "'#preference'")
     public Preference getPreference() {
         Optional<Preference> optional = prefsRepo.findById(Long.MAX_VALUE);
         return optional.orElse(null);

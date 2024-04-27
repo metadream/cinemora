@@ -4,7 +4,8 @@
 同时删除硬盘上的文件（不可恢复）
 文件路径：xxxx/xxx/xxx/dxx.mp4
 
-/home/xehu/Documents/test
+/home/xehu/Documents/test2
+
 ```
 static boolean changeCode() {
     String sourceFilePath = "/Users/jimmy/Downloads/bgm.wav";

@@ -14,6 +14,7 @@ import com.arraywork.puffin.enums.Rating;
 import com.arraywork.puffin.enums.Region;
 import com.arraywork.puffin.metafield.MetaColumn;
 import com.arraywork.springforce.NanoIdGenerator;
+import com.arraywork.springforce.ValidationGroup;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
@@ -45,7 +46,7 @@ public class Metadata {
 
     // 编号
     @Column(unique = true)
-    @NotBlank(message = "编号不能为空")
+    @NotBlank(message = "编号不能为空", groups = ValidationGroup.Update.class)
     @Size(max = 20, message = "编号不能超过{max}个字符")
     private String code;
 

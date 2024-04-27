@@ -31,7 +31,8 @@ public class MetadataService {
 
     @Resource
     private FfmpegService ffmpegService;
-    @Resource @Lazy
+    @Resource
+    @Lazy
     private PreferenceService prefsService;
     @Resource
     private MetadataRepo metadataRepo;
@@ -51,28 +52,18 @@ public class MetadataService {
     @Transactional(rollbackFor = Exception.class)
     public Metadata create(File file) {
         MediaInfo mediaInfo = ffmpegService.getMediaInfo(file);
+        Assert.isTrue(mediaInfo != null && mediaInfo.getVideo() != null, "无法获取视频元数据");
 
-        if (mediaInfo != null && mediaInfo.getVideo() != null) {
-            Metadata metadata = new Metadata();
-            metadata.setTitle(file.getName());
-            metadata.setFilePath(file.getPath());
-            metadata.setFileSize(file.length());
-            metadata.setMediaInfo(mediaInfo);
+        Metadata metadata = new Metadata();
+        metadata.setTitle(file.getName());
+        metadata.setFilePath(file.getPath());
+        metadata.setFileSize(file.length());
+        metadata.setMediaInfo(mediaInfo);
 
-            try {
-                boolean autoGenerateCode = prefsService.getPreference().isAutoGenerateCode();
-                if (autoGenerateCode) {
-                    metadata.setCode(Digest.nanoId(9)); // TODO 全数字id
-                }
-                if (file.getName().equals("333.avi")) {
-                    int a = 1 / 0;
-                }
-                return metadataRepo.save(metadata);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (prefsService.getPreference().isAutoGenerateCode()) {
+            metadata.setCode(Digest.nanoId(9)); // TODO 全数字id
         }
-        return null;
+        return metadataRepo.save(metadata);
     }
 
     // 保存元数据
