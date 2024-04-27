@@ -16,7 +16,7 @@ import com.arraywork.springforce.util.Assert;
 import jakarta.annotation.Resource;
 
 /**
- * 偏好服务
+ * 偏好设置服务
  * @author AiChen
  * @copyright ArrayWork Inc.
  * @since 2024/04/22
