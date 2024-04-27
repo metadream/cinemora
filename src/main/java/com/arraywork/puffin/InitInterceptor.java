@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Resource
-    private PreferenceService preferenceService;
+    private PreferenceService prefsService;
 
     @Value("${puffin.init-url}")
     private String initUrl;
@@ -36,8 +36,8 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
         throws ServletException, IOException {
 
         if (!isRestErrorRequest(request)) {
-            Preference preference = preferenceService.getPreference();
-            if (preference == null) {
+            Preference prefs = prefsService.getPreference();
+            if (prefs == null) {
                 response.sendRedirect(initUrl);
                 return false;
             }

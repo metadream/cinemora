@@ -22,20 +22,20 @@ import jakarta.annotation.Resource;
 public class PreferenceController {
 
     @Resource
-    private PreferenceService prefService;
+    private PreferenceService prefsService;
 
     // 初始化偏好
     @PostMapping("/preference")
     @ResponseBody
-    public Preference init(@Validated @RequestBody Preference pref) {
-        return prefService.init(pref);
+    public Preference init(@Validated @RequestBody Preference prefs) {
+        return prefsService.init(prefs);
     }
 
     // 保存偏好
     @PutMapping("/preference")
     @ResponseBody
-    public Preference save(@Validated @RequestBody Preference pref) {
-        return prefService.save(pref);
+    public Preference save(@Validated @RequestBody Preference prefs) {
+        return prefsService.save(prefs);
     }
 
 }

@@ -3,6 +3,7 @@ package com.arraywork.puffin.service;
 import java.io.File;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class MetadataService {
 
     @Resource
     private FfmpegService ffmpegService;
-    @Resource // @Lazy
+    @Resource @Lazy
     private PreferenceService prefsService;
     @Resource
     private MetadataRepo metadataRepo;

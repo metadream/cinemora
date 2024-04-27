@@ -29,7 +29,7 @@ public class PreferenceService {
     @Resource
     private LibraryService libraryService;
     @Resource
-    private PreferenceRepo preferenceRepo;
+    private PreferenceRepo prefsRepo;
 
     // 登录
     public boolean login(Preference user) {
@@ -39,7 +39,7 @@ public class PreferenceService {
     // 获取偏好
     @Cacheable(value = "preference", key = "#Long.MAX_VALUE") // TODO 是否有效
     public Preference getPreference() {
-        Optional<Preference> optional = preferenceRepo.findById(Long.MAX_VALUE);
+        Optional<Preference> optional = prefsRepo.findById(Long.MAX_VALUE);
         return optional.orElse(null);
     }
 
@@ -52,7 +52,7 @@ public class PreferenceService {
 
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
         libraryService.scan(library);  // TODO 先保存or先扫描 的区别
-        return preferenceRepo.save(prefs);
+        return prefsRepo.save(prefs);
     }
 
     // 保存偏好
@@ -74,7 +74,7 @@ public class PreferenceService {
         if (!library.equals(_prefs.getLibrary())) {
             libraryService.scan(library);
         }
-        return preferenceRepo.save(prefs);
+        return prefsRepo.save(prefs);
     }
 
     // 校验媒体库路径

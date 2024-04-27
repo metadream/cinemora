@@ -25,7 +25,7 @@ public class ModelAttributes {
     @Resource
     private MetafieldManager metafieldManager;
     @Resource
-    private PreferenceService preferenceService;
+    private PreferenceService prefsService;
 
     @Value("${puffin.app.name}")
     private String appName;
@@ -52,7 +52,7 @@ public class ModelAttributes {
     // 偏好设置
     @ModelAttribute("preference")
     public Preference preference() {
-        return preferenceService.getPreference();
+        return prefsService.getPreference();
     }
 
 }

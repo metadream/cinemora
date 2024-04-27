@@ -19,7 +19,7 @@ import jakarta.annotation.Resource;
 public class IndexController {
 
     @Resource
-    private PreferenceService preferenceService;
+    private PreferenceService prefsService;
 
     // 首页
     @GetMapping("/")
@@ -30,8 +30,8 @@ public class IndexController {
     // 初始化页面
     @GetMapping("/init")
     public String init() {
-        Preference preference = preferenceService.getPreference();
-        return preference != null ? "redirect:/" : "init";
+        Preference prefs = prefsService.getPreference();
+        return prefs != null ? "redirect:/" : "init";
     }
 
 }

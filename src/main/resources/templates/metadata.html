@@ -7,7 +7,7 @@
     <h3>元数据</h3>
     <div class="buttons">
       <th-button onclick="scanLibrary()" id="scanBtn">扫描媒体库</th-button>
-      <th-button onclick="preferenceDialog.open()">偏好设置</th-button>
+      <th-button onclick="prefsDialog.open()">偏好设置</th-button>
     </div>
   </div>
 
@@ -68,7 +68,7 @@
     </div>
   </th-dialog>
 
-  <th-dialog id="preference-dialog">
+  <th-dialog id="prefs-dialog">
     <div class="front-panel preference" style="width:450px">
       <th-field label="管理员账号" name="username" th:value="${preference.username}" maxlength="20" required></th-field>
       <th-field label="管理员密码" name="password" placeholder="无需修改密码则留空" type="password" maxlength="20"></th-field>
@@ -104,7 +104,7 @@
 
 <script>
 const metadataDialog = document.querySelector('#metadata-dialog');
-const preferenceDialog = document.querySelector('#preference-dialog');
+const prefsDialog = document.querySelector('#prefs-dialog');
 
 metadataDialog.buttons = [{
   label: '取消'
@@ -121,7 +121,7 @@ metadataDialog.buttons = [{
   }
 }];
 
-preferenceDialog.buttons = [{
+prefsDialog.buttons = [{
   label: '取消'
 }, {
   label: '保存',
