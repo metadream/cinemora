@@ -52,7 +52,7 @@ public class MetadataService {
     @Transactional(rollbackFor = Exception.class)
     public Metadata create(File file) {
         MediaInfo mediaInfo = ffmpegService.getMediaInfo(file);
-        Assert.isTrue(mediaInfo != null && mediaInfo.getVideo() != null, "无法获取视频元数据");
+        Assert.isTrue(mediaInfo != null && mediaInfo.getVideo() != null, "无法提取视频元数据");
 
         Metadata metadata = new Metadata();
         metadata.setTitle(file.getName());

@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.springframework.stereotype.Component;
 
+import com.arraywork.puffin.entity.ScanStatus;
 import com.arraywork.springforce.filewatch.FileSystemListener;
 import com.arraywork.springforce.util.CommonUtils;
 
@@ -18,20 +19,30 @@ import jakarta.annotation.Resource;
 @Component
 public class LibraryListener implements FileSystemListener {
 
+    private ScanStatus scanStatus = new ScanStatus();
     @Resource
     private MetadataService metadataService;
 
     @Override
     public void onStarted(File file, int count, int total) {
-        System.out.print("Started[" + count + "/" + total + "]: ");
-        System.out.println(file);
+        scanStatus.path = file.getPath();
+        scanStatus.count = count;
+        scanStatus.total = total;
+        scanStatus.event = "扫描";
+        scanStatus.result = null;
+        scanStatus.error = null;
 
         try {
             CommonUtils.delay(500);
             metadataService.create(file);
+            scanStatus.result = "成功";
+            scanStatus.success++;
         } catch (Exception e) {
-            System.out.println("error ignored: " + e.getMessage());
+            scanStatus.result = "失败";
+            scanStatus.error = e.getMessage();
+            scanStatus.failed++;
         }
+        System.out.println(scanStatus);
     }
 
     @Override
