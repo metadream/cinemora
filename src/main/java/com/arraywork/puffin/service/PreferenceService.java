@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.repo.PreferenceRepo;
@@ -51,7 +52,7 @@ public class PreferenceService {
         checkLibraryPath(library);
 
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
-        libraryService.scan(library);  // TODO 先保存or先扫描 的区别
+        libraryService.scan(library);
         return prefsRepo.save(prefs);
     }
 
@@ -64,10 +65,10 @@ public class PreferenceService {
 
         // 修改密码
         Preference _prefs = getPreference();
-        if ("********".equals(prefs.getPassword())) { // TODO 密码传null是否会保持原密码
-            prefs.setPassword(_prefs.getPassword());
-        } else {
+        if (StringUtils.hasText(prefs.getPassword())) {
             prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
+        } else {
+            prefs.setPassword(_prefs.getPassword());
         }
 
         // 变更监听目录

@@ -50,8 +50,8 @@ public class LibraryListener implements FileSystemListener {
         System.out.print("Added: ");
         System.out.println(file);
 
-        CommonUtils.delay(500);
-        metadataService.create(file);
+        // CommonUtils.delay(500);
+        // metadataService.create(file);
     }
 
     @Override

@@ -40,6 +40,9 @@ public class MetadataService {
     @Value("${puffin.page-size}")
     private int pageSize;
 
+    @Value("${puffin.cover-dir}")
+    private String coverDir;
+
     // 查询分页元数据
     public Pagination<Metadata> getMetadatas(String page, Metadata condition) {
         page = page != null && page.matches("\\d+") ? page : "1";
@@ -60,10 +63,18 @@ public class MetadataService {
         metadata.setFileSize(file.length());
         metadata.setMediaInfo(mediaInfo);
 
+        // 自动生成编号
         if (prefsService.getPreference().isAutoGenerateCode()) {
             metadata.setCode(Digest.nanoId(9)); // TODO 全数字id
         }
-        return metadataRepo.save(metadata);
+        // 先保存以便设置ID
+        metadataRepo.save(metadata);
+
+        // 视频截图
+        String coverUrl = coverDir + "/" + metadata.getId() + ".jpg";
+        ffmpegService.screenshot(file, new File(coverUrl), mediaInfo.getDuration() / 2);
+        metadata.setCoverUrl(coverUrl);
+        return metadata;
     }
 
     // 保存元数据

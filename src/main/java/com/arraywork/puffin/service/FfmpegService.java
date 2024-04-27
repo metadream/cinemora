@@ -10,6 +10,7 @@ import com.arraywork.puffin.entity.VideoInfo;
 
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.ScreenExtractor;
 import ws.schild.jave.info.MultimediaInfo;
 import ws.schild.jave.info.VideoSize;
 
@@ -69,6 +70,14 @@ public class FfmpegService {
     }
 
     // 视频截图
-    public void screenshot(String videoPath, String outputPath, long time) {}
+    public void screenshot(File videoFile, File outputFile, long millis) {
+        MultimediaObject mObject = new MultimediaObject(videoFile);
+        ScreenExtractor screenExtractor = new ScreenExtractor();
+        try {
+            screenExtractor.renderOneImage(mObject, -1, -1, millis, outputFile, 1);
+        } catch (EncoderException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

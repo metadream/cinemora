@@ -115,7 +115,6 @@ metadataDialog.buttons = [{
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
 
-    data.coverImageData = window.coverImageData;
     await Thyme.http.put('/metadata', data);
     location.reload();
   }
@@ -130,7 +129,7 @@ prefsDialog.buttons = [{
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
     data.metafields = data.metafields?.split(',');
-    data.password = data.password || '********';
+
     await Thyme.http.put('/preference', data);
     dlg.hide();
     location.reload();
