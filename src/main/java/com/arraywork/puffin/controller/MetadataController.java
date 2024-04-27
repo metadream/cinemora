@@ -2,7 +2,11 @@ package com.arraywork.puffin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.MetadataService;
@@ -26,6 +30,13 @@ public class MetadataController {
     public String metadata(Model model, String page, Metadata condition) {
         model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
         return "metadata";
+    }
+
+    // 元数据接口
+    @PutMapping("/metadata")
+    @ResponseBody
+    public Metadata metadata(@Validated @RequestBody Metadata metadata) {
+        return metadataService.save(metadata);
     }
 
 }

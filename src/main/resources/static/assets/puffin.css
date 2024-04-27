@@ -163,56 +163,18 @@ th-button::part(button) {
   margin-left: 10px;
 }
 
-.editor {
-  width: 580px
-}
-
-.editor th-field, .editor th-calendar, .editor th-select {
-  margin: 5px;
-  width: 280px;
-}
-
-.editor th-field.single-column {
-  width: 570px;
-}
-
-.fields {
+.metadata-editor {
   display: flex;
-  flex-wrap: wrap;
+  width: 750px
 }
 
-.fixed-form {
-  display: flex;
-}
-
-.fixed-form>*:not(:first-child) {
-  margin: 5px;
-}
-
-.fixed-form .fields {
-  flex-direction: column;
-}
-
-.fixed-form>.starred {
-  width: 100px;
-  border-radius: var(--borderRadius);
-  border: #ccc 1px solid;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.fixed-form>.starred>div {
-  margin-bottom: 5px;
-}
-
-.fixed-form>.uploader {
+.metadata-editor .uploader {
   position: relative;
-  width: 170px;
+  width: 160px;
+  height: 90px;
 }
 
-.fixed-form>.uploader>div {
+.metadata-editor .uploader>div {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -228,6 +190,22 @@ th-button::part(button) {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.metadata-editor .fields {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  margin-left: 10px;
+}
+
+.metadata-editor .fields>* {
+  margin: 0 0 10px 10px;
+  width: 280px;
+}
+
+.metadata-editor .fields>.exclusive {
+  width: 100%;
 }
 
 .prefer {

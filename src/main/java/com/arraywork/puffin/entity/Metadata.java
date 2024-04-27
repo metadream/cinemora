@@ -77,6 +77,11 @@ public class Metadata {
     @MetaColumn(label = "主演")
     private String[] starring;
 
+    // 系列
+    @Size(max = 60, message = "系列名不能超过 {max} 个字符")
+    @MetaColumn(label = "系列")
+    private String series;
+
     // 题材
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
@@ -88,11 +93,6 @@ public class Metadata {
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "标签")
     private String[] tags;
-
-    // 系列
-    @Size(max = 60, message = "系列名不能超过 {max} 个字符")
-    @MetaColumn(label = "系列")
-    private String series;
 
     // 地区
     @Convert(converter = Region.Converter.class)

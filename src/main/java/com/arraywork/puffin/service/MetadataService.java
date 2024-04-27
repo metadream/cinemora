@@ -67,7 +67,7 @@ public class MetadataService {
 
         // 自动生成编号
         if (prefsService.getPreference().isAutoGenerateCode()) {
-            metadata.setCode(Digest.nanoId(9)); // TODO 全数字id
+            metadata.setCode(Digest.nanoId(9, "0123456789"));
         }
         // 先保存以便设置ID
         metadataRepo.save(metadata);

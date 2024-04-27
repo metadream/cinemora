@@ -25,8 +25,7 @@
       <td><a th:href="@{|/${metadata.code}|}">[[${metadata.code}]]</a></td>
       <td>[[${metadata.title}]]</td>
       <td th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}" 
-        th:with="enum=${metadata[metafield.name]}">
-        <span th:if="${enum}">[[${enum.label}]]</span>
+        th:with="enum=${metadata[metafield.name]}"><span th:if="${enum}">[[${enum.label}]]</span>
       </td>
       <td style="text-align:right">[[${Numbers.formatBytes(metadata.fileSize)}]]</td>
       <td style="text-align:center"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
@@ -36,34 +35,28 @@
   <div th:replace="~{_pager}"></div>
 
   <th-dialog id="metadata-dialog">
-    <div class="editor">
-      <div class="fixed-form">
-        <div class="fields">
-          <th-field label="编号" name="code" maxlength="20" value="${movie.code}" required></th-field>
-          <th-calendar label="发行日期" name="rDate" value="${movie.rDate}"></th-calendar>
-          <input type="hidden" name="id" value="${movie.id}"/>
-          <input type="hidden" name="videoSize" value="${movie.videoSize}"/>
-          <input type="hidden" name="videoWidth" value="${movie.videoWidth}"/>
-          <input type="hidden" name="videoHeight" value="${movie.videoHeight}"/>
-          <input type="hidden" name="duration" value="${movie.duration}"/>
-        </div>
-        <div class="starred">
-          <div>收藏</div>
-          <th-switch name="starred" ${movie.starred?'checked':''}></th-switch>
-        </div>
-        <div class="uploader">
-          <div onclick="document.querySelector('#file').click()" style="background-image:url('/cover/${movie.id}')">
-            <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
-            <span>上传封面</span>
-          </div>
+    <div class="metadata-editor">
+      <div class="uploader">
+        <div onclick="document.querySelector('#file').click()" style="background-image:url()">
+          <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
+          <span>上传封面</span>
         </div>
       </div>
       <div class="fields">
-        ${producerField} ${directorField} ${regionField}
-        ${qualityField} ${censorshipField} ${ratingField} ${seriesField}
-        <th-field class="single-column" label="标题" name="title" value="${movie.title}" required></th-field>
-        ${genresField} ${starringField}
-        <th-field class="single-column" label="视频路径" name="videoPath" value="${movie.videoPath}" disabled></th-field>
+        <input type="hidden" name="id"/>
+        <th-field label="编号" name="code" maxlength="20" required></th-field>
+        <th-calendar th:if="${#lists.contains(metafields,'issueDate')}" label="发行日" name="issueDate"></th-calendar>
+        <th-field label="标题" name="title" maxlength="120" class="exclusive" required></th-field>
+        <th-field label="路径" name="filePath" class="exclusive" disabled></th-field>
+
+        <th:block th:each="metafield: ${preference.metafields}">
+           <th-select th:if="${metafield.enums != null}" th:label="${metafield.label}" th:name="${metafield.name}">
+             <option></option>
+             <option th:each="enum: ${metafield.enums}" th:value="${enum}">[[${enum.label}]]</option>
+           </th-select>
+           <th-field class="exclusive" th:if="${metafield.name != 'issueDate' && metafield.enums == null}"
+            th:label="${metafield.label}" th:name="${metafield.name}"></th-field>
+        </th:block>
       </div>
     </div>
   </th-dialog>
@@ -114,6 +107,11 @@ metadataDialog.buttons = [{
   onclick: async function(dlg) {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
+    data.producers = data.producers?.split(',');
+    data.directors = data.directors?.split(',');
+    data.starring = data.starring?.split(',');
+    data.genres = data.genres?.split(',');
+    data.tags = data.tags?.split(',');
 
     await Thyme.http.put('/metadata', data);
     location.reload();
@@ -138,6 +136,7 @@ prefsDialog.buttons = [{
 
 function openMetadata(metadata) {
   console.log(metadata);
+  bindModel(metadataDialog, metadata);
   metadataDialog.open();
 }
 
