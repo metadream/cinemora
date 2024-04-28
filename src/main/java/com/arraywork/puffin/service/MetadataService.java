@@ -17,6 +17,7 @@ import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.repo.MetadataRepo;
 import com.arraywork.puffin.spec.MetadataSpec;
 import com.arraywork.springforce.util.Assert;
+import com.arraywork.springforce.util.Files;
 import com.arraywork.springforce.util.KeyGenerator;
 import com.arraywork.springforce.util.Pagination;
 
@@ -60,7 +61,7 @@ public class MetadataService {
         Assert.isTrue(mediaInfo != null && mediaInfo.getVideo() != null, "无法提取视频元数据");
 
         Metadata metadata = new Metadata();
-        metadata.setTitle(file.getName());
+        metadata.setTitle(Files.getName(file.getName()));
         metadata.setFilePath(file.getPath());
         metadata.setFileSize(file.length());
         metadata.setMediaInfo(mediaInfo);
