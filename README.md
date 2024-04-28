@@ -1,9 +1,5 @@
 # Puffin
 
-## TODO
-同时删除硬盘上的文件（不可恢复）
-文件路径：xxxx/xxx/xxx/dxx.mp4
-
 /home/xehu/Documents/test2
 
 #### vi /etc/systemd/system/spring-puffin.service
