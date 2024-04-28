@@ -2,9 +2,9 @@ package com.arraywork.puffin.metafield;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import com.arraywork.springforce.util.JsonUtils;
+import com.arraywork.springforce.util.Arrays;
+import com.arraywork.springforce.util.Jackson;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
 import jakarta.annotation.Resource;
@@ -20,13 +20,15 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
     implements AttributeConverter<List<Metafield>, String> {
 
     @Resource
+    private Jackson jackson;
+    @Resource
     private MetafieldManager metafieldManager;
 
     // 实现JPA实体到数据库的转换
     @Override
     public String convertToDatabaseColumn(List<Metafield> attributes) {
         if (attributes != null) {
-            return JsonUtils.stringify(attributes.stream().map(v -> v.getName()).toArray());
+            return jackson.stringify(Arrays.map(attributes, Metafield::getName));
         }
         return "[]";
     }
@@ -34,7 +36,7 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
     // 实现JPA数据库到实体的转换
     @Override
     public List<Metafield> convertToEntityAttribute(String dbData) {
-        return convert(JsonUtils.parse(dbData, String[].class));
+        return convert(jackson.parse(dbData, String[].class));
     }
 
     // 实现StdConverter反序列化方法
@@ -45,9 +47,8 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
 
         if (values != null) {
             for (String value : values) {
-                Optional<Metafield> optional = metafields.stream()
-                    .filter(v -> v.getName().equals(value)).findAny();
-                optional.ifPresent(v -> result.add(v));
+                Metafield metafield = Arrays.findAny(metafields, v -> v.getName().equals(value));
+                if (metafield != null) result.add(metafield);
             }
         }
         return result;

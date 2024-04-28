@@ -10,6 +10,7 @@ import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.metafield.Metafield;
 import com.arraywork.puffin.metafield.MetafieldManager;
 import com.arraywork.puffin.service.PreferenceService;
+import com.arraywork.springforce.util.Arrays;
 
 import jakarta.annotation.Resource;
 
@@ -46,7 +47,7 @@ public class ModelAttributes {
     @ModelAttribute("metafields")
     public List<String> metafields() {
         Preference prfc = preference();
-        return prfc != null ? prfc.getMetafields().stream().map(v -> v.getName()).toList() : null;
+        return prfc != null ? Arrays.map(prfc.getMetafields(), Metafield::getName) : null;
     }
 
     // 偏好设置

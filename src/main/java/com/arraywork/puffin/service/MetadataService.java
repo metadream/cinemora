@@ -17,7 +17,7 @@ import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.repo.MetadataRepo;
 import com.arraywork.puffin.spec.MetadataSpec;
 import com.arraywork.springforce.util.Assert;
-import com.arraywork.springforce.util.Digest;
+import com.arraywork.springforce.util.KeyGenerator;
 import com.arraywork.springforce.util.Pagination;
 
 import jakarta.annotation.Resource;
@@ -67,7 +67,7 @@ public class MetadataService {
 
         // 自动生成编号
         if (prefsService.getPreference().isAutoGenerateCode()) {
-            metadata.setCode(Digest.nanoId(9, "0123456789"));
+            metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
         }
         // 先保存以便设置ID
         metadataRepo.save(metadata);

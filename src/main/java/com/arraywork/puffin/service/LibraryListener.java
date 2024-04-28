@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.arraywork.puffin.entity.ScanStatus;
 import com.arraywork.springforce.filewatch.FileSystemListener;
-import com.arraywork.springforce.util.CommonUtils;
+import com.arraywork.springforce.util.Times;
 
 import jakarta.annotation.Resource;
 
@@ -33,7 +33,7 @@ public class LibraryListener implements FileSystemListener {
         scanStatus.error = null;
 
         try {
-            CommonUtils.delay(100);
+            Times.delay(100);
             metadataService.create(file);
             scanStatus.result = "成功";
             scanStatus.success++;

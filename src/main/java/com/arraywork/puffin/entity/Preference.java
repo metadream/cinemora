@@ -8,7 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.puffin.metafield.Metafield;
 import com.arraywork.puffin.metafield.MetafieldConverter;
-import com.arraywork.springforce.ValidationGroup;
+import com.arraywork.springforce.util.Validator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.persistence.Column;
@@ -40,7 +40,7 @@ public class Preference {
     private String username;
 
     // 密码
-    @NotBlank(message = "密码不能为空", groups = ValidationGroup.Insert.class)
+    @NotBlank(message = "密码不能为空", groups = Validator.Insert.class)
     @Size(max = 60, message = "密码不能超过 {max} 个字符")
     private String password;
 
