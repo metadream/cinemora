@@ -1,6 +1,7 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
+import com.arraywork.puffin.entity.VideoInfo;
+import com.arraywork.puffin.enums.Quality;
 import com.arraywork.puffin.repo.MetadataRepo;
 import com.arraywork.puffin.spec.MetadataSpec;
 import com.arraywork.springforce.util.Assert;
@@ -43,8 +46,11 @@ public class MetadataService {
     @Value("${puffin.page-size}")
     private int pageSize;
 
-    @Value("${puffin.cover-dir}")
-    private String coverDir;
+    @Value("${puffin.cover.base-url}")
+    private String coverBaseUrl;
+
+    @Value("${puffin.cover.base-dir}")
+    private String coverBaseDir;
 
     // 查询分页元数据
     public Pagination<Metadata> getMetadatas(String page, Metadata condition) {
@@ -61,10 +67,12 @@ public class MetadataService {
         Assert.isTrue(mediaInfo != null && mediaInfo.getVideo() != null, "无法提取视频元数据");
 
         Metadata metadata = new Metadata();
+        VideoInfo video = mediaInfo.getVideo();
+        metadata.setMediaInfo(mediaInfo);
+        metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
         metadata.setTitle(Files.getName(file.getName()));
         metadata.setFilePath(file.getPath());
         metadata.setFileSize(file.length());
-        metadata.setMediaInfo(mediaInfo);
 
         // 自动生成编号
         if (prefsService.getPreference().isAutoGenerateCode()) {
@@ -74,9 +82,10 @@ public class MetadataService {
         metadataRepo.save(metadata);
 
         // 视频截图
-        String coverUrl = coverDir + "/" + metadata.getId() + ".jpg";
-        ffmpegService.screenshot(file, new File(coverUrl), mediaInfo.getDuration() / 2);
-        metadata.setCoverUrl(coverUrl);
+        String coverName = metadata.getId() + ".jpg";
+        File coverFile = Path.of(coverBaseDir, coverName).toFile();
+        ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+        metadata.setCoverUrl(coverBaseUrl + "/" + coverName);
         return metadata;
     }
 
@@ -129,6 +138,16 @@ public class MetadataService {
                 if (coverFile.exists()) coverFile.delete();
             }
         }
+    }
+
+    private Quality adaptQuality(int width, int height) {
+        if (height >= width) return Quality.XX;
+        if (height > 4000) return Quality.EK;   // 8192×4320
+        if (height > 2000) return Quality.FK;   // 4096×2160
+        if (height > 1000) return Quality.FHD;  // 1920×1080
+        if (height > 700) return Quality.HD;    // 1280×720
+        if (height > 400) return Quality.SD;    // 640×480
+        return Quality.XX;
     }
 
 }

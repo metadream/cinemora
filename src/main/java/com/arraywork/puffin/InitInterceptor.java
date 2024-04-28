@@ -2,7 +2,6 @@ package com.arraywork.puffin;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -27,9 +26,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Resource
     private PreferenceService prefsService;
-
-    @Value("${puffin.init-url}")
-    private String initUrl;
+    private String initUrl = "/init";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

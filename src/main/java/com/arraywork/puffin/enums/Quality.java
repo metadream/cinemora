@@ -17,8 +17,8 @@ import lombok.Getter;
 @Getter
 public enum Quality implements MetafieldEnum, GenericEnum<String> {
 
+    EK("8K", "8K"),
     FK("4K", "4K"),
-    UHD("UHD", "超高清"),
     FHD("FHD", "全高清"),
     HD("HD", "高清"),
     SD("SD", "标清"),

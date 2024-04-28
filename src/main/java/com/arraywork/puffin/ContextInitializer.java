@@ -17,7 +17,7 @@ import jakarta.servlet.ServletContextListener;
 @Component
 public class ContextInitializer implements ServletContextListener {
 
-    @Value("${puffin.cover-dir}")
+    @Value("${puffin.cover.base-dir}")
     private String coverDir;
 
     // 创建应用所需目录
