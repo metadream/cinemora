@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.arraywork.puffin.entity.Metadata;
 
 /**
@@ -14,13 +12,12 @@ import com.arraywork.puffin.entity.Metadata;
  * @copyright ArrayWork Inc.
  * @since 2024/04/24
  */
-@Service
 public class MetafieldManager {
 
     public static List<Metafield> metafields;
 
     // 获取所有元字段
-    public List<Metafield> getMetafields() {
+    public static List<Metafield> getMetafields() {
         if (metafields != null) return metafields;
         metafields = new ArrayList<>();
         Field[] fields = Metadata.class.getDeclaredFields();
