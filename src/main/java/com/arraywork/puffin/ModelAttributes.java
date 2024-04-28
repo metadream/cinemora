@@ -24,8 +24,6 @@ import jakarta.annotation.Resource;
 public class ModelAttributes {
 
     @Resource
-    private MetafieldManager metafieldManager;
-    @Resource
     private PreferenceService prefsService;
 
     @Value("${puffin.app.name}")
@@ -40,7 +38,7 @@ public class ModelAttributes {
     // 所有元字段实体
     @ModelAttribute("Metafields")
     public List<Metafield> Metafields() {
-        return metafieldManager.getMetafields();
+        return MetafieldManager.getMetafields();
     }
 
     // 已选元字段名称
