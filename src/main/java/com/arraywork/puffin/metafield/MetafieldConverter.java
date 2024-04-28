@@ -21,8 +21,6 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
 
     @Resource
     private Jackson jackson;
-    @Resource
-    private MetafieldManager metafieldManager;
 
     // 实现JPA实体到数据库的转换
     @Override
@@ -43,7 +41,7 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
     @Override
     public List<Metafield> convert(String[] values) {
         List<Metafield> result = new ArrayList<>();
-        List<Metafield> metafields = metafieldManager.getMetafields();
+        List<Metafield> metafields = MetafieldManager.getMetafields();
 
         if (values != null) {
             for (String value : values) {
