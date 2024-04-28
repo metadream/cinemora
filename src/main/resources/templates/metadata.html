@@ -36,10 +36,26 @@
 
   <th-dialog id="metadata-dialog">
     <div class="metadata-editor">
-      <div class="uploader">
-        <div onclick="document.querySelector('#file').click()" style="background-image:url()">
-          <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
-          <span>上传封面</span>
+      <div style="width:160px">
+        <div class="uploader">
+          <div onclick="document.querySelector('#file').click()" style="background-image:url()">
+            <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
+            <span>上传封面</span>
+          </div>
+        </div>
+        <div class="media-info">
+          <div><span>　时长 :　</span><span id="duration"></span></div>
+          <div><span>　格式 :　</span><span id="duration">avi</span></div>
+          <b>视频信息</b>
+          <div><span>解码器 :　</span><span id="duration">mpeg4 (Advanced Simple Profile)</span></div>
+          <div><span>分辨率 :　</span><span id="duration"></span>1920x1080</div>
+          <div><span>　位率 :　</span><span id="duration"></span>910000</div>
+          <div><span>　帧率 :　</span><span id="duration"></span>29.97</div>
+          <b>音频信息</b>
+          <div><span>解码器 :　</span><span id="duration">aac (LC)</span></div>
+          <div><span>　声道 :　</span><span id="duration"></span>2</div>
+          <div><span>　位率 :　</span><span id="duration"></span>910000</div>
+          <div><span>　帧率 :　</span><span id="duration"></span>29.97</div>
         </div>
       </div>
       <div class="fields">
@@ -98,6 +114,7 @@
 <script>
 const metadataDialog = document.querySelector('#metadata-dialog');
 const prefsDialog = document.querySelector('#prefs-dialog');
+const { formatSeconds } = Thyme.util;
 
 metadataDialog.buttons = [{
   label: '取消'
@@ -135,8 +152,8 @@ prefsDialog.buttons = [{
 }];
 
 function openMetadata(metadata) {
-  console.log(metadata);
   bindModel(metadataDialog, metadata);
+  metadataDialog.querySelector('#duration').innerHTML = formatSeconds(metadata.mediaInfo.duration/1000);
   metadataDialog.open();
 }
 

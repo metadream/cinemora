@@ -4,12 +4,14 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,20 @@ public class MetadataService {
         Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize);
         Page<Metadata> pageInfo = metadataRepo.findAll(new MetadataSpec(condition), pageable);
         return new Pagination<Metadata>(pageInfo);
+    }
+
+    // 根据ID获取元数据
+    public Metadata getById(String id) {
+        Optional<Metadata> optional = metadataRepo.findById(id);
+        Assert.isTrue(optional.isPresent(), HttpStatus.NOT_FOUND);
+        return optional.get();
+    }
+
+    // 根据编号获取元数据
+    public Metadata getByCode(String code) {
+        Metadata metadata = metadataRepo.findByCode(code);
+        Assert.notNull(metadata, HttpStatus.NOT_FOUND);
+        return metadata;
     }
 
     // 根据文件创建元数据

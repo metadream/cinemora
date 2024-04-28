@@ -165,6 +165,7 @@ th-button::part(button) {
 
 .metadata-editor {
   display: flex;
+  align-items: start;
   width: 750px
 }
 
@@ -190,6 +191,17 @@ th-button::part(button) {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.metadata-editor .media-info {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--minorColor);
+}
+
+.metadata-editor .media-info b {
+  display: block;
+  margin: 5px 0;
 }
 
 .metadata-editor .fields {
@@ -517,8 +529,12 @@ main.detail .tags a {
 }
 
 .error-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   font-size: 1.2rem;
-  text-align: center;
 }
 
 .error-panel h1 {
