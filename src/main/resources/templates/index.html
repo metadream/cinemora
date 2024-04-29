@@ -7,7 +7,7 @@
   <div class="covers">
     <a class="cover" th:each="metadata: ${pagination.content}" th:href="|/${metadata.code}|">
       <div class="thumb" th:style="|background-image:url(/cover/${metadata.id})|">
-        <div class="quality">[[${metadata.quality}]]</div>
+        <div class="quality" th:if="${metadata.quality.code!='XX'}">[[${metadata.quality.code}]]</div>
         <div class="duration">[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</div>
       </div>
       <div class="caption">
