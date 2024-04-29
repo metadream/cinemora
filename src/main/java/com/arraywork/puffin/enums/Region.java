@@ -17,25 +17,25 @@ import lombok.Getter;
 @Getter
 public enum Region implements MetafieldEnum, GenericEnum<String> {
 
-    CN("cn", "中国"),
-    JP("jp", "日本"),
-    KR("kr", "韩国"),
-    IN("in", "印度"),
-    TH("th", "泰国"),
-    US("us", "美国"),
-    CA("ca", "加拿大"),
-    RU("ru", "俄罗斯"),
-    GB("gb", "英国"),
-    FR("fr", "法国"),
-    DE("de", "德国"),
-    IT("it", "意大利"),
-    ES("es", "西班牙"),
-    IE("ie", "爱尔兰"),
-    SE("se", "瑞典"),
-    DK("dk", "丹麦"),
-    AU("au", "澳大利亚"),
-    BR("br", "巴西"),
-    XX("xx", "其他");
+    CN("CN", "中国"),
+    JP("JP", "日本"),
+    KR("KR", "韩国"),
+    IN("IN", "印度"),
+    TH("TH", "泰国"),
+    US("US", "美国"),
+    CA("CA", "加拿大"),
+    RU("RU", "俄罗斯"),
+    GB("GB", "英国"),
+    FR("FR", "法国"),
+    DE("DE", "德国"),
+    IT("IT", "意大利"),
+    ES("ES", "西班牙"),
+    IE("IE", "爱尔兰"),
+    SE("SE", "瑞典"),
+    DK("DK", "丹麦"),
+    AU("AU", "澳大利亚"),
+    BR("BR", "巴西"),
+    XX("XX", "其他");
 
     private final String code;
     private final String label;
