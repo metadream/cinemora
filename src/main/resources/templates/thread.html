@@ -11,14 +11,14 @@
   <div class="thread">
     <h3>[[${metadata.title}]]</h3>
     <div class="tiny-title">
-      <span>[[${metadata.issueDate}]]</span>
+      <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd HH:mm')}]]</span>
       <span>[[${Numbers.formatSiBytes(metadata.fileSize)}]]</span>
       <span>[[*{video.width}]]×[[*{video.height}]]</span>
       <span>[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</span>
       <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
     </div>
 
-    <video th:src="|/video/${metadata.id}|" th:poster="|/cover/${metadata.id}|"
+    <video th:src="|/video/${metadata.id}1|" th:poster="|/cover/${metadata.id}|"
       controlslist="nodownload" controls muted autoplay autofocus></video>
   </div>
 
@@ -31,7 +31,7 @@
     <div class="prop" th:each="metafield: ${preference.metafields}" th:with="value=${metadata[metafield.name]}">
       <label>[[${metafield.label}]]:</label>
       <div th:if="${metafield.enums}">
-        <span th:if="${value}">[[${value.label}]]</span>
+        <a th:if="${value}" th:href="|/?${metafield.name}=${value.code}|">[[${value.label}]]</a>
       </div>
       <div th:unless="${metafield.enums}" class="tags">
         <a th:each="tag:${value}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a>
