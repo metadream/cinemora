@@ -51,15 +51,15 @@
           <div><span>　时长 :　</span><span id="duration"></span></div>
           <div><span>　格式 :　</span><span id="format"></span></div>
           <b>视频信息</b>
-          <div><span>解码器 :　</span><span id="adecoder"></span></div>
-          <div><span>分辨率 :　</span><span id="duration"></span>1920x1080</div>
-          <div><span>　位率 :　</span><span id="duration"></span>910000</div>
-          <div><span>　帧率 :　</span><span id="duration"></span>29.97</div>
+          <div><span>解码器 :　</span><span id="vcodec"></span></div>
+          <div><span>分辨率 :　</span><span id="dimension"></span></div>
+          <div><span>　位率 :　</span><span id="vBitRate"></span> kbps</div>
+          <div><span>　帧率 :　</span><span id="frameRate"></span> fps</div>
           <b>音频信息</b>
-          <div><span>解码器 :　</span><span id="duration">aac (LC)</span></div>
-          <div><span>　声道 :　</span><span id="duration"></span>2</div>
-          <div><span>　位率 :　</span><span id="duration"></span>910000</div>
-          <div><span>　帧率 :　</span><span id="duration"></span>29.97</div>
+          <div><span>解码器 :　</span><span id="acodec"></span></div>
+          <div><span>　声道 :　</span><span id="channels"></span></div>
+          <div><span>　位率 :　</span><span id="aBitRate"></span> kbps</div>
+          <div><span>采样率 :　</span><span id="samplingRate"></span> Hz</div>
         </div>
       </div>
       <div class="fields">
@@ -114,11 +114,11 @@
 </html>
 
 <script>
-const metadataDialog = document.querySelector('#metadata-dialog');
+const metaDialog = document.querySelector('#metadata-dialog');
 const prefsDialog = document.querySelector('#prefs-dialog');
 const { formatSeconds } = Thyme.util;
 
-metadataDialog.buttons = [{
+metaDialog.buttons = [{
   label: '取消'
 }, {
   label: '保存',
@@ -126,11 +126,12 @@ metadataDialog.buttons = [{
   onclick: async function(dlg) {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
-    data.producers = data.producers?.split(',');
-    data.directors = data.directors?.split(',');
-    data.starring = data.starring?.split(',');
-    data.genres = data.genres?.split(',');
-    data.tags = data.tags?.split(',');
+    data.producers = toArray(data.producers);
+    data.directors = toArray(data.directors);
+    data.starring = toArray(data.starring);
+    data.series = toArray(data.series);
+    data.genres = toArray(data.genres);
+    data.tags = toArray(data.tags);
 
     await Thyme.http.put('/~/metadata', data);
     location.reload();
@@ -154,11 +155,23 @@ prefsDialog.buttons = [{
 }];
 
 function openMetadata(metadata) {
-  bindModel(metadataDialog, metadata);
-  metadataDialog.querySelector('#duration').innerHTML = formatSeconds(metadata.mediaInfo.duration/1000);
-  metadataDialog.querySelector('#format').innerHTML = metadata.mediaInfo.format;
-  metadataDialog.querySelector('#adecoder').innerHTML = metadata.mediaInfo.audio.decoder;
-  metadataDialog.open();
+  Thyme.form.setJsonObject(metaDialog, metadata);
+  const { video, audio } = metadata.mediaInfo;
+  metaDialog.querySelector('#duration').innerHTML = formatSeconds(metadata.mediaInfo.duration/1000);
+  metaDialog.querySelector('#format').innerHTML = metadata.mediaInfo.format;
+  metaDialog.querySelector('#vcodec').innerHTML = video.decoder;
+  metaDialog.querySelector('#dimension').innerHTML = video.width +' × '+ video.height;
+  metaDialog.querySelector('#vBitRate').innerHTML = Math.round(video.bitRate/1000);
+  metaDialog.querySelector('#frameRate').innerHTML = video.frameRate;
+  metaDialog.querySelector('#acodec').innerHTML = audio.decoder;
+  metaDialog.querySelector('#channels').innerHTML = audio.channels;
+  metaDialog.querySelector('#aBitRate').innerHTML = Math.round(audio.bitRate/1000);
+  metaDialog.querySelector('#samplingRate').innerHTML = audio.samplingRate;
+  metaDialog.open();
+}
+
+function toArray(str) {
+  return str ? str.split(/\s*[,，]\s*/) : null;
 }
 
 function turnPage(n) {
