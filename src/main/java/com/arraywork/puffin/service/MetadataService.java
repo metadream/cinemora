@@ -68,7 +68,7 @@ public class MetadataService {
 
     // 根据编号获取元数据
     public Metadata getByCode(String code) {
-        Metadata metadata = metadataRepo.findByCode(code);
+        Metadata metadata = metadataRepo.findByCode(code.toUpperCase());
         Assert.notNull(metadata, HttpStatus.NOT_FOUND);
         return metadata;
     }
@@ -100,6 +100,7 @@ public class MetadataService {
     @Transactional(rollbackFor = Exception.class)
     public Metadata save(Metadata metadata) {
         Metadata _metadata = metadataRepo.getReferenceById(metadata.getId());
+        metadata.setCode(metadata.getCode().toUpperCase());
         metadata.setFilePath(_metadata.getFilePath());
         metadata.setFileSize(_metadata.getFileSize());
         metadata.setMediaInfo(_metadata.getMediaInfo());
