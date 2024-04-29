@@ -39,6 +39,7 @@ body.layout-fit {
 main {
   flex: 1;
   margin: auto;
+  width: 100%;
   max-width: 1000px;
   padding: 30px;
 }
