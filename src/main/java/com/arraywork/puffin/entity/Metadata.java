@@ -78,9 +78,9 @@ public class Metadata {
     private String[] starring;
 
     // 系列
-    @Size(max = 60, message = "系列名不能超过 {max} 个字符")
+    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "系列")
-    private String series;
+    private String[] series;
 
     // 题材
     @Type(JsonStringType.class)

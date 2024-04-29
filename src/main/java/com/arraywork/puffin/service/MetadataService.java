@@ -100,7 +100,8 @@ public class MetadataService {
     @Transactional(rollbackFor = Exception.class)
     public Metadata save(Metadata metadata) {
         Metadata _metadata = metadataRepo.getReferenceById(metadata.getId());
-        metadata.setFilePath(_metadata.getFilePath()); // TODO 测试是否需要重复设置
+        metadata.setFilePath(_metadata.getFilePath());
+        metadata.setFileSize(_metadata.getFileSize());
         metadata.setMediaInfo(_metadata.getMediaInfo());
 
         // TODO 上传封面
