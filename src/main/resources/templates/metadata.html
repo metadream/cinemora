@@ -26,7 +26,7 @@
     </tr>
     <tr class="metadata" th:each="metadata: ${pagination.content}" th:onclick="openMetadata([[${metadata}]])">
       <td style="text-align:center;padding:0;"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
-      <td><a th:href="@{|/${metadata.code}|}">[[${metadata.code}]]</a></td>
+      <td><a th:href="@{|/${metadata.code}|}" onclick="event.cancelBubble=true">[[${metadata.code}]]</a></td>
       <td>[[${metadata.title}]]</td>
       <td th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}"
         th:with="enum=${metadata[metafield.name]}"><span th:if="${enum}">[[${enum.label}]]</span>
