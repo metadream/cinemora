@@ -128,10 +128,6 @@ public class Metadata {
     // 文件大小
     private long fileSize;
 
-    // 封面地址
-    @Size(max = 60, message = "封面地址不能超过 {max} 个字符")
-    private String coverUrl;
-
     // 是否标星
     private boolean starred;
 

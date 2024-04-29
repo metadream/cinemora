@@ -48,9 +48,6 @@ public class MetadataService {
     @Value("${puffin.page-size}")
     private int pageSize;
 
-    @Value("${puffin.cover.base-url}")
-    private String coverBaseUrl;
-
     @Value("${puffin.cover.base-dir}")
     private String coverBaseDir;
 
@@ -89,19 +86,13 @@ public class MetadataService {
         metadata.setTitle(Files.getName(file.getName()));
         metadata.setFilePath(file.getPath());
         metadata.setFileSize(file.length());
-
-        // 自动生成编号
-        if (prefsService.getPreference().isAutoGenerateCode()) {
-            metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
-        }
-        // 先保存以便设置ID
-        metadataRepo.save(metadata);
+        metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
+        metadataRepo.save(metadata); // 先保存以便截图获取ID
 
         // 视频截图
         String coverName = metadata.getId() + ".jpg";
         File coverFile = Path.of(coverBaseDir, coverName).toFile();
         ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
-        metadata.setCoverUrl(coverBaseUrl + "/" + coverName);
         return metadata;
     }
 
@@ -150,7 +141,8 @@ public class MetadataService {
                 metadataRepo.delete(metadata);
 
                 // 删除封面文件
-                File coverFile = new File(metadata.getCoverUrl());
+                String coverName = metadata.getId() + ".jpg";
+                File coverFile = Path.of(coverBaseDir, coverName).toFile();
                 if (coverFile.exists()) coverFile.delete();
             }
         }

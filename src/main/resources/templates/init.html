@@ -26,11 +26,7 @@
       </label>
     </div>
     <p></p><div>
-      <label><input type="checkbox" name="autoGenerateCode" value="true"/>自动生成元数据编号</label>
-      <div class="tiny-title">勾选此项后，保存元数据时将自动对无编号的记录生成随机编号。</div>
-    </div>
-    <p></p><div>
-      <label><input type="checkbox" name="autoRenameFile" value="true"/>自动使用“编号_标题”对文件重命名</label>
+      <label><input type="checkbox" name="autoRename" value="true"/>自动使用“编号_标题”对文件重命名</label>
       <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
     </div>
     <th-button onclick="init(this)">确定</th-button>
@@ -45,8 +41,8 @@ async function init(btn) {
   data.metafields = data.metafields?.split(',');
   btn.loading = true;
   try {
-    await Thyme.http.post('/preference', data);
-    location.href = '/metadata';
+    await Thyme.http.post('/~/preference', data);
+    location.href = '/~/metadata';
   } finally {
     btn.loading = false;
   }

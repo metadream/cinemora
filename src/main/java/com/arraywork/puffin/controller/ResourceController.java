@@ -37,11 +37,12 @@ public class ResourceController {
     private String coverBaseDir;
 
     // 封面资源
-    @GetMapping("/cover/{id}.jpg")
+    @GetMapping("/cover/{id}")
     public void cover(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) {
         try {
-            request.setAttribute(StaticResourceHandler.ATTR_FILE, Path.of(coverBaseDir, id + ".jpg"));
+            Path coverPath = Path.of(coverBaseDir, id + ".jpg");
+            request.setAttribute(StaticResourceHandler.ATTR_FILE, coverPath);
             resourceHandler.handleRequest(request, response);
         } catch (ServletException | IOException e) {
             throw new HttpException(HttpStatus.NOT_FOUND);

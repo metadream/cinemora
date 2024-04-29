@@ -39,7 +39,7 @@ public class FfmpegService {
                 ws.schild.jave.info.AudioInfo aInfo = mInfo.getAudio();
                 if (aInfo != null) {
                     AudioInfo audio = new AudioInfo();
-                    audio.setDecoder(aInfo.getDecoder().replaceAll(" \\(\\w+ / \\w+\\)", ""));
+                    audio.setDecoder(aInfo.getDecoder().replaceAll(" \\(.+", ""));
                     audio.setChannels(aInfo.getChannels());
                     audio.setBitRate(aInfo.getBitRate());
                     audio.setSamplingRate(aInfo.getSamplingRate());
@@ -50,7 +50,7 @@ public class FfmpegService {
                 ws.schild.jave.info.VideoInfo vInfo = mInfo.getVideo();
                 if (vInfo != null) {
                     VideoInfo video = new VideoInfo();
-                    video.setDecoder(vInfo.getDecoder().replaceAll(" \\(\\w+ / \\w+\\)", ""));
+                    video.setDecoder(vInfo.getDecoder().replaceAll(" \\(.+", ""));
                     video.setBitRate(vInfo.getBitRate());
                     video.setFrameRate(vInfo.getFrameRate());
 

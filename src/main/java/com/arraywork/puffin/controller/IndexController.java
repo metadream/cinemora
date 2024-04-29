@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.service.PreferenceService;
 
 import jakarta.annotation.Resource;
@@ -25,13 +24,6 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model) {
         return "index";
-    }
-
-    // 初始化页面
-    @GetMapping("/init")
-    public String init() {
-        Preference prefs = prefsService.getPreference();
-        return prefs != null ? "redirect:/" : "init";
     }
 
 }

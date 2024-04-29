@@ -45,9 +45,9 @@
         </div>
         <div class="media-info">
           <div><span>　时长 :　</span><span id="duration"></span></div>
-          <div><span>　格式 :　</span><span id="duration">avi</span></div>
+          <div><span>　格式 :　</span><span id="format"></span></div>
           <b>视频信息</b>
-          <div><span>解码器 :　</span><span id="duration">mpeg4 (Advanced Simple Profile)</span></div>
+          <div><span>解码器 :　</span><span id="adecoder"></span></div>
           <div><span>分辨率 :　</span><span id="duration"></span>1920x1080</div>
           <div><span>　位率 :　</span><span id="duration"></span>910000</div>
           <div><span>　帧率 :　</span><span id="duration"></span>29.97</div>
@@ -95,13 +95,8 @@
         </label>
       </div>
       <p></p><div>
-        <label><input type="checkbox" name="autoGenerateCode" value="true"
-         th:checked="${preference.autoGenerateCode}"/>自动生成元数据编号</label>
-        <div class="tiny-title">勾选此项后，保存元数据时将自动对无编号的记录生成随机编号。</div>
-      </div>
-      <p></p><div>
-        <label><input type="checkbox" name="autoRenameFile" value="true"
-         th:checked="${preference.autoRenameFile}"//>自动使用“编号_标题”对文件重命名</label>
+        <label><input type="checkbox" name="autoRename" value="true"
+         th:checked="${preference.autoRename}"//>自动使用“编号_标题”对文件重命名</label>
         <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
       </div>
     </div>
@@ -130,7 +125,7 @@ metadataDialog.buttons = [{
     data.genres = data.genres?.split(',');
     data.tags = data.tags?.split(',');
 
-    await Thyme.http.put('/metadata', data);
+    await Thyme.http.put('/~/metadata', data);
     location.reload();
   }
 }];
@@ -145,7 +140,7 @@ prefsDialog.buttons = [{
     if (!data) return;
     data.metafields = data.metafields?.split(',');
 
-    await Thyme.http.put('/preference', data);
+    await Thyme.http.put('/~/preference', data);
     dlg.hide();
     location.reload();
   }
@@ -154,6 +149,8 @@ prefsDialog.buttons = [{
 function openMetadata(metadata) {
   bindModel(metadataDialog, metadata);
   metadataDialog.querySelector('#duration').innerHTML = formatSeconds(metadata.mediaInfo.duration/1000);
+  metadataDialog.querySelector('#format').innerHTML = metadata.mediaInfo.format;
+  metadataDialog.querySelector('#adecoder').innerHTML = metadata.mediaInfo.audio.decoder;
   metadataDialog.open();
 }
 

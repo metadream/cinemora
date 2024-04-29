@@ -26,7 +26,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Resource
     private PreferenceService prefsService;
-    private String initUrl = "/init";
+    private String initUrl = "/~/init";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -45,7 +45,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(this).addPathPatterns("/**")
-            .excludePathPatterns(initUrl, "/preference", "/assets/**");
+            .excludePathPatterns(initUrl, "/~/preference", "/assets/**");
     }
 
     private boolean isRestErrorRequest(HttpServletRequest request) {
