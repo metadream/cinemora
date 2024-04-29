@@ -50,10 +50,10 @@ public class ResourceController {
     }
 
     // 视频资源
-    @GetMapping("/video/{code}")
+    @GetMapping("/video/{id}")
     public void video(HttpServletRequest request, HttpServletResponse response,
-        @PathVariable String code) {
-        Metadata metadata = metadataService.getByCode(code);
+        @PathVariable String id) {
+        Metadata metadata = metadataService.getById(id);
         Path path = Path.of(metadata.getFilePath());
         try {
             request.setAttribute(StaticResourceHandler.ATTR_FILE, path);
