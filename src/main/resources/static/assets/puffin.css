@@ -476,6 +476,10 @@ main.detail .prop>div {
   flex: 1;
 }
 
+main.detail .tags {
+  word-break: break-all;
+}
+
 main.detail .tags a {
   margin-right: 10px;
 }

@@ -14,7 +14,7 @@
         <div class="tiny-title">
           <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd HH:mm')}]]</span>
           <span>[[${Numbers.formatSiBytes(metadata.fileSize)}]]</span>
-          <span class="right" th:if="${metadata.starred}"><img src="/assets/circle.svg"/></span>
+          <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
         </div>
         <div class="title">[[${metadata.title}]]</div>
       </div>
