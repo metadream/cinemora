@@ -55,10 +55,6 @@ public class Metadata {
     @Size(max = 120, message = "标题不能超过 {max} 个字符")
     private String title;
 
-    // 发行日
-    @MetaColumn(label = "发行日")
-    private LocalDate issueDate;
-
     // 制作方
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
@@ -113,6 +109,10 @@ public class Metadata {
     @Convert(converter = Rating.Converter.class)
     @MetaColumn(label = "分级")
     private Rating rating;
+
+    // 发行日
+    @MetaColumn(label = "发行日")
+    private LocalDate issueDate;
 
     // 媒体信息
     @Type(JsonStringType.class)
