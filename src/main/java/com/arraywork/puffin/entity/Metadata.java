@@ -57,36 +57,30 @@ public class Metadata {
 
     // 制作方
     @Type(JsonStringType.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "制作方")
     private String[] producers;
 
     // 导演
     @Type(JsonStringType.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "导演")
     private String[] directors;
 
     // 主演
     @Type(JsonStringType.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "主演")
     private String[] starring;
 
     // 系列
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "系列")
     private String[] series;
 
     // 题材
     @Type(JsonStringType.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "题材")
     private String[] genres;
 
     // 标签
     @Type(JsonStringType.class)
-    @Column(columnDefinition = "JSON DEFAULT (JSON_ARRAY())")
     @MetaColumn(label = "标签")
     private String[] tags;
 
