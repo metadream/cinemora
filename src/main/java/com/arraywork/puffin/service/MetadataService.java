@@ -2,7 +2,7 @@ package com.arraywork.puffin.service;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.entity.VideoInfo;
 import com.arraywork.puffin.enums.Quality;
 import com.arraywork.puffin.repo.MetadataRepo;
-import com.arraywork.puffin.spec.MetadataSpec;
+import com.arraywork.puffin.repo.MetadataSpec;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Files;
 import com.arraywork.springforce.util.KeyGenerator;
@@ -75,23 +75,25 @@ public class MetadataService {
 
     // 根据文件创建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata create(File file) {
-        MediaInfo mediaInfo = ffmpegService.getMediaInfo(file);
-        Assert.isTrue(mediaInfo != null && mediaInfo.getVideo() != null, "无法提取视频元数据");
+    public Metadata build(File file) {
+        MediaInfo mediaInfo = ffmpegService.extract(file);
+        if (mediaInfo == null) return null;
 
-        Metadata metadata = new Metadata();
-        VideoInfo video = mediaInfo.getVideo();
-        metadata.setMediaInfo(mediaInfo);
-        metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
-        metadata.setTitle(Files.getName(file.getName()));
-        metadata.setFilePath(file.getPath());
-        metadata.setFileSize(file.length());
-        metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
-        metadataRepo.save(metadata); // 先保存以便截图获取ID
+        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
+        if (metadata == null) {
+            metadata = new Metadata();
+            VideoInfo video = mediaInfo.getVideo();
+            metadata.setMediaInfo(mediaInfo);
+            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
+            metadata.setTitle(Files.getName(file.getName()));
+            metadata.setFilePath(file.getPath());
+            metadata.setFileSize(file.length());
+            metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
+            metadataRepo.save(metadata); // 先保存以便截图获取ID
+        }
 
-        // 视频截图
-        String coverName = metadata.getId() + ".jpg";
-        File coverFile = Path.of(coverBaseDir, coverName).toFile();
+        // 视频截图（已存在则更新）
+        File coverFile = getCoverPath(metadata.getId()).toFile();
         ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
         return metadata;
     }
@@ -109,47 +111,35 @@ public class MetadataService {
         return metadataRepo.save(metadata);
     }
 
-    // 删除元数据
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(String id, boolean autoDeleteFile) {
-        Metadata metadata = metadataRepo.findById(id).orElse(null);
-        Assert.notNull(metadata, "记录不存在或已被删除");
-        metadataRepo.delete(metadata);
-
-        // TODO 删除封面
-
-        // 删除文件
-        if (autoDeleteFile) {
-            File file = new File(metadata.getFilePath());
-            if (file.exists() && file.isFile()) {
-                file.delete();
-            }
-        }
-    }
-
     // 清空路径对应文件不存在的元数据
     @Transactional(rollbackFor = Exception.class)
     public void purge(String library) {
         List<Metadata> metadatas = metadataRepo.findAll();
-        Iterator<Metadata> iterator = metadatas.iterator();
+        List<Metadata> toDelete = new ArrayList<>();
 
-        // 此方式迭代可正确删除集合中的元素
-        while (iterator.hasNext()) {
-            Metadata metadata = iterator.next();
-            File file = new File(metadata.getFilePath());
-
+        for (Metadata metadata : metadatas) {
             // 如果原始文件不存在、或者不是媒体库下的文件则删除
+            File file = new File(metadata.getFilePath());
             if (!file.exists() || !file.getParent().equals(library)) {
-                metadataRepo.delete(metadata);
-
-                // 删除封面文件
-                String coverName = metadata.getId() + ".jpg";
-                File coverFile = Path.of(coverBaseDir, coverName).toFile();
-                if (coverFile.exists()) coverFile.delete();
+                toDelete.add(metadata);
             }
+        }
+
+        for (Metadata metadata : toDelete) {
+            // 删除元数据 TODO bug: database locked?
+            metadataRepo.delete(metadata);
+            // 删除封面文件
+            File coverFile = getCoverPath(metadata.getId()).toFile();
+            if (coverFile.exists()) coverFile.delete();
         }
     }
 
+    // 根据ID获取封面路径
+    private Path getCoverPath(String id) {
+        return Path.of(coverBaseDir, id + ".jpg");
+    }
+
+    // 根据分辨率适配画质
     private Quality adaptQuality(int width, int height) {
         if (height >= width) return Quality.XX;
         if (height > 4000) return Quality.EK;   // 8192×4320
