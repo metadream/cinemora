@@ -1,4 +1,4 @@
-package com.arraywork.puffin.spec;
+package com.arraywork.puffin.repo;
 
 import java.util.ArrayList;
 import java.util.List;
