@@ -73,7 +73,7 @@ public class MetadataService {
         return metadata;
     }
 
-    // 根据文件创建元数据
+    // 根据文件构建元数据
     @Transactional(rollbackFor = Exception.class)
     public Metadata build(File file) {
         MediaInfo mediaInfo = ffmpegService.extract(file);
@@ -109,6 +109,11 @@ public class MetadataService {
 
         // TODO 上传封面
         return metadataRepo.save(metadata);
+    }
+
+    public Metadata delete(File file) {
+        // TODO
+        return null;
     }
 
     // 清空路径对应文件不存在的元数据
