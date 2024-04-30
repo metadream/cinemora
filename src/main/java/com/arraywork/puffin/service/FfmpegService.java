@@ -8,6 +8,7 @@ import com.arraywork.puffin.entity.AudioInfo;
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.VideoInfo;
 
+import lombok.extern.slf4j.Slf4j;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.ScreenExtractor;
@@ -21,10 +22,11 @@ import ws.schild.jave.info.VideoSize;
  * @since 2024/04/22
  */
 @Service
+@Slf4j
 public class FfmpegService {
 
     // 获取媒体信息
-    public MediaInfo getMediaInfo(File file) {
+    public MediaInfo extract(File file) {
         MediaInfo mediaInfo = null;
         try {
             MultimediaInfo mInfo = new MultimediaObject(file).getInfo();
@@ -77,6 +79,7 @@ public class FfmpegService {
             screenExtractor.renderOneImage(mObject, -1, -1, millis, outputFile, 1);
         } catch (EncoderException e) {
             e.printStackTrace();
+            log.error("Screenshot error: ", e);
         }
     }
 
