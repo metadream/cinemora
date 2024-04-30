@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.arraywork.puffin.entity.Preference;
 import com.arraywork.springforce.filewatch.DirectoryWatcher;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 
 /**
  * 媒体库服务
@@ -17,18 +20,27 @@ import jakarta.annotation.PreDestroy;
 @Service
 public class LibraryService {
 
-    // 创建目录监视器
     private DirectoryWatcher watcher;
+    @Resource
+    private PreferenceService prefsService;
+    @Resource
+    private MetadataService metadataService;
 
     @Autowired
     public LibraryService(LibraryListener listener) {
-        watcher = new DirectoryWatcher(3, 1, listener);
+        watcher = new DirectoryWatcher(5, 2, listener);
     }
 
     // 异步启动目录监视器
+    @PostConstruct
     @Async
-    public void scan(String rootDir) {
-        watcher.start(rootDir);
+    public void scan() {
+        Preference prefs = prefsService.getPreference();
+        if (prefs == null) return;
+
+        String library = prefs.getLibrary();
+        metadataService.purge(library);
+        watcher.start(library);
     }
 
     // 应用销毁时停止监听进程
