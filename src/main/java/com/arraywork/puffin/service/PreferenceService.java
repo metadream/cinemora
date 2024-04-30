@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,9 +29,8 @@ public class PreferenceService {
     @Resource
     private BCryptEncoder bCryptEncoder;
     @Resource
+    @Lazy
     private LibraryService libraryService;
-    @Resource
-    private MetadataService metadataService;
     @Resource
     private PreferenceRepo prefsRepo;
 
@@ -52,8 +52,10 @@ public class PreferenceService {
     public Preference init(Preference prefs) {
         checkLibrary(prefs);
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
-        libraryService.scan(prefs.getLibrary());
-        return prefsRepo.save(prefs);
+        prefsRepo.save(prefs);
+
+        libraryService.scan();
+        return prefs;
     }
 
     // 保存偏好
@@ -64,19 +66,20 @@ public class PreferenceService {
 
         // 修改密码
         Preference _prefs = getPreference();
+        String _library = _prefs.getLibrary();
         if (StringUtils.hasText(prefs.getPassword())) {
             prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
         } else {
             prefs.setPassword(_prefs.getPassword());
         }
+        prefsRepo.save(prefs);
 
         // 变更监听目录
         String library = prefs.getLibrary();
-        if (!library.equals(_prefs.getLibrary())) {
-            metadataService.purge(library);
-            libraryService.scan(library);
+        if (!library.equals(_library)) {
+            libraryService.scan();
         }
-        return prefsRepo.save(prefs);
+        return prefs;
     }
 
     // 校验媒体库路径
