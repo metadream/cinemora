@@ -14,5 +14,6 @@ import com.arraywork.puffin.entity.Metadata;
 public interface MetadataRepo extends JpaRepository<Metadata, String>, JpaSpecificationExecutor<Metadata> {
 
     Metadata findByCode(String code);
+    Metadata findByFilePath(String filePath);
 
 }
