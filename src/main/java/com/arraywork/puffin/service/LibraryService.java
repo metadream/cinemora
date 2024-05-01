@@ -28,18 +28,23 @@ public class LibraryService {
 
     @Autowired
     public LibraryService(LibraryListener listener) {
-        watcher = new DirectoryWatcher(5, 2, listener);
+        watcher = new DirectoryWatcher(2, 1, listener);
+    }
+
+    // 随应用启动目录监视器
+    @PostConstruct
+    public void scan() {
+        Preference prefs = prefsService.getPreference();
+        if (prefs != null) {
+            String library = prefs.getLibrary();
+            metadataService.purge(library);
+            scan(library);
+        }
     }
 
     // 异步启动目录监视器
-    @PostConstruct
     @Async
-    public void scan() {
-        Preference prefs = prefsService.getPreference();
-        if (prefs == null) return;
-
-        String library = prefs.getLibrary();
-        metadataService.purge(library);
+    public void scan(String library) {
         watcher.start(library);
     }
 
