@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +58,9 @@ public class MetadataService {
 
     // 查询分页元数据
     public Pagination<Metadata> getMetadatas(String page, Metadata condition) {
+        Sort sort = Sort.by("lastModified").descending().and(Sort.by("code").descending());
         page = page != null && page.matches("\\d+") ? page : "1";
-        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize);
+        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize, sort);
         Page<Metadata> pageInfo = metadataRepo.findAll(new MetadataSpec(condition), pageable);
         return new Pagination<Metadata>(pageInfo);
     }

@@ -25,6 +25,7 @@ public class PortalController {
     // 首页
     @GetMapping("/")
     public String index(Model model, String page, Metadata condition) {
+        model.addAttribute("condition", condition);
         model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
         return "index";
     }

@@ -34,6 +34,7 @@ public class MetadataController {
     // 元数据页面
     @GetMapping("/metadata")
     public String metadata(Model model, String page, Metadata condition) {
+        model.addAttribute("condition", condition);
         model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
         return "metadata";
     }

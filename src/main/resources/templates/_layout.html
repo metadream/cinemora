@@ -14,7 +14,8 @@
   <main>
     <a href="/" class="logo"><img src="/assets/logo.png"/></a>
     <div class="search-bar">
-      <input class="search-text" type="text" maxlength="30" placeholder="搜索..." onkeyup="search()"/>
+      <input class="search-text" type="search" maxlength="30" placeholder="搜索..."
+       th:value="${condition?.keyword}" onsearch="filter(this)"/>
     </div>
 
     <nav>
@@ -28,6 +29,13 @@
       </menu>
     </nav>
   </main>
+
+  <script>
+    function filter(field) {
+      const keyword = field.value = field.value.trim();
+      location.href = '?keyword=' + keyword;
+    }
+  </script>
 </header>
 
 <main layout:fragment="main"></main>
