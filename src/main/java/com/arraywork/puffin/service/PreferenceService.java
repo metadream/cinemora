@@ -32,6 +32,8 @@ public class PreferenceService {
     @Lazy
     private LibraryService libraryService;
     @Resource
+    private MetadataService metadataService;
+    @Resource
     private PreferenceRepo prefsRepo;
 
     // 登录
@@ -52,10 +54,8 @@ public class PreferenceService {
     public Preference init(Preference prefs) {
         checkLibrary(prefs);
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
-        prefsRepo.save(prefs);
-
-        libraryService.scan();
-        return prefs;
+        libraryService.scan(prefs.getLibrary());
+        return prefsRepo.save(prefs);
     }
 
     // 保存偏好
@@ -72,14 +72,14 @@ public class PreferenceService {
         } else {
             prefs.setPassword(_prefs.getPassword());
         }
-        prefsRepo.save(prefs);
 
         // 变更监听目录
         String library = prefs.getLibrary();
         if (!library.equals(_library)) {
-            libraryService.scan();
+            metadataService.purge(library);
+            libraryService.scan(library);
         }
-        return prefs;
+        return prefsRepo.save(prefs);
     }
 
     // 校验媒体库路径
