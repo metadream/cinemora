@@ -75,11 +75,12 @@ public class MetadataService {
 
     // 根据文件构建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata build(File file) {
+    public Metadata build(File file, boolean rebuildCover) {
+        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
+        if (metadata != null && !rebuildCover) return null;
         MediaInfo mediaInfo = ffmpegService.extract(file);
         if (mediaInfo == null) return null;
 
-        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
         if (metadata == null) {
             metadata = new Metadata();
             VideoInfo video = mediaInfo.getVideo();
