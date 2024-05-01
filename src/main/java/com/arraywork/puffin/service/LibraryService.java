@@ -10,6 +10,7 @@ import com.arraywork.springforce.filewatch.DirectoryWatcher;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 媒体库服务
@@ -18,6 +19,7 @@ import jakarta.annotation.Resource;
  * @since 2024/04/22
  */
 @Service
+@Slf4j
 public class LibraryService {
 
     private DirectoryWatcher watcher;
@@ -28,10 +30,10 @@ public class LibraryService {
 
     @Autowired
     public LibraryService(LibraryListener listener) {
-        watcher = new DirectoryWatcher(2, 1, listener);
+        watcher = new DirectoryWatcher(5, 3, listener);
     }
 
-    // 随应用启动目录监视器
+    // 随应用启动目录监听
     @PostConstruct
     public void scan() {
         Preference prefs = prefsService.getPreference();
@@ -42,9 +44,10 @@ public class LibraryService {
         }
     }
 
-    // 异步启动目录监视器
+    // 异步启动目录监听
     @Async
     public void scan(String library) {
+        log.info("启动媒体库监听: {}", library);
         watcher.start(library);
     }
 

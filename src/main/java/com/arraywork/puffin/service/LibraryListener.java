@@ -43,6 +43,8 @@ public class LibraryListener implements FileSystemListener {
 
         try {
             Metadata metadata = metadataService.build(file, false);
+            System.out.println(metadata);
+
             if (metadata != null) {
                 scanning.state = ScanState.SUCCESS;
             } else {
@@ -63,6 +65,7 @@ public class LibraryListener implements FileSystemListener {
                 scanLogs.add(scanning);
                 channel.broadcast(scanning);
             }
+
         }
     }
 
@@ -71,6 +74,7 @@ public class LibraryListener implements FileSystemListener {
     public void onAdded(File file, int count, int total) {
         Times.delay(300);
         Metadata metadata = metadataService.build(file, false);
+        System.out.println(metadata);
     }
 
     // 修改文件回调方法
@@ -78,6 +82,7 @@ public class LibraryListener implements FileSystemListener {
     public void onModified(File file, int count, int total) {
         Times.delay(300);
         Metadata metadata = metadataService.build(file, true);
+        System.out.println(metadata);
     }
 
     // 删除文件回调方法
@@ -85,6 +90,7 @@ public class LibraryListener implements FileSystemListener {
     public void onDeleted(File file, int count, int total) {
         Times.delay(300);
         Metadata metadata = metadataService.delete(file);
+        System.out.println(metadata);
     }
 
 }

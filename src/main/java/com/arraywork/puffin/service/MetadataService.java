@@ -27,6 +27,7 @@ import com.arraywork.springforce.util.KeyGenerator;
 import com.arraywork.springforce.util.Pagination;
 
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 元数据服务
@@ -35,6 +36,7 @@ import jakarta.annotation.Resource;
  * @since 2024/04/22
  */
 @Service
+@Slf4j
 public class MetadataService {
 
     @Resource
@@ -99,6 +101,13 @@ public class MetadataService {
         return metadata;
     }
 
+    // 根据文件删除元数据
+    @Transactional(rollbackFor = Exception.class)
+    public Metadata delete(File file) {
+        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
+        return delete(metadata);
+    }
+
     // 保存元数据
     @Transactional(rollbackFor = Exception.class)
     public Metadata save(Metadata metadata) {
@@ -112,14 +121,9 @@ public class MetadataService {
         return metadataRepo.save(metadata);
     }
 
-    public Metadata delete(File file) {
-        // TODO
-        return null;
-    }
-
-    // 清空路径对应文件不存在的元数据
+    // 清理元数据
     @Transactional(rollbackFor = Exception.class)
-    public void purge(String library) {
+    public int purge(String library) {
         List<Metadata> metadatas = metadataRepo.findAll();
         List<Metadata> toDelete = new ArrayList<>();
 
@@ -130,14 +134,20 @@ public class MetadataService {
                 toDelete.add(metadata);
             }
         }
+        toDelete.forEach(v -> delete(v));
+        log.info("共清理 {} 条元数据", toDelete.size());
+        return toDelete.size();
+    }
 
-        for (Metadata metadata : toDelete) {
-            // 删除元数据 TODO bug: database locked?
-            metadataRepo.delete(metadata);
-            // 删除封面文件
+    // 删除元数据
+    @Transactional(rollbackFor = Exception.class)
+    private Metadata delete(Metadata metadata) {
+        if (metadata != null) {
+            metadataRepo.delete(metadata); // 删除元数据
             File coverFile = getCoverPath(metadata.getId()).toFile();
-            if (coverFile.exists()) coverFile.delete();
+            if (coverFile.exists()) coverFile.delete(); // 删除封面图片
         }
+        return metadata;
     }
 
     // 根据ID获取封面路径
