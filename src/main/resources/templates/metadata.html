@@ -154,7 +154,7 @@ prefsDialog.buttons = [{
   onclick: async (dlg) => {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
-    data.metafields = data.metafields?.split(',');
+    data.metafields = data.metafields?.split(',') || [];
 
     await Thyme.http.put('/~/preference', data);
     dlg.hide();

@@ -38,7 +38,7 @@
 async function init(btn) {
   const data = Thyme.form.getJsonObject('.front-panel');
   if (!data) return;
-  data.metafields = data.metafields?.split(',');
+  data.metafields = data.metafields?.split(',') || [];
   btn.loading = true;
   try {
     await Thyme.http.post('/~/preference', data);
