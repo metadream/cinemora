@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.service.PreferenceService;
+import com.arraywork.springforce.util.Validator;
 
 import jakarta.annotation.Resource;
+import jakarta.validation.groups.Default;
 
 /**
  * 偏好设置控制器
@@ -37,7 +39,8 @@ public class PreferenceController {
     // 初始化偏好
     @PostMapping("/preference")
     @ResponseBody
-    public Preference init(@Validated @RequestBody Preference prefs) {
+    public Preference init(
+        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Preference prefs) {
         return prefsService.init(prefs);
     }
 
