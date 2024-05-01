@@ -1,5 +1,7 @@
 package com.arraywork.puffin.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,6 +13,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ScanEvent {
 
     SCAN("扫描"),
@@ -19,5 +22,10 @@ public enum ScanEvent {
     DELETE("删除");
 
     private final String label;
+
+    // 序列化字面量属性
+    public String getName() {
+        return this.name();
+    }
 
 }

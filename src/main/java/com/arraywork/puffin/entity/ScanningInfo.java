@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.arraywork.puffin.enums.ScanEvent;
 import com.arraywork.puffin.enums.ScanState;
 
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * 扫描数据
@@ -13,8 +13,8 @@ import lombok.ToString;
  * @copyright ArrayWork Inc.
  * @since 2024/04/21
  */
-@ToString
-public class Scanning {
+@Data
+public class ScanningInfo {
 
     public int count;
     public int total;
@@ -25,7 +25,7 @@ public class Scanning {
     public String message;
     public LocalDateTime time;
 
-    public Scanning(ScanEvent event) {
+    public ScanningInfo(ScanEvent event) {
         this.event = event;
         this.time = LocalDateTime.now();
     }

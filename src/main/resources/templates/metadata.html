@@ -8,7 +8,7 @@
   <div class="headline">
     <h3>元数据</h3>
     <div class="buttons">
-      <th-button onclick="openLogs()" variant="minor outline">扫描日志</th-button>
+      <th-button onclick="logDialog.open()" id="log-btn" variant="minor outline">扫描日志</th-button>
       <th-button onclick="prefsDialog.open()">偏好设置</th-button>
     </div>
   </div>
@@ -108,23 +108,26 @@
       </div>
     </div>
   </th-dialog>
+  
+  <th-dialog id="log-dialog">
+    <div style="width:600px" id="logs"></div>
+  </th-dialog>
 </main>
 
 </body>
 </html>
 
 <script>
-const metaDialog = document.querySelector('#metadata-dialog');
 const prefsDialog = document.querySelector('#prefs-dialog');
-const { formatSeconds } = Thyme.util;
+const metaDialog = document.querySelector('#metadata-dialog');
+const logDialog = document.querySelector('#log-dialog');
+const logBtn = document.querySelector('#log-btn');
+const library = prefsDialog.querySelector('[name="library"]').value;
+const { createElement, formatSeconds } = Thyme.util;
 
 const source = new EventSource('/~/status');
-source.onmessage = function(e) {
-  console.log(e.data);
-}
-
-function openLogs() {
-}
+source.onmessage = e => log(JSON.parse(e.data));
+logDialog.buttons = ['关闭'];
 
 metaDialog.buttons = [{
   label: '取消'
@@ -176,6 +179,24 @@ function openMetadata(metadata) {
   metaDialog.querySelector('#aBitRate').innerHTML = Math.round(audio.bitRate/1000);
   metaDialog.querySelector('#samplingRate').innerHTML = audio.samplingRate;
   metaDialog.open();
+}
+
+function log(info) {
+  const $logs = logDialog.querySelector('#logs');
+  if (info.state.name == 'FINISHED') {
+    logBtn.innerHTML = `扫描日志`;
+    $logs.append(createElement(`<div class="${info.state.name}">
+      <span>[${info.time}] </span><span>${info.message}</span>
+    </div>`));
+  } else {
+    logBtn.innerHTML = `${info.count}/${info.total}`;
+    $logs.append(createElement(`<div>
+      <span class="${info.state.name}">${info.event.label}${info.state.label}</span>
+      <span> (${info.count}/${info.total}) </span>
+      <span class="MINOR">${info.path.substring(library.length)}</span>
+      <span class="${info.state.name}">${info.message||''}</span>
+    </div>`));
+  }
 }
 
 function toArray(str) {

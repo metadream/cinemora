@@ -81,7 +81,7 @@ public class MetadataService {
         Metadata metadata = metadataRepo.findByFilePath(file.getPath());
         if (metadata != null && !rebuildCover) return null;
         MediaInfo mediaInfo = ffmpegService.extract(file);
-        if (mediaInfo == null) return null;
+        if (mediaInfo == null || mediaInfo.getVideo() == null) return null;
 
         if (metadata == null) {
             metadata = new Metadata();

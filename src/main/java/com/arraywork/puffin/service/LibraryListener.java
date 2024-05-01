@@ -1,13 +1,11 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.stereotype.Component;
 
 import com.arraywork.puffin.entity.Metadata;
-import com.arraywork.puffin.entity.Scanning;
+import com.arraywork.puffin.entity.ScanningInfo;
 import com.arraywork.puffin.enums.ScanEvent;
 import com.arraywork.puffin.enums.ScanState;
 import com.arraywork.springforce.SseChannel;
@@ -25,7 +23,9 @@ import jakarta.annotation.Resource;
 @Component
 public class LibraryListener implements FileSystemListener {
 
-    private static List<Scanning> scanLogs = new CopyOnWriteArrayList<>();
+    private int success;
+    private int skipped;
+    private int failed;
 
     @Resource
     private MetadataService metadataService;
@@ -35,62 +35,69 @@ public class LibraryListener implements FileSystemListener {
     // 监听启动回调方法
     @Override
     public void onStarted(File file, int count, int total) {
-        Times.delay(300);
-        Scanning scanning = new Scanning(ScanEvent.SCAN);
-        scanning.count = count;
-        scanning.total = total;
-        scanning.path = file.getPath();
-
-        try {
-            Metadata metadata = metadataService.build(file, false);
-            System.out.println(metadata);
-
-            if (metadata != null) {
-                scanning.state = ScanState.SUCCESS;
-            } else {
-                scanning.state = ScanState.SKIPPED;
-            }
-        } catch (Exception e) {
-            scanning.state = ScanState.FAILED;
-            scanning.message = e.getMessage();
-        } finally {
-            scanLogs.add(scanning);
-            channel.broadcast(scanning);
-
-            if (count == total) {
-                scanning = new Scanning(ScanEvent.SCAN);
-                scanning.total = total;
-                scanning.state = ScanState.FINISHED;
-                scanning.message = "本次扫描共发现" + scanning.total + "个文件。成功" + 0 + "个，跳过" + 0 + "个，失败" + 0 + "个。";
-                scanLogs.add(scanning);
-                channel.broadcast(scanning);
-            }
-
-        }
+        onChanged(file, count, total, ScanEvent.SCAN, () -> metadataService.build(file, false));
     }
 
     // 新增文件回调方法
     @Override
     public void onAdded(File file, int count, int total) {
-        Times.delay(300);
-        Metadata metadata = metadataService.build(file, false);
-        System.out.println(metadata);
+        onChanged(file, count, total, ScanEvent.ADD, () -> metadataService.build(file, false));
     }
 
     // 修改文件回调方法
     @Override
     public void onModified(File file, int count, int total) {
-        Times.delay(300);
-        Metadata metadata = metadataService.build(file, true);
-        System.out.println(metadata);
+        onChanged(file, count, total, ScanEvent.MODIFY, () -> metadataService.build(file, true));
     }
 
     // 删除文件回调方法
     @Override
     public void onDeleted(File file, int count, int total) {
+        onChanged(file, count, total, ScanEvent.DELETE, () -> metadataService.delete(file));
+    }
+
+    // 监听回调方法
+    private void onChanged(File file, int count, int total, ScanEvent event, Consumer consumer) {
         Times.delay(300);
-        Metadata metadata = metadataService.delete(file);
-        System.out.println(metadata);
+        ScanningInfo info = new ScanningInfo(event);
+        info.count = count;
+        info.total = total;
+        info.path = file.getPath();
+
+        try {
+            Metadata metadata = consumer.execute();
+            if (metadata != null) {
+                info.state = ScanState.SUCCESS;
+                success++;
+            } else {
+                info.state = ScanState.SKIPPED;
+                skipped++;
+            }
+        } catch (Exception e) {
+            info.state = ScanState.FAILED;
+            info.message = e.getMessage();
+            failed++;
+        } finally {
+            channel.broadcast(info);
+
+            if (count == total) {
+                info = new ScanningInfo(ScanEvent.SCAN);
+                info.state = ScanState.FINISHED;
+                info.message = "本次扫描共发现" + total + "个文件。"
+                    + "成功" + success + "个，跳过" + skipped + "个，失败" + failed + "个。";
+                channel.broadcast(info);
+                success = 0;
+                skipped = 0;
+                failed = 0;
+            }
+        }
+    }
+
+    // 方法接口：监听回调需执行的逻辑
+    interface Consumer {
+
+        Metadata execute();
+
     }
 
 }

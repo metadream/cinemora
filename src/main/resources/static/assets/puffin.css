@@ -15,6 +15,26 @@
   --fontFamily: Monda;
 }
 
+.SUCCESS {
+  color: #1db164;
+}
+
+.SKIPPED {
+  color: #ff8500;
+}
+
+.FAILED {
+  color: #fa5151;
+}
+
+.FINISHED {
+  color: #007bff;
+}
+
+.MINOR {
+  color: var(--minorColor);
+}
+
 body {
   display: flex;
   flex-direction: column;
