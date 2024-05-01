@@ -42,8 +42,8 @@
     <div class="metadata-editor">
       <div style="width:160px">
         <div class="uploader">
-          <div onclick="document.querySelector('#file').click()" style="background-image:url()">
-            <input type="file" id="file" accept="image/\*" onchange="preview(this.files[0])"/>
+          <div onclick="document.querySelector('#file').click()">
+            <input type="file" id="file" accept="image/*" onchange="upload(this.files[0])"/>
             <span>上传封面</span>
           </div>
         </div>
@@ -123,6 +123,7 @@ const metaDialog = document.querySelector('#metadata-dialog');
 const logDialog = document.querySelector('#log-dialog');
 const logBtn = document.querySelector('#log-btn');
 const library = prefsDialog.querySelector('[name="library"]').value;
+const cover = metaDialog.querySelector('.uploader>div');
 const { createElement, formatSeconds } = Thyme.util;
 
 const source = new EventSource('/~/status');
@@ -168,6 +169,7 @@ prefsDialog.buttons = [{
 function openMetadata(metadata) {
   Thyme.form.setJsonObject(metaDialog, metadata);
   const { video, audio } = metadata.mediaInfo;
+  cover.style.backgroundImage = `url(/cover/${metadata.id})`;
   metaDialog.querySelector('#duration').innerHTML = formatSeconds(metadata.mediaInfo.duration/1000);
   metaDialog.querySelector('#format').innerHTML = metadata.mediaInfo.format;
   metaDialog.querySelector('#vcodec').innerHTML = video.decoder;
@@ -179,6 +181,15 @@ function openMetadata(metadata) {
   metaDialog.querySelector('#aBitRate').innerHTML = Math.round(audio.bitRate/1000);
   metaDialog.querySelector('#samplingRate').innerHTML = audio.samplingRate;
   metaDialog.open();
+}
+
+function upload(file) {
+  const id = metaDialog.querySelector('[name="id"]').value;
+  const fd = new FormData();
+  fd.append('multipartFile', file);
+  Thyme.http.put('/~/metadata/'+id, fd).then(res => {
+    cover.style.backgroundImage = `url(/cover/${id}?${Date.now()})`;
+  });
 }
 
 function log(info) {

@@ -1,6 +1,7 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
@@ -123,6 +125,10 @@ public class MetadataService {
         metadata.setFileSize(_metadata.getFileSize());
         metadata.setMediaInfo(_metadata.getMediaInfo());
 
+        // 如果未手动设置画质则采用自动匹配的画质
+        if (metadata.getQuality() == null) {
+            metadata.setQuality(_metadata.getQuality());
+        }
         // 重命名文件
         if (prefsService.getPreference().isAutoRename()) {
             String filePath = metadata.getFilePath();
@@ -133,6 +139,14 @@ public class MetadataService {
             metadata.setFilePath(newFile.getPath());
         }
         return metadataRepo.save(metadata);
+    }
+
+    // 上传封面图片
+    public String upload(String id, MultipartFile multipartFile) throws IOException {
+        Metadata metadata = getById(id);
+        Path coverPath = Path.of(coverBaseDir, metadata.getId() + ".jpg");
+        multipartFile.transferTo(coverPath);
+        return coverPath.toString();
     }
 
     // 清理元数据
