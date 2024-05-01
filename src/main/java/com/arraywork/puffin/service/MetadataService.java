@@ -111,13 +111,27 @@ public class MetadataService {
     // 保存元数据
     @Transactional(rollbackFor = Exception.class)
     public Metadata save(Metadata metadata) {
-        Metadata _metadata = metadataRepo.getReferenceById(metadata.getId());
-        metadata.setCode(metadata.getCode().toUpperCase());
+        String code = metadata.getCode().toUpperCase();
+        Metadata _metadata = metadataRepo.findByCode(code);
+        Assert.isTrue(_metadata == null || _metadata.getId().equals(metadata.getId()), "元数据编号冲突");
+
+        if (_metadata == null) {
+            _metadata = metadataRepo.getReferenceById(metadata.getId());
+        }
+        metadata.setCode(code);
         metadata.setFilePath(_metadata.getFilePath());
         metadata.setFileSize(_metadata.getFileSize());
         metadata.setMediaInfo(_metadata.getMediaInfo());
 
-        // TODO 上传封面
+        // 重命名文件
+        if (prefsService.getPreference().isAutoRename()) {
+            String filePath = metadata.getFilePath();
+            String extension = Files.getExtension(filePath);
+            File oldFile = new File(filePath);
+            File newFile = Path.of(oldFile.getParent(), "[" + code + "] " + metadata.getTitle() + extension).toFile();
+            oldFile.renameTo(newFile);
+            metadata.setFilePath(newFile.getPath());
+        }
         return metadataRepo.save(metadata);
     }
 

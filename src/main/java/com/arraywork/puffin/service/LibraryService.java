@@ -30,7 +30,7 @@ public class LibraryService {
 
     @Autowired
     public LibraryService(LibraryListener listener) {
-        watcher = new DirectoryWatcher(30, 5, listener);
+        watcher = new DirectoryWatcher(60, 5, listener);
     }
 
     // 随应用启动目录监听

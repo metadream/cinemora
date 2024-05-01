@@ -103,7 +103,7 @@
       </div>
       <p></p><div>
         <label><input type="checkbox" name="autoRename" value="true"
-         th:checked="${preference.autoRename}"//>自动使用“编号_标题”对文件重命名</label>
+         th:checked="${preference.autoRename}"//>自动使用“[编号] 标题”对文件重命名</label>
         <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
       </div>
     </div>
@@ -127,7 +127,7 @@ const { createElement, formatSeconds } = Thyme.util;
 
 const source = new EventSource('/~/status');
 source.onmessage = e => log(JSON.parse(e.data));
-logDialog.buttons = ['关闭'];
+logDialog.buttons = [{ label: '关闭', onclick: () => location.reload() }];
 
 metaDialog.buttons = [{
   label: '取消'
