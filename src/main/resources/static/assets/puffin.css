@@ -19,7 +19,7 @@
   color: #1db164;
 }
 
-.SKIPPED {
+.SKIPPED, .WARNING {
   color: #ff8500;
 }
 

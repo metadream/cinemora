@@ -138,6 +138,7 @@ metaDialog.buttons = [{
   onclick: async function(dlg) {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
+    
     data.producers = toArray(data.producers);
     data.directors = toArray(data.directors);
     data.starring = toArray(data.starring);
@@ -158,11 +159,20 @@ prefsDialog.buttons = [{
   onclick: async (dlg) => {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
-    data.metafields = data.metafields?.split(',') || [];
-
-    await Thyme.http.put('/~/preference', data);
-    dlg.hide();
-    location.reload();
+    const oldLib = prefsDialog.querySelector('[name="library"]').dataset.value;
+    if (data.library !== oldLib) {
+      Thyme.confirm('<b class="WARNING">更改媒体库路径将清空所有元数据且不可恢复，确定继续吗？</b>', 
+      async() => await save());
+    } else {
+      await save();
+    }
+    
+    async function save() {
+      data.metafields = data.metafields?.split(',') || [];
+      await Thyme.http.put('/~/preference', data);
+      dlg.hide();
+      location.reload();
+    }
   }
 }];
 
