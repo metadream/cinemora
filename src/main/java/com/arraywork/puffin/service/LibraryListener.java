@@ -42,7 +42,7 @@ public class LibraryListener implements FileSystemListener {
         scanning.path = file.getPath();
 
         try {
-            Metadata metadata = metadataService.build(file);
+            Metadata metadata = metadataService.build(file, false);
             if (metadata != null) {
                 scanning.state = ScanState.SUCCESS;
             } else {
@@ -70,14 +70,14 @@ public class LibraryListener implements FileSystemListener {
     @Override
     public void onAdded(File file, int count, int total) {
         Times.delay(300);
-        Metadata metadata = metadataService.build(file);
+        Metadata metadata = metadataService.build(file, false);
     }
 
     // 修改文件回调方法
     @Override
     public void onModified(File file, int count, int total) {
         Times.delay(300);
-        Metadata metadata = metadataService.build(file);
+        Metadata metadata = metadataService.build(file, true);
     }
 
     // 删除文件回调方法
