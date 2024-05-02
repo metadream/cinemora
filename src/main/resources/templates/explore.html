@@ -6,12 +6,11 @@
   <th:block th:each="metafield: ${preference.metafields}" 
     th:with="tags = ${tagCloud[metafield.name]}"
     th:if="${metafield.name != 'issueDate' && metafield.enums == null}">
-    <th:block th:if="${!#sets.isEmpty(tags)}">
-      <div class="headline"><h3>[[${metafield.label}]]</h3></div>
-      <section>
-        <a th:each="tag: ${tags}" th:href="|/?keyword=${tag}|">[[${tag}]]</a>
-      </section>
-    </th:block>
+
+    <section th:if="${!#sets.isEmpty(tags)}">
+      <h4>[[${metafield.label}]]</h4>
+      <div class="tags"><a th:each="tag: ${tags}" th:href="|/?keyword=${tag}|">[[${tag}]]</a></div>
+    </section>
   </th:block>
 </main>
 

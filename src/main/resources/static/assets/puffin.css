@@ -93,8 +93,26 @@ h3 {
   margin: 0;
 }
 
+h4 {
+  font-size: 20px;
+}
+
 section {
-  margin: 20px;
+  margin: 20px 0;
+}
+
+section .tags {
+  margin: 0 10px 40px;
+}
+
+section .tags>a {
+  margin: 0 10px;
+}
+
+section h4 {
+  padding-left: 15px;
+  line-height: 1;
+  border-left: var(--primaryColor) 3px solid;
 }
 
 input[type="file"] {
