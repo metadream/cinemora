@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.puffin.enums.Censorship;
 import com.arraywork.puffin.enums.Quality;
@@ -128,12 +127,11 @@ public class Metadata {
     // 文件大小
     private long fileSize;
 
+    // 文件更新时间
+    private LocalDateTime lastModified;
+
     // 是否标星
     private boolean starred;
-
-    // 更新时间
-    @UpdateTimestamp
-    private LocalDateTime lastModified;
 
     // 关键词搜索条件
     @Transient

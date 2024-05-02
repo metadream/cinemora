@@ -28,6 +28,7 @@ import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Files;
 import com.arraywork.springforce.util.KeyGenerator;
 import com.arraywork.springforce.util.Pagination;
+import com.arraywork.springforce.util.Times;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -95,6 +96,7 @@ public class MetadataService {
             metadata.setTitle(Files.getName(file.getName()));
             metadata.setFilePath(file.getPath());
             metadata.setFileSize(file.length());
+            metadata.setLastModified(Times.toLocal(file.lastModified()));
             metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
             metadataRepo.save(metadata); // 先保存以便截图获取ID
         }
@@ -125,6 +127,7 @@ public class MetadataService {
         metadata.setCode(code);
         metadata.setFilePath(_metadata.getFilePath());
         metadata.setFileSize(_metadata.getFileSize());
+        metadata.setLastModified(_metadata.getLastModified());
         metadata.setMediaInfo(_metadata.getMediaInfo());
 
         // 如果未手动设置画质则采用自动匹配的画质
