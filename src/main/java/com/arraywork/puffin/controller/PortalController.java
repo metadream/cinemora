@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.MetadataService;
+import com.arraywork.puffin.service.TagCloudService;
 
 import jakarta.annotation.Resource;
 
@@ -21,6 +22,8 @@ public class PortalController {
 
     @Resource
     private MetadataService metadataService;
+    @Resource
+    private TagCloudService tagCloudService;
 
     // 首页
     @GetMapping("/")
@@ -35,6 +38,13 @@ public class PortalController {
     public String thread(Model model, @PathVariable String code) {
         model.addAttribute("metadata", metadataService.getByCode(code));
         return "thread";
+    }
+
+    // 发现页
+    @GetMapping("/explore")
+    public String explore(Model model) {
+        model.addAttribute("tagCloud", tagCloudService.getTagCloud());
+        return "explore";
     }
 
 }
