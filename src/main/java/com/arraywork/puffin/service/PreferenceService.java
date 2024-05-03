@@ -63,6 +63,8 @@ public class PreferenceService implements SecurityService {
     public Preference init(Preference prefs) {
         checkLibrary(prefs);
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
+
+        context.authorize(prefs);
         libraryService.scan(prefs.getLibrary());
         return prefsRepo.save(prefs);
     }
