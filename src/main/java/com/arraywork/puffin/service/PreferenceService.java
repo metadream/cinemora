@@ -41,6 +41,7 @@ public class PreferenceService implements SecurityService {
     private PreferenceRepo prefsRepo;
 
     // 登录
+    @Override
     public Preference login(String username, String password) {
         Preference prefs = getPreference();
         Assert.notNull(prefs, "系统尚未初始化");
