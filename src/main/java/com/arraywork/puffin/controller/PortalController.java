@@ -33,6 +33,15 @@ public class PortalController {
         return "index";
     }
 
+    // 精选页
+    @GetMapping("/starred")
+    public String starred(Model model, String page) {
+        Metadata condition = new Metadata();
+        condition.setStarred(true);
+        model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
+        return "index";
+    }
+
     // 详情页
     @GetMapping("/{code}")
     public String thread(Model model, @PathVariable String code) {

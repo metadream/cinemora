@@ -21,7 +21,7 @@
     <nav>
       <menu>
         <a><img src="/assets/triangle.svg"/><span>发现</span></a>
-        <div><a class="tag-item" href="/?starred=true">精选</a><a class="tag-item" href="/explore">更多</a></div>
+        <div><a class="tag-item" href="/starred">精选</a><a class="tag-item" href="/explore">更多</a></div>
       </menu>
       <menu th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}">
         <a><img src="/assets/triangle.svg"/><span>[[${metafield.label}]]</span></a>
