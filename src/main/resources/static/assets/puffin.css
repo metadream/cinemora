@@ -546,7 +546,9 @@ main.detail .tags a {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: auto;
   padding: 40px 45px;
+  height: 100%;
   border-radius: var(--borderRadius);
   background: #fff;
   box-shadow: 0 3px 30px 0 rgb(0 0 0 / 20%);

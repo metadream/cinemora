@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.puffin.metafield.Metafield;
 import com.arraywork.puffin.metafield.MetafieldConverter;
+import com.arraywork.springforce.security.Principal;
+import com.arraywork.springforce.security.SecurityRole;
 import com.arraywork.springforce.util.Validator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -18,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 偏好设置
@@ -28,7 +31,8 @@ import lombok.Data;
 @Entity
 @DynamicInsert
 @Data
-public class Preference {
+@EqualsAndHashCode(callSuper = false)
+public class Preference extends Principal {
 
     @Id
     private long id = Long.MAX_VALUE;
@@ -61,5 +65,11 @@ public class Preference {
     // 最后更新时间
     @UpdateTimestamp
     private LocalDateTime lastModified;
+
+    // 本系统不使用角色控制
+    @Override
+    public List<SecurityRole> getSecurityRoles() {
+        return null;
+    }
 
 }

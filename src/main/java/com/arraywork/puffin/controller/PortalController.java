@@ -42,18 +42,18 @@ public class PortalController {
         return "index";
     }
 
-    // 详情页
-    @GetMapping("/{code}")
-    public String thread(Model model, @PathVariable String code) {
-        model.addAttribute("metadata", metadataService.getByCode(code));
-        return "thread";
-    }
-
     // 发现页
     @GetMapping("/explore")
     public String explore(Model model) {
         model.addAttribute("tagCloud", tagCloudService.getTagCloud());
         return "explore";
+    }
+
+    // 详情页
+    @GetMapping("/{code}")
+    public String thread(Model model, @PathVariable String code) {
+        model.addAttribute("metadata", metadataService.getByCode(code));
+        return "thread";
     }
 
 }

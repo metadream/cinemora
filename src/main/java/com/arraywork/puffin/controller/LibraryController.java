@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.arraywork.springforce.SseChannel;
+import com.arraywork.springforce.security.Authority;
 
 import jakarta.annotation.Resource;
 
@@ -25,6 +26,7 @@ public class LibraryController {
 
     // SSE获取扫描状态
     @GetMapping("/status")
+    @Authority
     @ResponseBody
     public SseEmitter status() {
         return channel.subscribe();

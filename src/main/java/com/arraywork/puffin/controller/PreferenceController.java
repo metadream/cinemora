@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.service.PreferenceService;
+import com.arraywork.springforce.security.Authority;
 import com.arraywork.springforce.util.Validator;
 
 import jakarta.annotation.Resource;
@@ -46,6 +47,7 @@ public class PreferenceController {
 
     // 保存偏好
     @PutMapping("/preference")
+    @Authority
     @ResponseBody
     public Preference save(@Validated @RequestBody Preference prefs) {
         return prefsService.save(prefs);

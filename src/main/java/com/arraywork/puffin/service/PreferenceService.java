@@ -13,6 +13,8 @@ import org.springframework.util.StringUtils;
 import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.repo.PreferenceRepo;
 import com.arraywork.springforce.external.BCryptEncoder;
+import com.arraywork.springforce.security.SecurityContext;
+import com.arraywork.springforce.security.SecurityService;
 import com.arraywork.springforce.util.Assert;
 
 import jakarta.annotation.Resource;
@@ -24,8 +26,10 @@ import jakarta.annotation.Resource;
  * @since 2024/04/22
  */
 @Service
-public class PreferenceService {
+public class PreferenceService implements SecurityService {
 
+    @Resource
+    private SecurityContext context;
     @Resource
     private BCryptEncoder bCryptEncoder;
     @Resource
@@ -37,8 +41,12 @@ public class PreferenceService {
     private PreferenceRepo prefsRepo;
 
     // 登录
-    public boolean login(Preference user) {
-        return false;
+    public Preference login(String username, String password) {
+        Preference prefs = getPreference();
+        Assert.notNull(prefs, "系统尚未初始化");
+        Assert.isTrue(prefs.getUsername().equals(username)
+            && bCryptEncoder.matches(password, prefs.getPassword()), "用户名或密码错误");
+        return prefs;
     }
 
     // 获取偏好

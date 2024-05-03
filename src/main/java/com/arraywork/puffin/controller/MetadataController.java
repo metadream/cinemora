@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.MetadataService;
+import com.arraywork.springforce.security.Authority;
 
 import jakarta.annotation.Resource;
 
@@ -33,6 +34,7 @@ public class MetadataController {
 
     // 元数据页面
     @GetMapping("/metadata")
+    @Authority
     public String metadata(Model model, String page, Metadata condition) {
         model.addAttribute("condition", condition);
         model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
@@ -41,6 +43,7 @@ public class MetadataController {
 
     // 元数据接口
     @PutMapping("/metadata")
+    @Authority
     @ResponseBody
     public Metadata metadata(@Validated @RequestBody Metadata metadata) {
         return metadataService.save(metadata);
@@ -48,6 +51,7 @@ public class MetadataController {
 
     // 上传封面图片
     @PutMapping("/metadata/{id}")
+    @Authority
     @ResponseBody
     public String upload(@PathVariable String id, MultipartFile multipartFile) throws IOException {
         return metadataService.upload(id, multipartFile);

@@ -3,7 +3,7 @@
 <body class="layout-fit">
 
 <main layout:fragment="main">
-  <div class="front-panel">
+  <div class="front-panel" style="width:500px">
     <th-field label="账号" name="username" maxlength="20" required autofocus></th-field>
     <th-field label="密码" name="password" maxlength="20" type="password" required></th-field>
     <th-button>登录</th-button>
@@ -29,7 +29,7 @@ async function login() {
   try {
     $loginBtn.loading = true;
     await Thyme.http.post('/login', data);
-    location.reload();
+    location.href = '/~/metadata';
   } finally {
     $loginBtn.loading = false;
   }
