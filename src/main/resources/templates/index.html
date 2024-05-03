@@ -11,7 +11,7 @@
         <div class="duration">[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</div>
       </div>
       <div class="caption">
-        <div class="tiny-title">
+        <div class="footnote">
           <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd HH:mm')}]]</span>
           <span>[[${Numbers.formatSiBytes(metadata.fileSize)}]]</span>
           <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>

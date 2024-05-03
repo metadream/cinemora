@@ -42,20 +42,6 @@ body {
   background: var(--bgColor);
 }
 
-body.layout-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-body.layout-fit {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100vh;
-}
-
 main {
   flex: 1;
   margin: auto;
@@ -263,15 +249,6 @@ th-button::part(button) {
   width: 100%;
 }
 
-.prefer {
-  display: flex;
-  flex-direction: column;
-}
-
-.prefer>* {
-  margin: 5px 0;
-}
-
 header {
   height: 70px;
   font-size: 1.2rem;
@@ -447,39 +424,6 @@ footer p:first-child {
   -webkit-box-orient: vertical;
 }
 
-.paging {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.paging>* {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 5px;
-}
-
-.paging>a {
-  min-width: 32px;
-  height: 32px;
-  padding: 5px;
-  background: var(--placeholderColor);
-  border-radius: var(--borderRadius);
-  transition: .3s all;
-}
-
-.paging>a:hover {
-  text-decoration: none;
-  background: var(--lineColor);
-}
-
-.paging>a.current {
-  color: var(--fontColor);
-  background: var(--primaryColor);
-}
-
 .notfound {
   text-align: center;
   width: 100%;
@@ -526,17 +470,17 @@ main.detail .tags a {
   margin-right: 10px;
 }
 
-.tiny-title {
+.footnote {
   display: flex;
   font-size: 0.85rem;
   color: var(--ignoredColor);
 }
 
-.tiny-title>* {
+.footnote>* {
   margin-right: 10px;
 }
 
-.tiny-title>*.right {
+.footnote>*.right {
   flex: 1;
   margin: 0;
   text-align: right;
@@ -580,9 +524,8 @@ main.detail .tags a {
 .error-panel {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100%;
+  margin: auto;
   font-size: 1.2rem;
 }
 

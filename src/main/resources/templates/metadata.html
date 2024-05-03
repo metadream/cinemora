@@ -92,7 +92,7 @@
         th:data-value="${preference.library}"></th-field>
 
       <p></p><div>可选元数据属性<br>
-        <span class="tiny-title">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
+        <span class="footnote">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
       </div>
       <div class="metafields">
         <label th:each="metafield: ${Metafields}">
@@ -104,7 +104,7 @@
       <p></p><div>
         <label><input type="checkbox" name="autoRename" value="true"
          th:checked="${preference.autoRename}"//>自动使用“[编号] 标题”对文件重命名</label>
-        <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
+        <div class="footnote">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
       </div>
     </div>
   </th-dialog>

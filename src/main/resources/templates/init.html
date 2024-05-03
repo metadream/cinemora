@@ -9,7 +9,7 @@
   <title>初始化 - [[${appName}]]</title>
 </head>
 
-<body class="layout-center">
+<body>
   <div class="front-panel" style="width:500px">
     <h2>初始化</h2>
     <th-field label="管理员账号" name="username" maxlength="20" required></th-field>
@@ -17,7 +17,7 @@
     <th-field label="媒体库路径" name="library" maxlength="120" required></th-field>
     
     <p></p><div>可选元数据属性<br>
-      <span class="tiny-title">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
+      <span class="footnote">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
     </div>
     <div class="metafields">
       <label th:each="metafield: ${Metafields}">
@@ -27,7 +27,7 @@
     </div>
     <p></p><div>
       <label><input type="checkbox" name="autoRename" value="true"/>自动使用“[编号] 标题”对文件重命名</label>
-      <div class="tiny-title">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
+      <div class="footnote">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
     </div>
     <th-button onclick="init(this)">确定</th-button>
   </div>

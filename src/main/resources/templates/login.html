@@ -1,9 +1,9 @@
 <html layout:decorate="~{_layout}">
 <head><title>登录</title></head>
-<body class="layout-fit">
+<body>
 
-<main layout:fragment="main">
-  <div class="front-panel" style="width:500px">
+<main layout:fragment="main" style="display:flex">
+  <div class="front-panel" style="width:400px">
     <th-field label="账号" name="username" maxlength="20" required autofocus></th-field>
     <th-field label="密码" name="password" maxlength="20" type="password" required></th-field>
     <th-button>登录</th-button>
