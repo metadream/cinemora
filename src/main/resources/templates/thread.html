@@ -58,6 +58,7 @@ video.on('error', function() {
   } else {
     this.src = '/transcode/'+this.dataset.id;
     this.transcoded = true;
+    Thyme.warn('正在实时转码播放');
   }
 });
 </script>
