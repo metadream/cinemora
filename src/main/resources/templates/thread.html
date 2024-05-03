@@ -1,8 +1,5 @@
 <html layout:decorate="~{_layout}">
-<head>
-  <title>[[${metadata.title}]]</title>
-  <script src="/assets/hls@1.4.12.js"></script>
-</head>
+<head><title>[[${metadata.title}]]</title></head>
 <body>
 
 <main class="detail" layout:fragment="main" th:object="${metadata.mediaInfo}" th:with="
@@ -19,7 +16,7 @@
     </div>
 
     <video th:src="|/video/${metadata.id}|" th:poster="|/cover/${metadata.id}|"
-      controlslist="nodownload" controls muted autoplay autofocus></video>
+      th:data-id="${metadata.id}" controlslist="nodownload" controls muted autoplay autofocus></video>
   </div>
 
   <div class="metadata">
@@ -59,31 +56,8 @@ video.on('error', function() {
   if (this.transcoded) {
     Thyme.error('不支持的视频格式');
   } else {
-    transcode();
+    this.src = '/transcode/'+this.dataset.id;
     this.transcoded = true;
   }
 });
-
-function transcode() {
-  const source = '/video/{{=movie.id}}.m3u8?playId={{=playId}}';
-  if(Hls.isSupported()) {
-    var hls = new Hls();
-    hls.loadSource(source);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-    hls.on(Hls.Events.ERROR, (event, data) => {
-      if (data.fatal) Thyme.error('视频转码发生错误');
-    });
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = source;
-    video.on('canplay', () => video.play());
-  }
-}
-
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-if (isSafari) {
-  window.onpagehide = () => navigator.sendBeacon('/video/{{=playId}}');
-} else {
-  window.onunload = () => navigator.sendBeacon('/video/{{=playId}}');
-}
 </script>

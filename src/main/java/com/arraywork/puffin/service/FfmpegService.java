@@ -1,6 +1,8 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.ScreenExtractor;
 import ws.schild.jave.info.MultimediaInfo;
 import ws.schild.jave.info.VideoSize;
+import ws.schild.jave.process.ProcessWrapper;
+import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 /**
  * FFMPEG服务
@@ -81,6 +85,22 @@ public class FfmpegService {
             e.printStackTrace();
             log.error("Screenshot error: ", e);
         }
+    }
+
+    // 视频转码
+    public InputStream transcode(String videoFile) throws IOException {
+        ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
+        ffmpeg.addArgument("-i");
+        ffmpeg.addArgument(videoFile);
+        ffmpeg.addArgument("-preset:v");
+        ffmpeg.addArgument("ultrafast");
+        ffmpeg.addArgument("-f");
+        ffmpeg.addArgument("mp4");
+        ffmpeg.addArgument("-movflags");
+        ffmpeg.addArgument("frag_keyframe+empty_moov");
+        ffmpeg.addArgument("-");
+        ffmpeg.execute();
+        return ffmpeg.getInputStream();
     }
 
 }
