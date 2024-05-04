@@ -164,6 +164,7 @@ public class MetadataService {
             // 如果原始文件不存在、或者不是媒体库下的文件则删除
             File file = new File(metadata.getFilePath());
             if (!file.exists() || !file.getParent().equals(library)) {
+                log.info("预清理元数据路径：{}", metadata.getFilePath());
                 toDelete.add(metadata);
             }
         }

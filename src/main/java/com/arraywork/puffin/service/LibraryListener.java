@@ -79,7 +79,7 @@ public class LibraryListener implements FileSystemListener {
             info.state = ScanState.FAILED;
             info.message = e.getMessage();
             failed++;
-            log.error("Build metadata error: ", e);
+            log.error("Build '{}' error: ", file, e);
         } finally {
             channel.broadcast(info);
 

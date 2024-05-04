@@ -121,7 +121,6 @@ public class Metadata {
     // 文件路径
     @Column(unique = true)
     @NotBlank(message = "路径不能为空")
-    @Size(max = 120, message = "路径不能超过 {max} 个字符")
     private String filePath;
 
     // 文件大小
