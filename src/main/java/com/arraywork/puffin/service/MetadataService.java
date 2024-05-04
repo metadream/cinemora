@@ -20,10 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
+import com.arraywork.puffin.entity.ScanningInfo;
 import com.arraywork.puffin.entity.VideoInfo;
 import com.arraywork.puffin.enums.Quality;
+import com.arraywork.puffin.enums.ScanEvent;
+import com.arraywork.puffin.enums.ScanState;
 import com.arraywork.puffin.repo.MetadataRepo;
 import com.arraywork.puffin.repo.MetadataSpec;
+import com.arraywork.springforce.SseChannel;
 import com.arraywork.springforce.util.Assert;
 import com.arraywork.springforce.util.Files;
 import com.arraywork.springforce.util.KeyGenerator;
@@ -31,7 +35,6 @@ import com.arraywork.springforce.util.Pagination;
 import com.arraywork.springforce.util.Times;
 
 import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 元数据服务
@@ -40,14 +43,15 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2024/04/22
  */
 @Service
-@Slf4j
 public class MetadataService {
 
     @Resource
-    private FfmpegService ffmpegService;
-    @Resource
     @Lazy
     private PreferenceService prefsService;
+    @Resource
+    private FfmpegService ffmpegService;
+    @Resource
+    private SseChannel channel;
     @Resource
     private MetadataRepo metadataRepo;
 
@@ -82,12 +86,11 @@ public class MetadataService {
 
     // 根据文件构建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata build(File file, boolean rebuildCover) {
-        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
-        if (metadata != null && !rebuildCover) return null;
+    public Metadata build(File file, boolean forceRebuildCover) {
         MediaInfo mediaInfo = ffmpegService.extract(file);
         if (mediaInfo == null || mediaInfo.getVideo() == null) return null;
 
+        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
         if (metadata == null) {
             metadata = new Metadata();
             VideoInfo video = mediaInfo.getVideo();
@@ -101,9 +104,12 @@ public class MetadataService {
             metadataRepo.save(metadata); // 先保存以便截图获取ID
         }
 
-        // 视频截图（已存在则更新）
+        // 如果封面不存在、或者存在但需强制重建，则进行视频截图
         File coverFile = getCoverPath(metadata.getId()).toFile();
-        ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+        boolean coverExists = coverFile.exists();
+        if (!coverExists || (coverExists && forceRebuildCover)) {
+            ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+        }
         return metadata;
     }
 
@@ -164,13 +170,28 @@ public class MetadataService {
             // 如果原始文件不存在、或者不是媒体库下的文件则删除
             File file = new File(metadata.getFilePath());
             if (!file.exists() || !file.getParent().equals(library)) {
-                log.info("预清理元数据路径：{}", metadata.getFilePath());
                 toDelete.add(metadata);
             }
         }
-        toDelete.forEach(v -> delete(v));
-        log.info("共清理 {} 条元数据", toDelete.size());
-        return toDelete.size();
+
+        int count = 0, total = toDelete.size();
+        for (Metadata metadata : toDelete) {
+            delete(metadata);
+            count++;
+
+            ScanningInfo info = new ScanningInfo(ScanEvent.PURGE);
+            info.count = count;
+            info.total = total;
+            info.path = metadata.getFilePath();
+            info.state = ScanState.SUCCESS;
+            channel.broadcast(info);
+        }
+
+        ScanningInfo info = new ScanningInfo(ScanEvent.PURGE);
+        info.state = ScanState.FINISHED;
+        info.message = "本次操作共清除元数据记录" + total + "条。";
+        channel.broadcast(info);
+        return total;
     }
 
     // 删除元数据

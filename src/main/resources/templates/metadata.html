@@ -128,7 +128,7 @@ const { createElement, formatSeconds } = Thyme.util;
 
 const source = new EventSource('/~/status');
 source.onmessage = e => log(JSON.parse(e.data));
-logDialog.buttons = [{ label: '关闭', onclick: () => location.reload() }];
+logDialog.buttons = ['关闭'];
 
 metaDialog.buttons = [{
   label: '取消'
@@ -153,6 +153,14 @@ metaDialog.buttons = [{
 
 prefsDialog.buttons = [{
   label: '取消'
+}, {
+  label: '<span style="color:orange">扫描媒体库</span>',
+  onclick: (dlg) => {
+    dlg.hide();
+    Thyme.confirm('扫描媒体库可能需要花费较长时间，确定继续吗？', () => {
+      Thyme.http.post('/~/rescan');
+    });
+  }
 }, {
   label: '保存',
   primary: true,

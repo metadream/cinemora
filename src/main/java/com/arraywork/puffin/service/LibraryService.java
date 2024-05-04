@@ -50,6 +50,13 @@ public class LibraryService {
         watcher.start(library, emitOnStart);
     }
 
+    // 重新扫描媒体库
+    public void rescan() {
+        String library = prefsService.getPreference().getLibrary();
+        metadataService.purge(library);
+        scan(library, true);
+    }
+
     // 应用销毁时停止监听进程
     @PreDestroy
     public void onDestroyed() {

@@ -84,7 +84,7 @@ public class LibraryListener implements FileSystemListener {
             channel.broadcast(info);
 
             if (count == total) {
-                info = new ScanningInfo(ScanEvent.SCAN);
+                info = new ScanningInfo(event);
                 info.state = ScanState.FINISHED;
                 info.message = "本次扫描共发现" + total + "个文件。"
                     + "成功" + success + "个，跳过" + skipped + "个，失败" + failed + "个。";

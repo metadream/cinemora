@@ -19,7 +19,8 @@ public enum ScanEvent {
     SCAN("扫描"),
     ADD("新增"),
     MODIFY("更新"),
-    DELETE("删除");
+    DELETE("删除"),
+    PURGE("清除");
 
     private final String label;
 
