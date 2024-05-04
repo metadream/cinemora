@@ -157,7 +157,7 @@ prefsDialog.buttons = [{
   label: '<span style="color:orange">扫描媒体库</span>',
   onclick: (dlg) => {
     dlg.hide();
-    Thyme.confirm('扫描媒体库可能需要花费较长时间，确定继续吗？', () => {
+    Thyme.confirm('<b class="WARNING">扫描媒体库可能需要花费较长时间，确定继续吗？</b>', () => {
       Thyme.http.post('/~/rescan');
     });
   }
@@ -167,18 +167,19 @@ prefsDialog.buttons = [{
   onclick: async (dlg) => {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
+    
     const oldLib = prefsDialog.querySelector('[name="library"]').dataset.value;
+    dlg.hide();
     if (data.library !== oldLib) {
       Thyme.confirm('<b class="WARNING">更改媒体库路径将清空所有元数据且不可恢复，确定继续吗？</b>', 
       async() => await save());
     } else {
       await save();
     }
-    
+
     async function save() {
       data.metafields = data.metafields?.split(',') || [];
       await Thyme.http.put('/~/preference', data);
-      dlg.hide();
       location.reload();
     }
   }
