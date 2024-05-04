@@ -13,6 +13,7 @@ import com.arraywork.springforce.filewatch.FileSystemListener;
 import com.arraywork.springforce.util.Times;
 
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 媒体库监听器
@@ -21,6 +22,7 @@ import jakarta.annotation.Resource;
  * @since 2024/04/27
  */
 @Component
+@Slf4j
 public class LibraryListener implements FileSystemListener {
 
     private int success;
@@ -77,6 +79,7 @@ public class LibraryListener implements FileSystemListener {
             info.state = ScanState.FAILED;
             info.message = e.getMessage();
             failed++;
+            log.error("Build metadata error: ", e);
         } finally {
             channel.broadcast(info);
 
