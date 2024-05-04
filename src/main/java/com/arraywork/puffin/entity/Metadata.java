@@ -50,7 +50,7 @@ public class Metadata {
 
     // 标题
     @NotBlank(message = "标题不能为空")
-    @Size(max = 120, message = "标题不能超过 {max} 个字符")
+    @Size(max = 255, message = "标题不能超过 {max} 个字符")
     private String title;
 
     // 制作方

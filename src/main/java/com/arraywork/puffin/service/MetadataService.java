@@ -147,8 +147,12 @@ public class MetadataService {
         if (prefsService.getPreference().isAutoRename()) {
             String filePath = metadata.getFilePath();
             String extension = Files.getExtension(filePath);
+            String newName = "[" + code + "] " + metadata.getTitle() + extension;
+            int nameLength = Files.getNameLength(newName);
+            Assert.isTrue(nameLength > 0 && nameLength <= 255, "文件名不能超过255个字符");
+
             File oldFile = new File(filePath);
-            File newFile = Path.of(oldFile.getParent(), "[" + code + "] " + metadata.getTitle() + extension).toFile();
+            File newFile = Path.of(oldFile.getParent(), newName).toFile();
             oldFile.renameTo(newFile);
             metadata.setFilePath(newFile.getPath());
         }
