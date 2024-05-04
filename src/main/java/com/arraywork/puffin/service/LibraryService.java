@@ -39,16 +39,15 @@ public class LibraryService {
         Preference prefs = prefsService.getPreference();
         if (prefs != null) {
             String library = prefs.getLibrary();
-            metadataService.purge(library);
-            scan(library);
+            scan(library, false);
         }
     }
 
     // 异步启动目录监听
     @Async
-    public void scan(String library) {
+    public void scan(String library, boolean emitOnStart) {
         log.info("启动媒体库监听: {}", library);
-        watcher.start(library);
+        watcher.start(library, emitOnStart);
     }
 
     // 应用销毁时停止监听进程

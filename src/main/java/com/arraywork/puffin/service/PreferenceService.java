@@ -65,7 +65,7 @@ public class PreferenceService implements SecurityService {
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
 
         context.authorize(prefs);
-        libraryService.scan(prefs.getLibrary());
+        libraryService.scan(prefs.getLibrary(), true);
         return prefsRepo.save(prefs);
     }
 
@@ -88,7 +88,7 @@ public class PreferenceService implements SecurityService {
         String library = prefs.getLibrary();
         if (!library.equals(_library)) {
             metadataService.purge(library);
-            libraryService.scan(library);
+            libraryService.scan(library, true);
         }
         return prefsRepo.save(prefs);
     }

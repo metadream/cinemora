@@ -60,7 +60,7 @@ public class LibraryListener implements FileSystemListener {
 
     // 监听回调方法
     private void onChanged(File file, int count, int total, ScanEvent event, Consumer consumer) {
-        Times.delay(300);
+        Times.delay(200);
         ScanningInfo info = new ScanningInfo(event);
         info.count = count;
         info.total = total;
