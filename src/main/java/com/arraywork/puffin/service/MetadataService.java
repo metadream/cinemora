@@ -90,10 +90,10 @@ public class MetadataService {
         MediaInfo mediaInfo = ffmpegService.extract(file);
         if (mediaInfo == null || mediaInfo.getVideo() == null) return null;
 
+        VideoInfo video = mediaInfo.getVideo();
         Metadata metadata = metadataRepo.findByFilePath(file.getPath());
         if (metadata == null) {
             metadata = new Metadata();
-            VideoInfo video = mediaInfo.getVideo();
             metadata.setMediaInfo(mediaInfo);
             metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
             metadata.setTitle(Files.getName(file.getName()));
@@ -108,6 +108,9 @@ public class MetadataService {
         File coverFile = getCoverPath(metadata.getId()).toFile();
         boolean coverExists = coverFile.exists();
         if (!coverExists || (coverExists && forceRebuildCover)) {
+            metadata.setMediaInfo(mediaInfo);
+            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
+            metadata.setFileSize(file.length());
             ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
         }
         return metadata;
