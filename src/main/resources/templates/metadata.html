@@ -226,6 +226,7 @@ function log(info) {
       <span class="${info.state.name}">${info.message||''}</span>
     </div>`));
   }
+  scrollToBottom();
 }
 
 function toArray(str) {
@@ -236,5 +237,10 @@ function turnPage(n) {
   const params = new URLSearchParams(location.search);
   params.set('page', n);
   location.href = '?' + params.toString();
+}
+
+function scrollToBottom() {
+  const $logs = logDialog.shadowRoot.querySelector('.dialog-body');
+  $logs.scrollTop = $logs.scrollHeight;
 }
 </script>
