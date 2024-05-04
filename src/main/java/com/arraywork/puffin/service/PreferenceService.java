@@ -1,6 +1,7 @@
 package com.arraywork.puffin.service;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.springframework.cache.annotation.CachePut;
@@ -99,7 +100,7 @@ public class PreferenceService implements SecurityService {
         File entry = new File(library);
         Assert.isTrue(entry.exists(), "媒体库路径不存在");
         Assert.isTrue(entry.isDirectory(), "媒体库路径必须为目录");
-        prefs.setLibrary(library.replaceAll("[/\\\\]+$", ""));
+        prefs.setLibrary(Path.of(library).toString());
     }
 
 }
