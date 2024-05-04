@@ -167,9 +167,10 @@ public class MetadataService {
         List<Metadata> toDelete = new ArrayList<>();
 
         for (Metadata metadata : metadatas) {
+            Path filePath = Path.of(metadata.getFilePath());
+            Path libPath = Path.of(library);
             // 如果原始文件不存在、或者不是媒体库下的文件则删除
-            File file = new File(metadata.getFilePath());
-            if (!file.exists() || !file.getParent().equals(library)) {
+            if (!filePath.startsWith(libPath) || !filePath.toFile().exists()) {
                 toDelete.add(metadata);
             }
         }
