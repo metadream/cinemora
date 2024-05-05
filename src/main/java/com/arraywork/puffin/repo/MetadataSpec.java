@@ -11,6 +11,7 @@ import com.arraywork.puffin.enums.Censorship;
 import com.arraywork.puffin.enums.Quality;
 import com.arraywork.puffin.enums.Rating;
 import com.arraywork.puffin.enums.Region;
+import com.arraywork.springforce.util.Arrays;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -61,6 +62,42 @@ public class MetadataSpec implements Specification<Metadata> {
                     cb.like(root.get("tags"), cb.literal("%\"" + keyword + "\"%")))
             // THE END
             ));
+        }
+
+        String[] producers = condition.getProducers();
+        if (!Arrays.isEmpty(producers)) {
+            predicates.add(cb.and(root.get("producers").isNotNull(),
+                cb.like(root.get("producers"), cb.literal("%\"" + producers[0] + "\"%"))));
+        }
+
+        String[] directors = condition.getDirectors();
+        if (!Arrays.isEmpty(directors)) {
+            predicates.add(cb.and(root.get("directors").isNotNull(),
+                cb.like(root.get("directors"), cb.literal("%\"" + directors[0] + "\"%"))));
+        }
+
+        String[] starring = condition.getStarring();
+        if (!Arrays.isEmpty(starring)) {
+            predicates.add(cb.and(root.get("starring").isNotNull(),
+                cb.like(root.get("starring"), cb.literal("%\"" + starring[0] + "\"%"))));
+        }
+
+        String[] series = condition.getSeries();
+        if (!Arrays.isEmpty(series)) {
+            predicates.add(cb.and(root.get("series").isNotNull(),
+                cb.like(root.get("series"), cb.literal("%\"" + series[0] + "\"%"))));
+        }
+
+        String[] genres = condition.getGenres();
+        if (!Arrays.isEmpty(genres)) {
+            predicates.add(cb.and(root.get("genres").isNotNull(),
+                cb.like(root.get("genres"), cb.literal("%\"" + genres[0] + "\"%"))));
+        }
+
+        String[] tags = condition.getTags();
+        if (!Arrays.isEmpty(tags)) {
+            predicates.add(cb.and(root.get("tags").isNotNull(),
+                cb.like(root.get("tags"), cb.literal("%\"" + tags[0] + "\"%"))));
         }
 
         Region region = condition.getRegion();

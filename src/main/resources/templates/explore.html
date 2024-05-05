@@ -9,7 +9,7 @@
 
     <section th:if="${!#sets.isEmpty(tags)}">
       <h4>[[${metafield.label}]]</h4>
-      <div class="tags"><a th:each="tag: ${tags}" th:href="|/?keyword=${tag}|">[[${tag}]]</a></div>
+      <div class="tags"><a th:each="tag: ${tags}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a></div>
     </section>
   </th:block>
 </main>
