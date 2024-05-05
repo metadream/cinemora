@@ -74,7 +74,7 @@
              <option th:each="enum: ${metafield.enums}" th:value="${enum.code}">[[${enum.label}]]</option>
            </th-select>
            <th-field th:if="${metafield.name != 'issueDate' && metafield.enums == null}" class="exclusive"
-            th:label="${metafield.label}" th:name="${metafield.name}"></th-field>
+            th:label="${metafield.label}" th:name="${metafield.name}" placeholder="多个条目之间用逗号分隔"></th-field>
            <th-calendar th:if="${metafield.name == 'issueDate'}" th:label="${metafield.label}" th:name="${metafield.name}">
            </th-calendar>
         </th:block>

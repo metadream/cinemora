@@ -25,15 +25,17 @@
       <div>[[${metadata.code}]]</div>
     </div>
 
-    <div class="prop" th:each="metafield: ${preference.metafields}" th:with="value=${metadata[metafield.name]}">
-      <label>[[${metafield.label}]]:</label>
-      <div th:if="${metafield.enums}">
-        <a th:if="${value}" th:href="|/?${metafield.name}=${value.code}|">[[${value.label}]]</a>
+    <th:block th:each="metafield: ${preference.metafields}" th:with="value=${metadata[metafield.name]}">
+      <div class="prop" th:if="${value}">
+        <label>[[${metafield.label}]]:</label>
+        <div th:if="${metafield.enums}">
+          <a th:href="|/?${metafield.name}=${value.code}|">[[${value.label}]]</a>
+        </div>
+        <div th:unless="${metafield.enums}" class="tags">
+          <a th:each="tag:${value}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a>
+        </div>
       </div>
-      <div th:unless="${metafield.enums}" class="tags">
-        <a th:each="tag:${value}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a>
-      </div>
-    </div>
+    </th:block>
   </div>
 </main>
 
