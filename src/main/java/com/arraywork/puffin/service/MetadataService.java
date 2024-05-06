@@ -148,12 +148,11 @@ public class MetadataService {
             String filePath = metadata.getFilePath();
             String extension = Files.getExtension(filePath);
             String newName = "[" + code + "] " + metadata.getTitle() + extension;
-            int nameLength = Files.getNameLength(newName);
-            Assert.isTrue(nameLength > 0 && nameLength <= 255, "文件名不能超过255个字符");
 
             File oldFile = new File(filePath);
             File newFile = Path.of(oldFile.getParent(), newName).toFile();
-            oldFile.renameTo(newFile);
+            boolean success = oldFile.renameTo(newFile);
+            Assert.isTrue(success, "文件重命名失败：可能由于名称过长或含有保留字符");
             metadata.setFilePath(newFile.getPath());
         }
         return metadataRepo.save(metadata);
