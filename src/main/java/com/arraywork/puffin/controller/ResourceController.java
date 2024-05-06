@@ -18,6 +18,7 @@ import com.arraywork.springforce.StaticResourceHandler;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ws.schild.jave.process.ProcessWrapper;
 
 /**
  * 资源控制器
@@ -59,12 +60,22 @@ public class ResourceController {
     @GetMapping("/transcode/{id}")
     public void transcode(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
-        Metadata metadata = metadataService.getById(id);
-        InputStream input = ffmpegService.transcode(metadata.getFilePath());
-        OutputStream output = response.getOutputStream();
-
         response.setContentType("video/mp4");
-        resourceHandler.copy(input, output);
+        Metadata metadata = metadataService.getById(id);
+        ProcessWrapper ffmpeg = null;
+        InputStream input = null;
+        OutputStream output = null;
+
+        try {
+            ffmpeg = ffmpegService.transcode(metadata.getFilePath());
+            input = ffmpeg.getInputStream();
+            output = response.getOutputStream();
+            resourceHandler.copy(input, output);
+        } finally {
+            resourceHandler.close(input);
+            resourceHandler.close(output);
+            if (ffmpeg != null) ffmpeg.destroy();
+        }
     }
 
 }

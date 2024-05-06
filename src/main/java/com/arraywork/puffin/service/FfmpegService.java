@@ -2,7 +2,6 @@ package com.arraywork.puffin.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.springframework.stereotype.Service;
 
@@ -88,7 +87,7 @@ public class FfmpegService {
     }
 
     // 视频转码
-    public InputStream transcode(String videoFile) throws IOException {
+    public ProcessWrapper transcode(String videoFile) throws IOException {
         ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
         ffmpeg.addArgument("-i");
         ffmpeg.addArgument(videoFile);
@@ -100,7 +99,7 @@ public class FfmpegService {
         ffmpeg.addArgument("frag_keyframe+empty_moov");
         ffmpeg.addArgument("-");
         ffmpeg.execute();
-        return ffmpeg.getInputStream();
+        return ffmpeg;
     }
 
 }
