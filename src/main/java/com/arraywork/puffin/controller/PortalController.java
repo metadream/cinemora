@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.MetadataService;
 import com.arraywork.puffin.service.TagCloudService;
+import com.arraywork.springforce.util.KeyGenerator;
 
 import jakarta.annotation.Resource;
 
@@ -53,6 +54,7 @@ public class PortalController {
     @GetMapping("/{code}")
     public String thread(Model model, @PathVariable String code) {
         model.addAttribute("metadata", metadataService.getByCode(code));
+        model.addAttribute("transId", KeyGenerator.nanoId());
         return "thread";
     }
 

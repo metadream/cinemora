@@ -2,6 +2,9 @@ package com.arraywork.puffin.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,8 @@ import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 @Service
 @Slf4j
 public class FfmpegService {
+
+    private static final Map<String, ProcessWrapper> ffmpegProcesses = new HashMap<>();
 
     // 获取媒体信息
     public MediaInfo extract(File file) {
@@ -87,7 +92,7 @@ public class FfmpegService {
     }
 
     // 视频转码
-    public ProcessWrapper transcode(String videoFile) throws IOException {
+    public InputStream transcode(String transId, String videoFile) throws IOException {
         ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
         ffmpeg.addArgument("-i");
         ffmpeg.addArgument(videoFile);
@@ -99,7 +104,15 @@ public class FfmpegService {
         ffmpeg.addArgument("frag_keyframe+empty_moov");
         ffmpeg.addArgument("-");
         ffmpeg.execute();
-        return ffmpeg;
+
+        ffmpegProcesses.put(transId, ffmpeg);
+        return ffmpeg.getInputStream();
+    }
+
+    // 终止转码进程
+    public void destroy(String transId) {
+        ProcessWrapper ffmpeg = ffmpegProcesses.get(transId);
+        if (ffmpeg != null) ffmpeg.destroy();
     }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.FfmpegService;
@@ -18,7 +20,6 @@ import com.arraywork.springforce.StaticResourceHandler;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ws.schild.jave.process.ProcessWrapper;
 
 /**
  * 资源控制器
@@ -57,25 +58,22 @@ public class ResourceController {
     }
 
     // 视频转码
-    @GetMapping("/transcode/{id}")
-    public void transcode(HttpServletRequest request, HttpServletResponse response,
-        @PathVariable String id) throws IOException {
+    @GetMapping("/video/{id}/{transId}")
+    public void transcode(@PathVariable String id, @PathVariable String transId,
+        HttpServletResponse response) throws IOException {
         response.setContentType("video/mp4");
-        Metadata metadata = metadataService.getById(id);
-        ProcessWrapper ffmpeg = null;
-        InputStream input = null;
-        OutputStream output = null;
 
-        try {
-            ffmpeg = ffmpegService.transcode(metadata.getFilePath());
-            input = ffmpeg.getInputStream();
-            output = response.getOutputStream();
-            resourceHandler.copy(input, output);
-        } finally {
-            resourceHandler.close(input);
-            resourceHandler.close(output);
-            if (ffmpeg != null) ffmpeg.destroy();
-        }
+        Metadata metadata = metadataService.getById(id);
+        InputStream input = ffmpegService.transcode(transId, metadata.getFilePath());
+        OutputStream output = response.getOutputStream();
+        resourceHandler.copy(input, output);
+    }
+
+    // 终止转码进程
+    @PostMapping("/video/{transId}")
+    @ResponseBody
+    public void destroy(@PathVariable String transId) {
+        ffmpegService.destroy(transId);
     }
 
 }

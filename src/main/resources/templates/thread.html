@@ -16,7 +16,7 @@
     </div>
 
     <video th:src="|/video/${metadata.id}|" th:poster="|/cover/${metadata.id}|"
-      th:data-id="${metadata.id}" controlslist="nodownload" controls muted autoplay autofocus></video>
+      controlslist="nodownload" controls muted autoplay autofocus></video>
   </div>
 
   <div class="metadata">
@@ -58,9 +58,13 @@ video.on('error', function() {
   if (this.transcoded) {
     Thyme.error('不支持的视频格式');
   } else {
-    this.src = '/transcode/'+this.dataset.id;
+    this.src += '/[[${transId}]]';
     this.transcoded = true;
     Thyme.warn('正在实时转码播放');
   }
 });
+
+window.onunload = window.onpagehide = () => {
+  navigator.sendBeacon('/video/[[${transId}]]');
+}
 </script>
