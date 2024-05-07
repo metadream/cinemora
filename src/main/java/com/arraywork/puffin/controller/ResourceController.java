@@ -20,6 +20,7 @@ import com.arraywork.springforce.StaticResourceHandler;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 资源控制器
@@ -28,6 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @since 2024/04/28
  */
 @Controller
+@Slf4j
 public class ResourceController {
 
     @Resource
@@ -60,13 +62,18 @@ public class ResourceController {
     // 视频转码
     @GetMapping("/video/{id}/{transId}")
     public void transcode(@PathVariable String id, @PathVariable String transId,
-        HttpServletResponse response) throws IOException {
+        HttpServletResponse response) {
         response.setContentType("video/mp4");
 
-        Metadata metadata = metadataService.getById(id);
-        InputStream input = ffmpegService.transcode(transId, metadata.getFilePath());
-        OutputStream output = response.getOutputStream();
-        resourceHandler.copy(input, output);
+        try {
+            Metadata metadata = metadataService.getById(id);
+            InputStream input = ffmpegService.transcode(transId, metadata.getFilePath());
+            OutputStream output = response.getOutputStream();
+            resourceHandler.copy(input, output);
+        } catch (Exception e) {
+            log.error("Ignored: {}", e.getMessage());
+            destroy(transId);
+        }
     }
 
     // 终止转码进程
