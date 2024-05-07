@@ -15,31 +15,18 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Region implements MetafieldEnum, GenericEnum<String> {
+public enum Region implements MetafieldEnum, GenericEnum<Integer> {
 
-    CN("CN", "中国"),
-    JP("JP", "日本"),
-    KR("KR", "韩国"),
-    IN("IN", "印度"),
-    TH("TH", "泰国"),
-    US("US", "美国"),
-    CA("CA", "加拿大"),
-    RU("RU", "俄罗斯"),
-    GB("GB", "英国"),
-    FR("FR", "法国"),
-    DE("DE", "德国"),
-    IT("IT", "意大利"),
-    ES("ES", "西班牙"),
-    IE("IE", "爱尔兰"),
-    SE("SE", "瑞典"),
-    DK("DK", "丹麦"),
-    AU("AU", "澳大利亚"),
-    BR("BR", "巴西"),
-    XX("XX", "其他");
+    CHINESE(10, "中国"),
+    JAPANESE(11, "日本"),
+    KOREAN(12, "韩国"),
+    ASIAN(20, "亚洲"),
+    OCCIDENT(30, "欧美"),
+    OTHERS(99, "其他");
 
-    private final String code;
+    private final Integer code;
     private final String label;
 
-    public static class Converter extends GenericEnumConverter<Region, String> {}
+    public static class Converter extends GenericEnumConverter<Region, Integer> {}
 
 }
