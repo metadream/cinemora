@@ -51,6 +51,8 @@ public class MetadataService {
     @Resource
     private FfmpegService ffmpegService;
     @Resource
+    private TagCloudService tagCloudService;
+    @Resource
     private SseChannel channel;
     @Resource
     private MetadataRepo metadataRepo;
@@ -155,6 +157,7 @@ public class MetadataService {
             Assert.isTrue(success, "文件重命名失败：可能由于名称过长或含有保留字符");
             metadata.setFilePath(newFile.getPath());
         }
+        tagCloudService.clearCache();
         return metadataRepo.save(metadata);
     }
 

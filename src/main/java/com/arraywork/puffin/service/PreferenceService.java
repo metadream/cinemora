@@ -52,15 +52,15 @@ public class PreferenceService implements SecurityService {
     }
 
     // 获取偏好
-    @Cacheable(value = "preference", key = "'#preference'")
+    @Cacheable(value = "puffin", key = "'#preference'")
     public Preference getPreference() {
         Optional<Preference> optional = prefsRepo.findById(Long.MAX_VALUE);
         return optional.orElse(null);
     }
 
     // 初始化偏好
+    @CachePut(value = "puffin", key = "'#preference'")
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(value = "preference", key = "'#preference'")
     public Preference init(Preference prefs) {
         checkLibrary(prefs);
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
@@ -72,7 +72,7 @@ public class PreferenceService implements SecurityService {
 
     // 保存偏好
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(value = "preference", key = "'#preference'")
+    @CachePut(value = "puffin", key = "'#preference'")
     public Preference save(Preference prefs) {
         checkLibrary(prefs);
 

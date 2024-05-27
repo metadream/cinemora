@@ -65,8 +65,13 @@ public class TagCloudService {
             if (genres != null) allGenres.addAll(Arrays.asList(genres));
             if (tags != null) allTags.addAll(Arrays.asList(tags));
         }
-        cache.put(TAG_CLOUD_KEY, tagCloud, 3600 * 24); // 1天过期
+        cache.put(TAG_CLOUD_KEY, tagCloud);
         return tagCloud;
+    }
+
+    // 清空缓存
+    public void clearCache() {
+        cache.remove(TAG_CLOUD_KEY);
     }
 
 }

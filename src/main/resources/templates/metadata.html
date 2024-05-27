@@ -195,10 +195,10 @@ function openMetadata(metadata) {
   metaDialog.querySelector('#dimension').innerHTML = video.width +' × '+ video.height;
   metaDialog.querySelector('#vBitRate').innerHTML = Math.round(video.bitRate/1000);
   metaDialog.querySelector('#frameRate').innerHTML = video.frameRate;
-  metaDialog.querySelector('#acodec').innerHTML = audio.decoder;
-  metaDialog.querySelector('#channels').innerHTML = audio.channels;
-  metaDialog.querySelector('#aBitRate').innerHTML = Math.round(audio.bitRate/1000);
-  metaDialog.querySelector('#samplingRate').innerHTML = audio.samplingRate;
+  metaDialog.querySelector('#acodec').innerHTML = audio?.decoder || '';
+  metaDialog.querySelector('#channels').innerHTML = audio?.channels || '';
+  metaDialog.querySelector('#aBitRate').innerHTML = audio ? Math.round(audio.bitRate/1000) : 0;
+  metaDialog.querySelector('#samplingRate').innerHTML = audio?.samplingRate || 0;
   metaDialog.open();
 }
 
