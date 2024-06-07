@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.MetadataService;
 import com.arraywork.puffin.service.TagCloudService;
-import com.arraywork.springforce.util.KeyGenerator;
+import com.arraywork.springforce.id.KeyGenerator;
 
 import jakarta.annotation.Resource;
 

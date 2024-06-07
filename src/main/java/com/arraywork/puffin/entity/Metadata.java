@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.arraywork.puffin.enums.Censorship;
@@ -12,13 +11,12 @@ import com.arraywork.puffin.enums.Quality;
 import com.arraywork.puffin.enums.Rating;
 import com.arraywork.puffin.enums.Region;
 import com.arraywork.puffin.metafield.MetaColumn;
-import com.arraywork.springforce.util.KeyGenerator;
+import com.arraywork.springforce.id.NanoIdGeneration;
 
 import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
@@ -37,9 +35,8 @@ import lombok.Data;
 public class Metadata {
 
     @Id
+    @NanoIdGeneration
     @Column(length = 24, insertable = false, updatable = false)
-    @GenericGenerator(name = "nano-id-generator", type = KeyGenerator.NanoId.class)
-    @GeneratedValue(generator = "nano-id-generator")
     private String id;
 
     // 编号
