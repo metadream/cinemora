@@ -13,10 +13,10 @@
 <header>
   <main>
     <a href="/" class="logo"><img src="/assets/logo.png"/></a>
-    <div class="search-bar">
+    <form action="" class="search-bar">
       <input class="search-text" type="search" maxlength="30" placeholder="搜索..."
-       th:value="${condition?.keyword}" onsearch="filter(this)"/>
-    </div>
+       name="keyword" th:value="${condition?.keyword}"/>
+    </form>
 
     <nav>
       <menu>
