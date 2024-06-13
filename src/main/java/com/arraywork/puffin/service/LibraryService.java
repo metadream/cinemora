@@ -1,7 +1,6 @@
 package com.arraywork.puffin.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.arraywork.puffin.entity.Preference;
@@ -30,7 +29,7 @@ public class LibraryService {
 
     @Autowired
     public LibraryService(LibraryListener listener) {
-        watcher = new DirectoryWatcher(30, 5, listener);
+        watcher = new DirectoryWatcher(10, 5, listener);
     }
 
     // 随应用启动目录监听
@@ -44,7 +43,6 @@ public class LibraryService {
     }
 
     // 异步启动目录监听
-    @Async
     public void scan(String library, boolean emitOnStart) {
         log.info("启动媒体库监听: {}", library);
         watcher.start(library, emitOnStart);
