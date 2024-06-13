@@ -2,6 +2,7 @@ logs/
 target/
 avatar/
 data/
+TODO.md
 .settings/
 .classpath
 .project
