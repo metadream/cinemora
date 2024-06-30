@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.arraywork.puffin.entity.MediaInfo;
 import com.arraywork.puffin.entity.Metadata;
+import com.arraywork.puffin.entity.Preference;
 import com.arraywork.puffin.entity.ScanningInfo;
 import com.arraywork.puffin.entity.VideoInfo;
 import com.arraywork.puffin.enums.Quality;
@@ -95,11 +96,13 @@ public class MetadataService {
         VideoInfo video = mediaInfo.getVideo();
         Metadata metadata = metadataRepo.findByFilePath(file.getPath());
         if (metadata == null) {
+            int index = prefsService.getPreference().getLibrary().length();
+
             metadata = new Metadata();
             metadata.setMediaInfo(mediaInfo);
             metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
             metadata.setTitle(Files.getName(file.getName()));
-            metadata.setFilePath(file.getPath());
+            metadata.setFilePath(file.getPath().substring(index));
             metadata.setFileSize(file.length());
             metadata.setLastModified(Times.toLocal(file.lastModified()));
             metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
@@ -146,16 +149,19 @@ public class MetadataService {
             metadata.setQuality(_metadata.getQuality());
         }
         // 重命名文件
-        if (prefsService.getPreference().isAutoRename()) {
+        Preference prefer = prefsService.getPreference();
+        if (prefer.isAutoRename()) {
+            String library = prefer.getLibrary();
             String filePath = metadata.getFilePath();
             String extension = Files.getExtension(filePath);
             String newName = "[" + code + "] " + metadata.getTitle() + extension;
 
-            File oldFile = new File(filePath);
+            File oldFile = Path.of(library, filePath).toFile();
             File newFile = Path.of(oldFile.getParent(), newName).toFile();
+            System.out.println("newFile=" + newFile);
             boolean success = oldFile.renameTo(newFile);
             Assert.isTrue(success, "文件重命名失败：可能由于名称过长或含有保留字符");
-            metadata.setFilePath(newFile.getPath());
+            metadata.setFilePath(newFile.getPath().substring(library.length()));
         }
         tagCloudService.clearCache();
         return metadataRepo.save(metadata);
@@ -176,10 +182,9 @@ public class MetadataService {
         List<Metadata> toDelete = new ArrayList<>();
 
         for (Metadata metadata : metadatas) {
-            Path filePath = Path.of(metadata.getFilePath());
-            Path libPath = Path.of(library);
-            // 如果原始文件不存在、或者不是媒体库下的文件则删除
-            if (!filePath.startsWith(libPath) || !filePath.toFile().exists()) {
+            Path filePath = Path.of(library, metadata.getFilePath());
+            // 如果原始文件不存在则删除
+            if (!filePath.toFile().exists()) {
                 toDelete.add(metadata);
             }
         }

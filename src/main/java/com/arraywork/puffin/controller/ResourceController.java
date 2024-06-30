@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.arraywork.puffin.entity.Metadata;
 import com.arraywork.puffin.service.FfmpegService;
 import com.arraywork.puffin.service.MetadataService;
+import com.arraywork.puffin.service.PreferenceService;
 import com.arraywork.springforce.StaticResourceHandler;
 
 import jakarta.annotation.Resource;
@@ -37,6 +38,8 @@ public class ResourceController {
     @Resource
     private FfmpegService ffmpegService;
     @Resource
+    private PreferenceService preferService;
+    @Resource
     private MetadataService metadataService;
 
     @Value("${puffin.cover.base-dir}")
@@ -54,8 +57,9 @@ public class ResourceController {
     @GetMapping("/video/{id}")
     public void video(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
+        String library = preferService.getPreference().getLibrary();
         Metadata metadata = metadataService.getById(id);
-        Path videoPath = Path.of(metadata.getFilePath());
+        Path videoPath = Path.of(library, metadata.getFilePath());
         resourceHandler.serve(videoPath, request, response);
     }
 
