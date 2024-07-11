@@ -31,7 +31,7 @@ import com.arraywork.puffin.repo.MetadataSpec;
 import com.arraywork.springforce.SseChannel;
 import com.arraywork.springforce.id.KeyGenerator;
 import com.arraywork.springforce.util.Assert;
-import com.arraywork.springforce.util.Files;
+import com.arraywork.springforce.util.FileUtils;
 import com.arraywork.springforce.util.Pagination;
 import com.arraywork.springforce.util.Times;
 
@@ -101,7 +101,7 @@ public class MetadataService {
             metadata = new Metadata();
             metadata.setMediaInfo(mediaInfo);
             metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
-            metadata.setTitle(Files.getName(file.getName()));
+            metadata.setTitle(FileUtils.getName(file.getName()));
             metadata.setFilePath(file.getPath().substring(index));
             metadata.setFileSize(file.length());
             metadata.setLastModified(Times.toLocal(file.lastModified()));
@@ -153,7 +153,7 @@ public class MetadataService {
         if (prefer.isAutoRename()) {
             String library = prefer.getLibrary();
             String filePath = metadata.getFilePath();
-            String extension = Files.getExtension(filePath);
+            String extension = FileUtils.getExtension(filePath);
             String newName = "[" + code + "] " + metadata.getTitle() + extension;
 
             File oldFile = Path.of(library, filePath).toFile();
