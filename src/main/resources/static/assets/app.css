@@ -239,13 +239,13 @@ table.list a.title {
 
 .metadata-editor {
   display: flex;
-  width: 750px
+  width: 760px
 }
 
 .metadata-editor .uploader {
   position: relative;
-  width: 175px;
-  height: 98px;
+  width: 180px;
+  height: 100px;
 }
 
 .metadata-editor .uploader > div {
@@ -282,6 +282,7 @@ table.list a.title {
   display: flex;
   flex-wrap: wrap;
   flex: 1;
+  margin-left: 30px;
   gap: 10px;
 }
 
