@@ -86,7 +86,6 @@
 </html>
 
 <script>
-const { createElement, formatSeconds } = Thyme.util;
 const metaDialog = document.querySelector('#meta-dialog');
 const cover = metaDialog.querySelector('.uploader>div');
 
@@ -112,10 +111,14 @@ metaDialog.buttons = [{
 }];
 
 function openMetadata(metadata) {
+  metadata.region = metadata.region?.code;
+  metadata.quality = metadata.quality?.code;
+  metadata.censorship = metadata.censorship?.code;
   Thyme.form.setJsonObject(metaDialog, metadata);
+
   const { video, audio } = metadata.mediaInfo;
   cover.style.backgroundImage = `url(/cover/${metadata.id})`;
-  metaDialog.querySelector('#duration').innerHTML = formatSeconds(metadata.mediaInfo.duration/1000);
+  metaDialog.querySelector('#duration').innerHTML = Thyme.util.formatSeconds(metadata.mediaInfo.duration/1000);
   metaDialog.querySelector('#format').innerHTML = metadata.mediaInfo.format;
   metaDialog.querySelector('#vcodec').innerHTML = video.decoder;
   metaDialog.querySelector('#dimension').innerHTML = video.width +' × '+ video.height;
