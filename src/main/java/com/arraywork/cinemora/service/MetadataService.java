@@ -27,8 +27,8 @@ import com.arraywork.autumn.util.Pagination;
 import com.arraywork.autumn.util.TimeUtils;
 import com.arraywork.cinemora.entity.MediaInfo;
 import com.arraywork.cinemora.entity.Metadata;
-import com.arraywork.cinemora.entity.Preference;
 import com.arraywork.cinemora.entity.ScanningInfo;
+import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.entity.VideoInfo;
 import com.arraywork.cinemora.enums.Quality;
 import com.arraywork.cinemora.enums.ScanEvent;
@@ -48,7 +48,7 @@ public class MetadataService {
 
     @Resource
     @Lazy
-    private PreferenceService prefsService;
+    private SettingService settingService;
     @Resource
     private FfmpegService ffmpegService;
     @Resource
@@ -96,7 +96,7 @@ public class MetadataService {
         VideoInfo video = mediaInfo.getVideo();
         Metadata metadata = metadataRepo.findByFilePath(file.getPath());
         if (metadata == null) {
-            int index = prefsService.getPreference().getLibrary().length();
+            int index = settingService.getSettings().getLibrary().length();
 
             metadata = new Metadata();
             metadata.setMediaInfo(mediaInfo);
@@ -149,9 +149,9 @@ public class MetadataService {
             metadata.setQuality(_metadata.getQuality());
         }
         // 重命名文件
-        Preference prefer = prefsService.getPreference();
-        if (prefer.isAutoRename()) {
-            String library = prefer.getLibrary();
+        Settings settings = settingService.getSettings();
+        if (settings.isAutoRename()) {
+            String library = settings.getLibrary();
             String filePath = metadata.getFilePath();
             String extension = FileUtils.getExtension(filePath);
             String newName = "[" + code + "] " + metadata.getTitle() + extension;

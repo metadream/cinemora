@@ -10,8 +10,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.arraywork.cinemora.entity.Preference;
-import com.arraywork.cinemora.service.PreferenceService;
+import com.arraywork.cinemora.entity.Settings;
+import com.arraywork.cinemora.service.SettingService;
 
 /**
  * 初始化拦截器
@@ -24,7 +24,7 @@ import com.arraywork.cinemora.service.PreferenceService;
 public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Resource
-    private PreferenceService prefsService;
+    private SettingService settingService;
     private String initUrl = "/~/init";
 
     @Override
@@ -32,8 +32,8 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
         throws IOException {
 
         if (!isRestErrorRequest(request)) {
-            Preference prefs = prefsService.getPreference();
-            if (prefs == null) {
+            Settings settings = settingService.getSettings();
+            if (settings == null) {
                 response.sendRedirect(initUrl);
                 return false;
             }
@@ -44,7 +44,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(this).addPathPatterns("/**")
-            .excludePathPatterns(initUrl, "/~/preference", "/assets/**");
+            .excludePathPatterns(initUrl, "/~/settings", "/assets/**");
     }
 
     private boolean isRestErrorRequest(HttpServletRequest request) {

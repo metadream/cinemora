@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.autumn.security.Permission;
 import com.arraywork.autumn.util.Validator;
-import com.arraywork.cinemora.entity.Preference;
-import com.arraywork.cinemora.service.PreferenceService;
+import com.arraywork.cinemora.entity.Settings;
+import com.arraywork.cinemora.service.SettingService;
 
 /**
  * 偏好设置控制器
@@ -26,32 +26,32 @@ import com.arraywork.cinemora.service.PreferenceService;
  */
 @Controller
 @RequestMapping("/~")
-public class PreferenceController {
+public class SettingController {
 
     @Resource
-    private PreferenceService prefsService;
+    private SettingService settingService;
 
     // 初始化页面
     @GetMapping("/init")
     public String init() {
-        Preference prefs = prefsService.getPreference();
-        return prefs != null ? "redirect:/" : "init";
+        Settings settings = settingService.getSettings();
+        return settings != null ? "redirect:/" : "init";
     }
 
     // 初始化偏好
-    @PostMapping("/preference")
+    @PostMapping("/settings")
     @ResponseBody
-    public Preference init(
-        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Preference prefs) throws Exception {
-        return prefsService.init(prefs);
+    public Settings init(
+        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Settings settings) throws Exception {
+        return settingService.init(settings);
     }
 
     // 保存偏好
-    @PutMapping("/preference")
+    @PutMapping("/settings")
     @Permission
     @ResponseBody
-    public Preference save(@Validated @RequestBody Preference prefs) throws Exception {
-        return prefsService.save(prefs);
+    public Settings save(@Validated @RequestBody Settings settings) throws Exception {
+        return settingService.save(settings);
     }
 
 }

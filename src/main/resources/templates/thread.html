@@ -23,7 +23,7 @@
       <div>[[${metadata.code}]]</div>
     </div>
 
-    <th:block th:each="metafield: ${preference.metafields}" th:with="value=${metadata[metafield.name]}">
+    <th:block th:each="metafield: ${settings.metafields}" th:with="value=${metadata[metafield.name]}">
       <div class="prop" th:if="${value}">
         <label>[[${metafield.label}]]:</label>
         <div th:if="${metafield.enums}">

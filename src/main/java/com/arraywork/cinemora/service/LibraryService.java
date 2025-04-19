@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.arraywork.autumn.helper.DirectoryMonitor;
-import com.arraywork.cinemora.entity.Preference;
+import com.arraywork.cinemora.entity.Settings;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ public class LibraryService {
 
     private DirectoryMonitor monitor;
     @Resource
-    private PreferenceService prefsService;
+    private SettingService settingService;
     @Resource
     private MetadataService metadataService;
 
@@ -37,9 +37,9 @@ public class LibraryService {
     // 随应用启动目录监听
     @PostConstruct
     public void scan() throws Exception {
-        Preference prefs = prefsService.getPreference();
-        if (prefs != null) {
-            String library = prefs.getLibrary();
+        Settings settings = settingService.getSettings();
+        if (settings != null) {
+            String library = settings.getLibrary();
             scan(library, false);
         }
     }
@@ -52,7 +52,7 @@ public class LibraryService {
 
     // 重新扫描媒体库
     public void rescan() throws Exception {
-        String library = prefsService.getPreference().getLibrary();
+        String library = settingService.getSettings().getLibrary();
         metadataService.purge(library);
         scan(library, true);
     }

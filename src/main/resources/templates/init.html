@@ -41,7 +41,7 @@ async function init(btn) {
   data.metafields = data.metafields?.split(',') || [];
   btn.loading = true;
   try {
-    await Thyme.http.post('/~/preference', data);
+    await Thyme.http.post('/~/settings', data);
     location.href = '/~/metadata';
   } finally {
     btn.loading = false;

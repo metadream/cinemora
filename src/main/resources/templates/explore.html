@@ -3,7 +3,7 @@
 <body>
 
 <main layout:fragment="main">
-  <th:block th:each="metafield: ${preference.metafields}" 
+  <th:block th:each="metafield: ${settings.metafields}"
     th:with="tags = ${tagCloud[metafield.name]}"
     th:if="${metafield.name != 'issueDate' && metafield.enums == null}">
 

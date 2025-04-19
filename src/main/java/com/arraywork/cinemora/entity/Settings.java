@@ -33,10 +33,10 @@ import lombok.EqualsAndHashCode;
 @DynamicInsert
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Preference extends Principal {
+public class Settings extends Principal {
 
     @Id
-    private long prfcId = Long.MAX_VALUE;
+    private long settingId = Long.MAX_VALUE;
 
     // 用户名
     @Column(unique = true)
@@ -49,7 +49,7 @@ public class Preference extends Principal {
     @Size(max = 60, message = "密码不能超过 {max} 个字符")
     private String password;
 
-    // 媒体库路径
+    // 媒体库路径h
     @NotBlank(message = "媒体库路径不能为空")
     @Size(max = 120, message = "媒体库路径不能超过 {max} 个字符")
     private String library;

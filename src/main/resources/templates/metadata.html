@@ -7,7 +7,7 @@
     <h3>元数据</h3>
     <div class="buttons">
       <th-button onclick="logDialog.open()" id="log-btn" variant="minor outline">扫描日志</th-button>
-      <th-button onclick="prefsDialog.open()">偏好设置</th-button>
+      <th-button onclick="settingsDialog.open()">Settings</th-button>
     </div>
   </div>
 
@@ -16,7 +16,7 @@
       <th width="3%"></th>
       <th width="13%">编号</th>
       <th>标题</th>
-      <th width="10%" th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}">
+      <th width="10%" th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}">
         [[${metafield.label}]]
       </th>
       <th width="10%" style="text-align:right">大小</th>
@@ -26,7 +26,7 @@
       <td style="text-align:center;padding:0;"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
       <td><a th:href="@{|/${metadata.code}|}" onclick="event.cancelBubble=true">[[${metadata.code}]]</a></td>
       <td>[[${metadata.title}]]</td>
-      <td th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}"
+      <td th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}"
         th:with="enum=${metadata[metafield.name]}"><span th:if="${enum}">[[${enum.label}]]</span>
       </td>
       <td style="text-align:right">[[${@utils.formatSiBytes(metadata.fileSize)}]]</td>
@@ -66,7 +66,7 @@
         <th-field label="精选"><th-switch name="starred"></th-switch></th-field>
         <th-field label="标题" name="title" maxlength="120" class="exclusive" required></th-field>
 
-        <th:block th:each="metafield: ${preference.metafields}">
+        <th:block th:each="metafield: ${settings.metafields}">
            <th-select th:if="${metafield.enums != null}" th:label="${metafield.label}" th:name="${metafield.name}">
              <option></option>
              <option th:each="enum: ${metafield.enums}" th:value="${enum.code}">[[${enum.label}]]</option>
@@ -82,12 +82,12 @@
     </div>
   </th-dialog>
 
-  <th-dialog id="prefs-dialog">
-    <div class="front-panel preference" style="width:450px">
-      <th-field label="管理员账号" name="username" th:value="${preference.username}" maxlength="20" required></th-field>
+  <th-dialog id="settings-dialog">
+    <div class="front-panel settings" style="width:450px">
+      <th-field label="管理员账号" name="username" th:value="${settings.username}" maxlength="20" required></th-field>
       <th-field label="管理员密码" name="password" placeholder="无需修改密码则留空" type="password" maxlength="20"></th-field>
-      <th-field label="媒体库路径" name="library" th:value="${preference.library}" maxlength="120" required
-        th:data-value="${preference.library}"></th-field>
+      <th-field label="媒体库路径" name="library" th:value="${settings.library}" maxlength="120" required
+        th:data-value="${settings.library}"></th-field>
 
       <p></p><div>可选元数据属性<br>
         <span class="footnote">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
@@ -101,7 +101,7 @@
       </div>
       <p></p><div>
         <label><input type="checkbox" name="autoRename" value="true"
-         th:checked="${preference.autoRename}"//>自动使用“[编号] 标题”对文件重命名</label>
+         th:checked="${settings.autoRename}"//>自动使用“[编号] 标题”对文件重命名</label>
         <div class="footnote">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
       </div>
     </div>
@@ -116,11 +116,11 @@
 </html>
 
 <script>
-const prefsDialog = document.querySelector('#prefs-dialog');
+const settingsDialog = document.querySelector('#settings-dialog');
 const metaDialog = document.querySelector('#metadata-dialog');
 const logDialog = document.querySelector('#log-dialog');
 const logBtn = document.querySelector('#log-btn');
-const library = prefsDialog.querySelector('[name="library"]').value;
+const library = settingsDialog.querySelector('[name="library"]').value;
 const cover = metaDialog.querySelector('.uploader>div');
 const { createElement, formatSeconds } = Thyme.util;
 
@@ -149,7 +149,7 @@ metaDialog.buttons = [{
   }
 }];
 
-prefsDialog.buttons = [{
+settingsDialog.buttons = [{
   label: '取消'
 }, {
   label: '<span style="color:orange">扫描媒体库</span>',
@@ -166,7 +166,7 @@ prefsDialog.buttons = [{
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
 
-    const oldLib = prefsDialog.querySelector('[name="library"]').dataset.value;
+    const oldLib = settingsDialog.querySelector('[name="library"]').dataset.value;
     dlg.hide();
     if (data.library !== oldLib) {
       Thyme.confirm('<b class="WARNING">更改媒体库路径将清空所有元数据且不可恢复，确定继续吗？</b>',
@@ -177,7 +177,7 @@ prefsDialog.buttons = [{
 
     async function save() {
       data.metafields = data.metafields?.split(',') || [];
-      await Thyme.http.put('/~/preference', data);
+      await Thyme.http.put('/~/settings', data);
       location.reload();
     }
   }

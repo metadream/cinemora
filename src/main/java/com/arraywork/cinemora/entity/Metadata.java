@@ -54,61 +54,61 @@ public class Metadata {
     // 制作方
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT NULL")
-    @MetaColumn(label = "制作方")
+    @MetaColumn(label = "Producers")
     private String[] producers;
 
     // 导演
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT NULL")
-    @MetaColumn(label = "导演")
+    @MetaColumn(label = "Directors")
     private String[] directors;
 
     // 主演
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT NULL")
-    @MetaColumn(label = "主演")
+    @MetaColumn(label = "Starring")
     private String[] starring;
 
     // 系列
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT NULL")
-    @MetaColumn(label = "系列")
+    @MetaColumn(label = "Series")
     private String[] series;
 
     // 题材
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT NULL")
-    @MetaColumn(label = "题材")
+    @MetaColumn(label = "Genres")
     private String[] genres;
 
     // 标签
     @Type(JsonStringType.class)
     @Column(columnDefinition = "JSON DEFAULT NULL")
-    @MetaColumn(label = "标签")
+    @MetaColumn(label = "Tags")
     private String[] tags;
 
     // 地区
     @Convert(converter = Region.Converter.class)
-    @MetaColumn(label = "地区")
+    @MetaColumn(label = "Region")
     private Region region;
 
     // 画质
     @Convert(converter = Quality.Converter.class)
-    @MetaColumn(label = "画质")
+    @MetaColumn(label = "Quality")
     private Quality quality;
 
     // 审查
     @Convert(converter = Censorship.Converter.class)
-    @MetaColumn(label = "审查")
+    @MetaColumn(label = "Censorship")
     private Censorship censorship;
 
     // 分级
     @Convert(converter = Rating.Converter.class)
-    @MetaColumn(label = "分级")
+    @MetaColumn(label = "Rating")
     private Rating rating;
 
     // 发行日
-    @MetaColumn(label = "发行日")
+    @MetaColumn(label = "Issue Date")
     private LocalDate issueDate;
 
     // 媒体信息

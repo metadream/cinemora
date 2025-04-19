@@ -19,7 +19,7 @@ import com.arraywork.autumn.StaticResourceHandler;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.service.FfmpegService;
 import com.arraywork.cinemora.service.MetadataService;
-import com.arraywork.cinemora.service.PreferenceService;
+import com.arraywork.cinemora.service.SettingService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +39,7 @@ public class ResourceController {
     @Resource
     private FfmpegService ffmpegService;
     @Resource
-    private PreferenceService preferService;
+    private SettingService settingService;
     @Resource
     private MetadataService metadataService;
 
@@ -58,7 +58,7 @@ public class ResourceController {
     @GetMapping("/video/{id}")
     public void video(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
-        String library = preferService.getPreference().getLibrary();
+        String library = settingService.getSettings().getLibrary();
         Metadata metadata = metadataService.getById(id);
         Path videoPath = Path.of(library, metadata.getFilePath());
         resourceHandler.serve(videoPath, request, response);
