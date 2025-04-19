@@ -8,7 +8,7 @@ import lombok.Getter;
 /**
  * 扫描事件枚举
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/30
  */

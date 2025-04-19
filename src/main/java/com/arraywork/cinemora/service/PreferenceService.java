@@ -22,7 +22,7 @@ import com.arraywork.cinemora.repo.PreferenceRepo;
 /**
  * 偏好设置服务
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/22
  */

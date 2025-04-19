@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * 初始化程序
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/27
  */

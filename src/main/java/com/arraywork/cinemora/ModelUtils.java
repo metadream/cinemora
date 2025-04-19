@@ -13,7 +13,7 @@ import com.arraywork.autumn.util.TimeUtils;
  * @since 2025/04/08
  */
 @Component("utils")
-public class ModelComponents {
+public class ModelUtils {
 
     public String formatSiBytes(long bytes) {
         return NumberUtils.formatSiBytes(bytes);

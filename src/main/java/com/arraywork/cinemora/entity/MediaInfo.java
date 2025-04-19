@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 媒体信息
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/21
  */

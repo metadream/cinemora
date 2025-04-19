@@ -10,7 +10,7 @@ import com.arraywork.autumn.BaseApplication;
 /**
  * 应用启动类
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/21
  */

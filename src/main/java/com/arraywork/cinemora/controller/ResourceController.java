@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 资源控制器
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/28
  */

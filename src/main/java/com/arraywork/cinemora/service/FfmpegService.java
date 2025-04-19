@@ -24,7 +24,7 @@ import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 /**
  * FFMPEG服务
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/22
  */

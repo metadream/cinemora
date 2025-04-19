@@ -21,7 +21,7 @@ import com.arraywork.cinemora.service.MetadataService;
 /**
  * 元数据控制器
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/24
  */

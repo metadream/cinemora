@@ -2,7 +2,6 @@ package com.arraywork.cinemora;
 
 import java.io.IOException;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -17,7 +16,7 @@ import com.arraywork.cinemora.service.PreferenceService;
 /**
  * 初始化拦截器
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/23
  */
@@ -30,7 +29,7 @@ public class InitInterceptor implements HandlerInterceptor, WebMvcConfigurer {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-        throws ServletException, IOException {
+        throws IOException {
 
         if (!isRestErrorRequest(request)) {
             Preference prefs = prefsService.getPreference();

@@ -15,7 +15,7 @@ import com.arraywork.cinemora.service.PreferenceService;
 /**
  * 模板全局属性
  *
- * @author AiChen
+ * @author Marco
  * @copyright ArrayWork Inc.
  * @since 2024/04/22
  */
