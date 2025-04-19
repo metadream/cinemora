@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.arraywork.autumn.external.BCryptEncoder;
-import com.arraywork.autumn.security.SecurityContext;
 import com.arraywork.autumn.security.SecurityService;
+import com.arraywork.autumn.security.SecuritySession;
 import com.arraywork.autumn.util.Assert;
 import com.arraywork.cinemora.entity.Preference;
 import com.arraywork.cinemora.repo.PreferenceRepo;
@@ -30,7 +30,7 @@ import com.arraywork.cinemora.repo.PreferenceRepo;
 public class PreferenceService implements SecurityService {
 
     @Resource
-    private SecurityContext context;
+    private SecuritySession session;
     @Resource
     private BCryptEncoder bCryptEncoder;
     @Resource
@@ -65,7 +65,7 @@ public class PreferenceService implements SecurityService {
         checkLibrary(prefs);
         prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
 
-        context.authorize(prefs);
+        session.setPrincipal(prefs);
         libraryService.scan(prefs.getLibrary(), true);
         return prefsRepo.save(prefs);
     }
