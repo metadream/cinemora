@@ -10,19 +10,19 @@
     </parent>
 
     <groupId>com.arraywork</groupId>
-    <artifactId>spring-puffin</artifactId>
+    <artifactId>cinemora</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-puffin</name>
-    <description>video media system</description>
+    <name>cinemora</name>
+    <description>Video Media Manager System</description>
     <properties>
         <java.version>17</java.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.arraywork.springforce</groupId>
-            <artifactId>spring-force</artifactId>
-            <version>0.0.1</version>
+            <groupId>com.arraywork</groupId>
+            <artifactId>autumn</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
