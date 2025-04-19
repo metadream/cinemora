@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.arraywork.autumn.external.BCryptEncoder;
+import com.arraywork.autumn.crypto.BCryptCipher;
 import com.arraywork.autumn.security.SecurityService;
 import com.arraywork.autumn.security.SecuritySession;
 import com.arraywork.autumn.util.Assert;
@@ -32,8 +32,6 @@ public class PreferenceService implements SecurityService {
     @Resource
     private SecuritySession session;
     @Resource
-    private BCryptEncoder bCryptEncoder;
-    @Resource
     @Lazy
     private LibraryService libraryService;
     @Resource
@@ -47,7 +45,7 @@ public class PreferenceService implements SecurityService {
         Preference prefs = getPreference();
         Assert.notNull(prefs, "系统尚未初始化");
         Assert.isTrue(prefs.getUsername().equals(username)
-            && bCryptEncoder.matches(password, prefs.getPassword()), "用户名或密码错误");
+            && BCryptCipher.matches(password, prefs.getPassword()), "用户名或密码错误");
         return prefs;
     }
 
@@ -61,9 +59,9 @@ public class PreferenceService implements SecurityService {
     // 初始化偏好
     @CachePut(value = "cinemora", key = "'#preference'")
     @Transactional(rollbackFor = Exception.class)
-    public Preference init(Preference prefs) {
+    public Preference init(Preference prefs) throws Exception {
         checkLibrary(prefs);
-        prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
+        prefs.setPassword(BCryptCipher.encode(prefs.getPassword()));
 
         session.setPrincipal(prefs);
         libraryService.scan(prefs.getLibrary(), true);
@@ -73,14 +71,14 @@ public class PreferenceService implements SecurityService {
     // 保存偏好
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "cinemora", key = "'#preference'")
-    public Preference save(Preference prefs) {
+    public Preference save(Preference prefs) throws Exception {
         checkLibrary(prefs);
 
         // 修改密码
         Preference _prefs = getPreference();
         String _library = _prefs.getLibrary();
         if (StringUtils.hasText(prefs.getPassword())) {
-            prefs.setPassword(bCryptEncoder.encode(prefs.getPassword()));
+            prefs.setPassword(BCryptCipher.encode(prefs.getPassword()));
         } else {
             prefs.setPassword(_prefs.getPassword());
         }

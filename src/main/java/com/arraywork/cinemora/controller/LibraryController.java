@@ -41,7 +41,7 @@ public class LibraryController {
     @PostMapping("/rescan")
     @Permission
     @ResponseBody
-    public void rescan() {
+    public void rescan() throws Exception {
         libraryService.rescan();
     }
 

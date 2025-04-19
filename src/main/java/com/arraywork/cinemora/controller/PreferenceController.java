@@ -42,7 +42,7 @@ public class PreferenceController {
     @PostMapping("/preference")
     @ResponseBody
     public Preference init(
-        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Preference prefs) {
+        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Preference prefs) throws Exception {
         return prefsService.init(prefs);
     }
 
@@ -50,7 +50,7 @@ public class PreferenceController {
     @PutMapping("/preference")
     @Permission
     @ResponseBody
-    public Preference save(@Validated @RequestBody Preference prefs) {
+    public Preference save(@Validated @RequestBody Preference prefs) throws Exception {
         return prefsService.save(prefs);
     }
 

@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
 public class Preference extends Principal {
 
     @Id
-    private long id = Long.MAX_VALUE;
+    private long prfcId = Long.MAX_VALUE;
 
     // 用户名
     @Column(unique = true)

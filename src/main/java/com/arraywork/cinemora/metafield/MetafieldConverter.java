@@ -21,7 +21,7 @@ public class MetafieldConverter extends StdConverter<String[], List<Metafield>>
     @Override
     public String convertToDatabaseColumn(List<Metafield> attributes) {
         if (attributes != null) {
-            return JsonUtils.stringify(attributes.stream().map(Metafield::getName));
+            return JsonUtils.stringify(attributes.stream().map(Metafield::getName).toList());
         }
         return "[]";
     }

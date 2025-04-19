@@ -2,9 +2,7 @@
 <head><title>元数据</title></head>
 <body>
 
-<main layout:fragment="main" th:with="
-  Numbers=${T(com.arraywork.springforce.util.Numbers)},
-  Times=${T(com.arraywork.springforce.util.Times)}">
+<main layout:fragment="main">
   <div class="headline">
     <h3>元数据</h3>
     <div class="buttons">
@@ -31,8 +29,8 @@
       <td th:each="metafield: ${preference.metafields}" th:if="${metafield.enums != null}"
         th:with="enum=${metadata[metafield.name]}"><span th:if="${enum}">[[${enum.label}]]</span>
       </td>
-      <td style="text-align:right">[[${Numbers.formatSiBytes(metadata.fileSize)}]]</td>
-      <td style="text-align:right">[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</td>
+      <td style="text-align:right">[[${@utils.formatSiBytes(metadata.fileSize)}]]</td>
+      <td style="text-align:right">[[${@utils.formatDuration(metadata.mediaInfo.duration)}]]</td>
     </tr>
   </table>
 
@@ -108,7 +106,7 @@
       </div>
     </div>
   </th-dialog>
-  
+
   <th-dialog id="log-dialog">
     <div style="width:600px" id="logs"></div>
   </th-dialog>
@@ -138,7 +136,7 @@ metaDialog.buttons = [{
   onclick: async function(dlg) {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
-    
+
     data.producers = toArray(data.producers);
     data.directors = toArray(data.directors);
     data.starring = toArray(data.starring);
@@ -167,11 +165,11 @@ prefsDialog.buttons = [{
   onclick: async (dlg) => {
     const data = Thyme.form.getJsonObject(dlg);
     if (!data) return;
-    
+
     const oldLib = prefsDialog.querySelector('[name="library"]').dataset.value;
     dlg.hide();
     if (data.library !== oldLib) {
-      Thyme.confirm('<b class="WARNING">更改媒体库路径将清空所有元数据且不可恢复，确定继续吗？</b>', 
+      Thyme.confirm('<b class="WARNING">更改媒体库路径将清空所有元数据且不可恢复，确定继续吗？</b>',
       async() => await save());
     } else {
       await save();

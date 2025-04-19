@@ -6,6 +6,8 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.arraywork.autumn.channel.SseChannel;
+import com.arraywork.autumn.helper.DirectoryMonitor;
+import com.arraywork.autumn.util.TimeUtils;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.ScanningInfo;
 import com.arraywork.cinemora.enums.ScanEvent;
@@ -22,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class LibraryListener implements FileSystemListener {
+public class LibraryListener extends DirectoryMonitor.DirectoryListener {
 
     private int success;
     private int skipped;
@@ -34,32 +36,32 @@ public class LibraryListener implements FileSystemListener {
     private SseChannel channel;
 
     // 监听启动回调方法
-    @Override
-    public void onStarted(File file, int count, int total) {
-        onChanged(file, count, total, ScanEvent.SCAN, () -> metadataService.build(file, false));
-    }
+    //    @Override
+    //    public void onStart(File file, int count, int total) {
+    //        onChanged(file, count, total, ScanEvent.SCAN, () -> metadataService.build(file, false));
+    //    }
 
     // 新增文件回调方法
     @Override
-    public void onAdded(File file, int count, int total) {
-        onChanged(file, count, total, ScanEvent.ADD, () -> metadataService.build(file, false));
+    public void onFileCreate(File file) {
+        //        onChanged(file, count, total, ScanEvent.ADD, () -> metadataService.build(file, false));
     }
 
     // 修改文件回调方法
     @Override
-    public void onModified(File file, int count, int total) {
-        onChanged(file, count, total, ScanEvent.MODIFY, () -> metadataService.build(file, true));
+    public void onFileChange(File file) {
+        //        onChanged(file, count, total, ScanEvent.MODIFY, () -> metadataService.build(file, true));
     }
 
     // 删除文件回调方法
     @Override
-    public void onDeleted(File file, int count, int total) {
-        onChanged(file, count, total, ScanEvent.DELETE, () -> metadataService.delete(file));
+    public void onFileDelete(File file) {
+        //        onChanged(file, count, total, ScanEvent.DELETE, () -> metadataService.delete(file));
     }
 
     // 监听回调方法
     private void onChanged(File file, int count, int total, ScanEvent event, Consumer consumer) {
-        Times.delay(200);
+        TimeUtils.delay(200);
         ScanningInfo info = new ScanningInfo(event);
         info.count = count;
         info.total = total;

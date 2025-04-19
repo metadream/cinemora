@@ -2,16 +2,14 @@
 <head><title>[[${metadata.title}]]</title></head>
 <body>
 
-<main class="detail" layout:fragment="main" th:object="${metadata.mediaInfo}" th:with="
-  Numbers=${T(com.arraywork.springforce.util.Numbers)},
-  Times=${T(com.arraywork.springforce.util.Times)}">
+<main class="detail" layout:fragment="main" th:object="${metadata.mediaInfo}">
   <div class="thread">
     <h3>[[${metadata.title}]]</h3>
     <div class="footnote">
       <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd HH:mm')}]]</span>
-      <span>[[${Numbers.formatSiBytes(metadata.fileSize)}]]</span>
+      <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
       <span>[[*{video.width}]]×[[*{video.height}]]</span>
-      <span>[[${Times.formatDuration(metadata.mediaInfo.duration)}]]</span>
+      <span>[[${@utils.formatDuration(metadata.mediaInfo.duration)}]]</span>
       <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
     </div>
 
