@@ -18,9 +18,9 @@ import lombok.Getter;
 @Getter
 public enum Censorship implements MetafieldEnum, GenericEnum<Integer> {
 
-    UNCENSORED(0, "无码"),
-    REDUCED(1, "消码"),
-    CENSORED(2, "有码");
+    UNCENSORED(0, "Uncensored"),
+    REDUCED(1, "Reduced"),
+    CENSORED(2, "Censored");
 
     private final Integer code;
     private final String label;

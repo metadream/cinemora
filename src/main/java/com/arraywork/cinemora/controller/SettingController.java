@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.autumn.security.Permission;
+import com.arraywork.autumn.security.SecurityController;
 import com.arraywork.autumn.util.Validator;
 import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.service.SettingService;
@@ -26,7 +27,7 @@ import com.arraywork.cinemora.service.SettingService;
  */
 @Controller
 @RequestMapping("/~")
-public class SettingController {
+public class SettingController extends SecurityController {
 
     @Resource
     private SettingService settingService;

@@ -96,8 +96,8 @@ public class SettingService implements SecurityService {
     private void checkLibrary(Settings settings) {
         String library = settings.getLibrary();
         File entry = new File(library);
-        Assert.isTrue(entry.exists(), "媒体库路径不存在");
-        Assert.isTrue(entry.isDirectory(), "媒体库路径必须为目录");
+        Assert.isTrue(entry.exists(), "The media library path does not exist.");
+        Assert.isTrue(entry.isDirectory(), "The media library path must be a directory.");
         settings.setLibrary(Path.of(library).toString());
     }
 

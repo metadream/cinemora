@@ -18,12 +18,12 @@ import lombok.Getter;
 @Getter
 public enum Region implements MetafieldEnum, GenericEnum<Integer> {
 
-    CHINESE(10, "中国"),
-    JAPANESE(11, "日本"),
-    KOREAN(12, "韩国"),
-    ASIAN(20, "亚洲"),
-    OCCIDENT(30, "欧美"),
-    OTHERS(99, "其他");
+    CHINA(10, "China"),
+    JAPAN(11, "Japan"),
+    KOREA(12, "Korea"),
+    ASIA(20, "Asia"),
+    OCCIDENT(30, "Occident"),
+    OTHERS(99, "Others");
 
     private final Integer code;
     private final String label;

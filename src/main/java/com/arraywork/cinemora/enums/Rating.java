@@ -18,10 +18,10 @@ import lombok.Getter;
 @Getter
 public enum Rating implements MetafieldEnum, GenericEnum<Integer> {
 
-    UNIVERSAL(0, "普适级"),
-    GUIDANCE(1, "指导级"),
-    RESTRICTED(2, "限制级"),
-    ADULT(3, "成人级");
+    UNIVERSAL(0, "Universal"),      // 普适级
+    GUIDANCE(1, "Guidance"),        // 指导级
+    RESTRICTED(2, "Restricted"),    // 限制级
+    ADULT(3, "Adult");              // 成人级
 
     private final Integer code;
     private final String label;

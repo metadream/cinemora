@@ -6,18 +6,18 @@
   <script src="//cdn.unpkg.net/assets/mod/thyme@0.1.0.js"></script>
   <link rel="icon" type="image/svg" href="/assets/favicon.svg"/>
   <link rel="stylesheet" href="/assets/app.css"/>
-  <title>初始化 - [[${appName}]]</title>
+  <title>Initialization - [[${appName}]]</title>
 </head>
 
 <body>
   <div class="front-panel" style="width:500px">
-    <h2>初始化</h2>
-    <th-field label="管理员账号" name="username" maxlength="20" required></th-field>
-    <th-field label="管理员密码" name="password" type="password" maxlength="20" required></th-field>
-    <th-field label="媒体库路径" name="library" maxlength="120" required></th-field>
+    <h2>Initialization</h2>
+    <th-field label="Username" name="username" maxlength="20" required></th-field>
+    <th-field label="Password" name="password" type="password" maxlength="20" required></th-field>
+    <th-field label="Library" name="library" maxlength="120" required></th-field>
 
-    <p></p><div>可选元数据属性<br>
-      <span class="footnote">勾选项将作为元数据的附加属性，对媒体进行多维度分类查询。</span>
+    <p></p><div>Metafields<br>
+      <span class="footnote">The selected items will serve as additional metadata attributes for multi-dimensional classification and retrieval of media.</span>
     </div>
     <div class="metafields">
       <label th:each="metafield: ${Metafields}">
@@ -26,10 +26,10 @@
       </label>
     </div>
     <p></p><div>
-      <label><input type="checkbox" name="autoRename" value="true"/>自动使用“[编号] 标题”对文件重命名</label>
-      <div class="footnote">勾选此项后，保存元数据时将自动对硬盘中的实体文件重命名。</div>
+      <label><input type="checkbox" name="autoRename" value="true"/><span>Automatically Rename</span></label>
+      <div class="footnote">Enable this option to automatically rename physical files on the disk using the “[No.] Title” format when saving metadata.</div>
     </div>
-    <th-button onclick="init(this)">确定</th-button>
+    <th-button onclick="init(this)">Next</th-button>
   </div>
 </body>
 </html>

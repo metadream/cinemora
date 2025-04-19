@@ -26,7 +26,6 @@ import com.arraywork.cinemora.enums.Region;
  */
 public class MetadataSpec implements Specification<Metadata> {
 
-    private static final long serialVersionUID = 4624074578174492514L;
     private Metadata condition;
 
     public MetadataSpec(Metadata condition) {

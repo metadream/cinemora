@@ -1,12 +1,12 @@
 <html layout:decorate="~{_layout}">
-<head><title>登录</title></head>
+<head><title>Login</title></head>
 <body>
 
 <main layout:fragment="main" style="display:flex">
-  <div class="front-panel" style="width:400px">
-    <th-field label="账号" name="username" maxlength="20" required autofocus></th-field>
-    <th-field label="密码" name="password" maxlength="20" type="password" required></th-field>
-    <th-button>登录</th-button>
+  <div class="front-panel" style="width:380px">
+    <th-field label="Username" name="username" maxlength="20" required autofocus></th-field>
+    <th-field label="Password" name="password" maxlength="20" type="password" required></th-field>
+    <th-button>Login</th-button>
   </div>
 </main>
 
@@ -28,7 +28,7 @@ async function login() {
 
   try {
     $loginBtn.loading = true;
-    await Thyme.http.post('/login', data);
+    await Thyme.http.post('/~/login', data);
     location.href = '/~/metadata';
   } finally {
     $loginBtn.loading = false;

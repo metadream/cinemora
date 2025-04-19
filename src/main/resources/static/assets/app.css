@@ -7,6 +7,7 @@
 :root {
   --primary-color: #fb0 !important;
   --contrast-color: #0af;
+  --font-color: #333;
   --menu-color: #666;
   --minor-color: #999;
   --ignored-color: #bbb;
@@ -86,6 +87,14 @@ h4 {
   font-size: 20px;
 }
 
+th-button::part(button) {
+  color: var(--font-color);
+}
+
+.buttons th-button:not(:first-child) {
+  margin-left: 10px;
+}
+
 img.logo {
   display: inline-block;
   height: 28px;
@@ -101,6 +110,12 @@ footer img.logo {
 
 section {
   margin: 20px 0;
+}
+
+section.metadata {
+  padding: 10px 20px 20px;
+  border-radius: 5px;
+  background: #fff;
 }
 
 section .tags {
@@ -132,28 +147,49 @@ video {
   cursor: pointer;
 }
 
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 table.list tr {
-  background: #fff;
+  border-bottom: var(--placeholder-color) 1px solid;
+  height: 36px;
+}
+
+table.list tr:first-child {
+  border-bottom-color: var(--line-color);
 }
 
 table.list th {
   text-align: left;
-  background: var(--placeholder-color);
 }
 
-tr.metadata:hover {
-  cursor: pointer;
-  background: #f9f9f9;
-  transition: .3s all;
+table.list th, table.list td {
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.list th:last-child, table.list td:last-child {
+  text-align: right;
+}
+
+table.list a.code {
+  color: inherit;
+}
+
+table.list a.title {
+  color: var(--contrast-color);
 }
 
 .metafields {
   display: flex;
   flex-wrap: wrap;
-}
-
-.metafields > * {
-  margin-right: 10px;
+  gap: 0 10px;
 }
 
 .pager {
@@ -165,6 +201,7 @@ tr.metadata:hover {
 }
 
 .pager a, .pager span {
+  color: inherit;
   margin: 0 5px;
 }
 
@@ -200,24 +237,15 @@ tr.metadata:hover {
   line-height: 1.4;
 }
 
-th-button::part(button) {
-  color: var(--font-color);
-}
-
-.buttons th-button:not(:first-child) {
-  margin-left: 10px;
-}
-
 .metadata-editor {
   display: flex;
-  align-items: start;
   width: 750px
 }
 
 .metadata-editor .uploader {
   position: relative;
-  width: 160px;
-  height: 90px;
+  width: 175px;
+  height: 98px;
 }
 
 .metadata-editor .uploader > div {
@@ -239,26 +267,26 @@ th-button::part(button) {
 }
 
 .metadata-editor .media-info {
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 13px;
   color: var(--minor-color);
 }
 
-.metadata-editor .media-info b {
-  display: block;
-  margin: 5px 0;
+.metadata-editor .media-info th {
+  color: var(--font-color);
+  text-align: left;
+  padding-top: 5px;
 }
 
 .metadata-editor .fields {
   display: flex;
   flex-wrap: wrap;
   flex: 1;
-  margin-left: 10px;
+  gap: 10px;
 }
 
 .metadata-editor .fields > * {
-  margin: 0 0 10px 10px;
-  width: 280px;
+  width: 270px;
 }
 
 .metadata-editor .fields > .exclusive {

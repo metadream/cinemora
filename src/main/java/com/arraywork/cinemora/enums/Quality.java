@@ -20,10 +20,10 @@ public enum Quality implements MetafieldEnum, GenericEnum<String> {
 
     EK("8K", "8K"),
     FK("4K", "4K"),
-    FHD("FHD", "全高清"),
-    HD("HD", "高清"),
-    SD("SD", "标清"),
-    XX("XX", "其他");
+    FHD("FHD", "FHD"),
+    HD("HD", "HD"),
+    SD("SD", "SD"),
+    XX("XX", "");
 
     private final String code;
     private final String label;
