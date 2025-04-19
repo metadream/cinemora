@@ -7,7 +7,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.arraywork.autumn.helper.DirectoryWatcher;
+import com.arraywork.autumn.helper.DirectoryMonitor;
 import com.arraywork.cinemora.entity.Preference;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryService {
 
-    private DirectoryWatcher watcher;
+    private DirectoryMonitor monitor;
     @Resource
     private PreferenceService prefsService;
     @Resource
@@ -31,12 +31,12 @@ public class LibraryService {
 
     @Autowired
     public LibraryService(LibraryListener listener) {
-        watcher = new DirectoryWatcher(10, 5, listener);
+        monitor = new DirectoryMonitor(5000, listener);
     }
 
     // 随应用启动目录监听
     @PostConstruct
-    public void scan() {
+    public void scan() throws Exception {
         Preference prefs = prefsService.getPreference();
         if (prefs != null) {
             String library = prefs.getLibrary();
@@ -45,13 +45,13 @@ public class LibraryService {
     }
 
     // 异步启动目录监听
-    public void scan(String library, boolean emitOnStart) {
+    public void scan(String library, boolean emitOnStart) throws Exception {
         log.info("启动媒体库监听: {}", library);
-        watcher.start(library, emitOnStart);
+        monitor.start(library);
     }
 
     // 重新扫描媒体库
-    public void rescan() {
+    public void rescan() throws Exception {
         String library = prefsService.getPreference().getLibrary();
         metadataService.purge(library);
         scan(library, true);
@@ -59,8 +59,8 @@ public class LibraryService {
 
     // 应用销毁时停止监听进程
     @PreDestroy
-    public void onDestroyed() {
-        watcher.stop();
+    public void onDestroyed() throws Exception {
+        monitor.stop();
     }
 
 }
