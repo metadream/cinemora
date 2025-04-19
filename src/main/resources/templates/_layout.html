@@ -27,6 +27,14 @@
         <a><img src="/assets/triangle.svg"/><span>[[${metafield.label}]]</span></a>
         <div><a class="tag-item" th:each="enum: ${metafield.enums}" th:href="|/?${metafield.name}=${enum.code}|">[[${enum.label}]]</a></div>
       </menu>
+      <menu>
+        <a><img src="/assets/triangle.svg"/><span>Console</span></a>
+        <div>
+          <a class="tag-item" href="/~/metadata">Metadata</a>
+          <a class="tag-item" href="/~/library">Library</a>
+          <a class="tag-item" href="/~/settings">Settings</a>
+        </div>
+      </menu>
     </nav>
   </main>
 
