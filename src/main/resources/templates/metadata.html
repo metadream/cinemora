@@ -8,7 +8,7 @@
   <section class="metadata">
     <table class="list">
       <tr>
-        <th style="width:10px;padding:0"></th>
+        <th class="starred"></th>
         <th width="11%">No.</th>
         <th>Title</th>
         <th width="10%" th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}">
@@ -18,7 +18,7 @@
         <th width="9%" style="text-align:right">Duration</th>
       </tr>
       <tr th:each="metadata: ${pagination.content}">
-        <td><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
+        <td class="starred"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
         <td><a class="code" target="_blank" th:href="@{|/${metadata.code}|}">[[${metadata.code}]]</a></td>
         <td><a th:onclick="openMetadata([[${metadata}]])">[[${metadata.title}]]</a></td>
         <td th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}"
@@ -71,7 +71,7 @@
              <option th:each="enum: ${metafield.enums}" th:value="${enum.code}">[[${enum.label}]]</option>
            </th-select>
            <th-field th:if="${metafield.name != 'issueDate' && metafield.enums == null}" class="exclusive"
-            th:label="${metafield.label}" th:name="${metafield.name}" placeholder="多个条目之间用逗号分隔"></th-field>
+            th:label="${metafield.label}" th:name="${metafield.name}" placeholder="Separate multiple entries with commas."></th-field>
            <th-calendar th:if="${metafield.name == 'issueDate'}" th:label="${metafield.label}" th:name="${metafield.name}">
            </th-calendar>
         </th:block>
@@ -114,6 +114,7 @@ function openMetadata(metadata) {
   metadata.region = metadata.region?.code;
   metadata.quality = metadata.quality?.code;
   metadata.censorship = metadata.censorship?.code;
+  metaDialog.querySelector('[name="filePath"]').title = metadata.filePath;
   Thyme.form.setJsonObject(metaDialog, metadata);
 
   const { video, audio } = metadata.mediaInfo;
@@ -141,7 +142,7 @@ function upload(file) {
 }
 
 function toArray(str) {
-  return str ? str.split(/\s*[,，]\s*/) : null;
+  return str ? str.split(/\s*[,，]\s*/).filter(v => !!v) : null;
 }
 
 function turnPage(n) {

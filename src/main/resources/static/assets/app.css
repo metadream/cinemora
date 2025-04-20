@@ -14,7 +14,7 @@
   --line-color: #ddd;
   --placeholder-color: #eee;
   --bg-color: #f6f6f6;
-  --font-family: Monda;
+  --font-family: Monda, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", "SimHei", Helvetica, Tahoma, Arial, sans-serif !important;
 }
 
 .SUCCESS {
@@ -95,13 +95,16 @@ th-button::part(button) {
   margin-left: 10px;
 }
 
+img {
+  display: block;
+}
+
 img.logo {
-  display: inline-block;
   height: 28px;
 }
 
 header img.logo {
-  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 footer img.logo {
@@ -184,6 +187,11 @@ table.list a.code {
 
 table.list a.title {
   color: var(--contrast-color);
+}
+
+table.list .starred {
+  width: 10px;
+  padding: 0;
 }
 
 .metafields {
