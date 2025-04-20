@@ -1,0 +1,66 @@
+<html layout:decorate="~{_layout}">
+<head><title>Library</title></head>
+<body>
+
+<main layout:fragment="main">
+  <div class="headline"><h3>Library</h3></div>
+
+  <section class="loose">
+    <div class="scan-controls">
+      <div class="scan-progress">
+        <div>Current library：[[${settings.library}]]</div>
+        <div class="progress"><div id="percent"></div></div>
+        <div class="footnote">&#8203;</div>
+      </div>
+      <div class="scan-options">
+        <th-checkbox name="forceUpdate" value="true">Force update metadata</th-checkbox>
+        <th-checkbox name="cleanIndexes" value="true">Clean up invalid metadata</th-checkbox>
+      </div>
+    </div>
+
+    <table class="logs">
+      <tr><th width="170"></th><th width="90"></th><th width="140"></th><th></th></tr>
+    </table>
+  </section>
+
+  <div class="footline">
+    <th-button class="outlined" variant="outlined" onclick="clearLogs(this)">Clear Logs</th-button>
+    <th-button class="outlined" variant="outlined" onclick="abortScan()">Abort Scan</th-button>
+    <th-button onclick="startScan(this)">Start Scan</th-button>
+  </div>
+</main>
+</body>
+</html>
+
+<script>
+const $percent = document.querySelector('#percent');
+const $footnote = document.querySelector('.footnote');
+const $logs = document.querySelector('.logs');
+
+const channel = new Thyme.Channel('/channel/library');
+channel.on('message', data => showLogs(data));
+
+function startScan() {
+  const options = Thyme.form.getJsonObject('.scan-options');
+  Thyme.confirm('Scanning the library may take a long time. <br>Are you sure you want to continue?', async (cfm) => {
+    Thyme.http.post('/~/library', options);
+    // $scanBtn.innerHTML = '正在扫描';
+    // $scanBtn.disabled = true;
+    // $abortBtn.disabled = false;
+  });
+}
+
+function showLogs(data) {
+  const { action, result } = data;
+  $footnote.innerHTML = data.message;
+
+  if (result.name != 'FINISHED') {
+    const row = $logs.insertRow(1);
+    row.insertCell().innerHTML = data.time;
+    row.insertCell().innerHTML = `<div class="number">${data.count}/${data.total}</div>`;
+    row.insertCell().innerHTML = `<div class="${result.name}">${action.label} ${result.label}</div>`;
+    row.insertCell().innerHTML = data.message;
+    $percent.style.width = data.percent + '%';
+  }
+}
+</script>

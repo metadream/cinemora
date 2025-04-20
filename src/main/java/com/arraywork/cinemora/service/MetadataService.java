@@ -27,12 +27,9 @@ import com.arraywork.autumn.util.Pagination;
 import com.arraywork.autumn.util.TimeUtils;
 import com.arraywork.cinemora.entity.MediaInfo;
 import com.arraywork.cinemora.entity.Metadata;
-import com.arraywork.cinemora.entity.ScanningInfo;
 import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.entity.VideoInfo;
 import com.arraywork.cinemora.enums.Quality;
-import com.arraywork.cinemora.enums.ScanEvent;
-import com.arraywork.cinemora.enums.ScanState;
 import com.arraywork.cinemora.repo.MetadataRepo;
 import com.arraywork.cinemora.repo.MetadataSpec;
 
@@ -89,7 +86,7 @@ public class MetadataService {
 
     // 根据文件构建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata build(File file, boolean forceRebuildCover) {
+    public Metadata build(File file) {
         MediaInfo mediaInfo = ffmpegService.extract(file);
         if (mediaInfo == null || mediaInfo.getVideo() == null) return null;
 
@@ -111,13 +108,16 @@ public class MetadataService {
 
         // 如果封面不存在、或者存在但需强制重建，则进行视频截图
         File coverFile = getCoverPath(metadata.getId()).toFile();
-        boolean coverExists = coverFile.exists();
-        if (!coverExists || (coverExists && forceRebuildCover)) {
-            metadata.setMediaInfo(mediaInfo);
-            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
-            metadata.setFileSize(file.length());
-            ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
-        }
+        ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+        //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
+
+        //        boolean coverExists = coverFile.exists();
+        //        if (!coverExists || (coverExists && forceRebuildCover)) {
+        //            metadata.setMediaInfo(mediaInfo);
+        //            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
+        //            metadata.setFileSize(file.length());
+        //            ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+        //        }
         return metadata;
     }
 
@@ -193,18 +193,18 @@ public class MetadataService {
             delete(metadata);
             count++;
 
-            ScanningInfo info = new ScanningInfo(ScanEvent.PURGE);
-            info.count = count;
-            info.total = total;
-            info.path = metadata.getFilePath();
-            info.state = ScanState.SUCCESS;
-            channel.broadcast(info);
+            //            ScanningInfo info = new ScanningInfo(ScanningAction.PURGE);
+            //            info.count = count;
+            //            info.total = total;
+            //            info.path = metadata.getFilePath();
+            //            info.state = ScanningResult.SUCCESS;
+            //            channel.broadcast(info);
         }
 
-        ScanningInfo info = new ScanningInfo(ScanEvent.PURGE);
-        info.state = ScanState.FINISHED;
-        info.message = "本次操作共清除元数据记录" + total + "条。";
-        channel.broadcast(info);
+        //        ScanningInfo info = new ScanningInfo(ScanningAction.PURGE);
+        //        info.state = ScanningResult.FINISHED;
+        //        info.message = "本次操作共清除元数据记录" + total + "条。";
+        //        channel.broadcast(info);
         return total;
     }
 

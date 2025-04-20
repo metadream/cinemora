@@ -57,9 +57,9 @@ public class FfmpegService {
                     mediaInfo.setAudio(audio);
                 }
 
-                // 获取视频信息
+                // 获取视频信息（有些图片也会被提取为视频，所以增加BitRate和FrameRate校验）
                 ws.schild.jave.info.VideoInfo vInfo = mInfo.getVideo();
-                if (vInfo != null) {
+                if (vInfo != null && vInfo.getBitRate() > 0 && vInfo.getFrameRate() > 0) {
                     VideoInfo video = new VideoInfo();
                     video.setDecoder(vInfo.getDecoder().replaceAll(" \\(.+", ""));
                     video.setBitRate(vInfo.getBitRate());

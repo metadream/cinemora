@@ -5,7 +5,7 @@
 <main layout:fragment="main">
   <div class="headline"><h3>Settings</h3></div>
 
-  <section class="settings">
+  <section class="loose">
     <th-field style="max-width:400px" label="Username" name="username" maxlength="20" th:value="${settings.username}" required></th-field>
     <th-field style="max-width:400px" label="Password" name="password" type="password" maxlength="20" placeholder="Leave blank if no change needed."></th-field>
     <th-field label="Library" name="library" maxlength="120" th:value="${settings.library}" th:data-value="${settings.library}" required></th-field>

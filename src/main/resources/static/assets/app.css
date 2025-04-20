@@ -17,7 +17,7 @@
   --font-family: Monda, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", "SimHei", Helvetica, Tahoma, Arial, sans-serif !important;
 }
 
-.SUCCESS {
+.SUCCEEDED {
   color: #1db164;
 }
 
@@ -104,6 +104,10 @@ th-button::part(button) {
   color: var(--font-color);
 }
 
+th-button.outlined::part(button) {
+  border-color: var(--primary-color);
+}
+
 .buttons th-button:not(:first-child) {
   margin-left: 10px;
 }
@@ -138,7 +142,7 @@ section.tags {
   gap: 5px 20px;
 }
 
-section.settings {
+section.loose {
   display: flex;
   flex-direction: column;
   padding: 5%;
@@ -204,10 +208,51 @@ table.list .starred {
   padding: 0;
 }
 
+table.logs td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.logs .number {
+  text-align: right;
+  margin-right: 10px;
+}
+
 .metafields {
   display: flex;
   flex-wrap: wrap;
   gap: 0 15px;
+}
+
+.scan-controls {
+  display: flex;
+  gap: 5%;
+}
+
+.scan-progress {
+  flex: 1;
+}
+
+.scan-options {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+}
+
+.progress {
+  background: var(--line-color);
+  height: 5px;
+  margin: 8px 0 5px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress > div {
+  background: var(--contrast-color);
+  width: 0;
+  height: 100%;
+  transition: .3s;
 }
 
 .pager {
@@ -527,6 +572,7 @@ main.detail .tags a {
   display: flex;
   justify-content: center;
   margin: 20px 0;
+  gap: 10px;
 }
 
 .footnote {

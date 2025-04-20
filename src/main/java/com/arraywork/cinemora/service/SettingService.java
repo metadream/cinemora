@@ -64,7 +64,7 @@ public class SettingService implements SecurityService {
         settings.setPassword(BCryptCipher.encode(settings.getPassword()));
 
         session.setPrincipal(settings);
-        libraryService.scan(settings.getLibrary(), true);
+        //        libraryService.scan(settings.getLibrary(), true); // TODO
         return settingRepo.save(settings);
     }
 
@@ -87,7 +87,7 @@ public class SettingService implements SecurityService {
         String library = settings.getLibrary();
         if (!library.equals(_library)) {
             metadataService.purge(library);
-            libraryService.scan(library, true);
+            //            libraryService.scan(library, true); // TODO
         }
         return settingRepo.save(settings);
     }
