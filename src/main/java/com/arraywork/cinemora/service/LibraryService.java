@@ -19,6 +19,7 @@ import com.arraywork.autumn.channel.ChannelService;
 import com.arraywork.autumn.helper.DirectoryMonitor;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.ScanningLog;
+import com.arraywork.cinemora.entity.ScanningOptions;
 import com.arraywork.cinemora.enums.ScanningAction;
 import com.arraywork.cinemora.enums.ScanningResult;
 
@@ -64,7 +65,7 @@ public class LibraryService {
 
     // 异步启动目录监听
     @Async
-    public void scan() throws IOException {
+    public void scan(ScanningOptions options) throws IOException {
         Path library = Path.of(settingService.getSettings().getLibrary());
         AtomicLong count = new AtomicLong();
         AtomicLong total = new AtomicLong();
@@ -77,6 +78,7 @@ public class LibraryService {
             total.set(paths.filter(Files::isRegularFile).count());
         }
 
+        System.out.println(options);
         long st = System.currentTimeMillis();
         // 遍历文件
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
@@ -87,13 +89,18 @@ public class LibraryService {
                 log.setTotal(total.get());
                 log.setMessage(library.relativize(path).toString());
 
-                Metadata metadata = metadataService.build(path.toFile());
-                if (metadata != null) {
-                    log.setResult(ScanningResult.SUCCEEDED);
-                    indexed.incrementAndGet();
-                } else {
-                    log.setResult(ScanningResult.SKIPPED);
-                    skipped.incrementAndGet();
+                try {
+                    Metadata metadata = metadataService.build(path.toFile(), options.isForceRebuild());
+                    if (metadata != null) {
+                        log.setResult(ScanningResult.SUCCEEDED);
+                        indexed.incrementAndGet();
+                    } else {
+                        log.setResult(ScanningResult.SKIPPED);
+                        skipped.incrementAndGet();
+                    }
+                } catch (Exception e) {
+                    log.setResult(ScanningResult.FAILED);
+                    failed.incrementAndGet();
                 }
 
                 channelService.broadcast(CHANNEL_NAME, log);

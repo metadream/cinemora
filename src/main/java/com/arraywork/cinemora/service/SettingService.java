@@ -2,7 +2,6 @@ package com.arraywork.cinemora.service;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Optional;
 import jakarta.annotation.Resource;
 
 import org.springframework.cache.annotation.CachePut;
@@ -52,8 +51,12 @@ public class SettingService implements SecurityService {
     // 获取偏好
     @Cacheable(value = "cinemora", key = "'#settings'")
     public Settings getSettings() {
-        Optional<Settings> optional = settingRepo.findById(Long.MAX_VALUE);
-        return optional.orElse(null);
+        return settingRepo.findById(Long.MAX_VALUE).orElse(null);
+    }
+
+    // 获取媒体库
+    public Path getLibrary() {
+        return Path.of(getSettings().getLibrary());
     }
 
     // 初始化偏好

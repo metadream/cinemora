@@ -208,6 +208,10 @@ table.list .starred {
   padding: 0;
 }
 
+table.logs {
+  margin-top: 15px;
+}
+
 table.logs td {
   white-space: nowrap;
   overflow: hidden;

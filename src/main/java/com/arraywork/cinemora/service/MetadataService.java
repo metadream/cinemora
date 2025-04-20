@@ -86,29 +86,39 @@ public class MetadataService {
 
     // 根据文件构建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata build(File file) {
+    public Metadata build(File file, boolean forceRebuild) {
         MediaInfo mediaInfo = ffmpegService.extract(file);
-        if (mediaInfo == null || mediaInfo.getVideo() == null) return null;
+        Assert.notNull(mediaInfo, "Not a video file");
+        Assert.notNull(mediaInfo.getVideo(), "Not a video file");
 
-        VideoInfo video = mediaInfo.getVideo();
-        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
+        Path library = settingService.getLibrary();
+        String relativePath = library.relativize(file.toPath()).toString();
+
+        Metadata metadata = metadataRepo.findByFilePath(relativePath);
         if (metadata == null) {
-            int index = settingService.getSettings().getLibrary().length();
-
             metadata = new Metadata();
+            metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
+            forceRebuild = true;
+        }
+        if (forceRebuild) {
+            // 保存元数据
+            VideoInfo video = mediaInfo.getVideo();
             metadata.setMediaInfo(mediaInfo);
             metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
             metadata.setTitle(FileUtils.getName(file.getName()));
-            metadata.setFilePath(file.getPath().substring(index));
+            metadata.setFilePath(relativePath);
             metadata.setFileSize(file.length());
             metadata.setLastModified(TimeUtils.toLocal(file.lastModified()));
-            metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
-            metadataRepo.save(metadata); // 先保存以便截图获取ID
+            metadataRepo.save(metadata); // 先保存以便获取ID供截图使用
+
+            // 创建缩略图
+            File coverFile = getCoverPath(metadata.getId()).toFile();
+            ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+            //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
+            return metadata;
         }
 
         // 如果封面不存在、或者存在但需强制重建，则进行视频截图
-        File coverFile = getCoverPath(metadata.getId()).toFile();
-        ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
         //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
 
         //        boolean coverExists = coverFile.exists();
@@ -118,7 +128,7 @@ public class MetadataService {
         //            metadata.setFileSize(file.length());
         //            ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
         //        }
-        return metadata;
+        return null;
     }
 
     // 根据文件删除元数据

@@ -5,11 +5,13 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.autumn.channel.SseChannel;
 import com.arraywork.autumn.security.Permission;
+import com.arraywork.cinemora.entity.ScanningOptions;
 import com.arraywork.cinemora.service.LibraryService;
 
 /**
@@ -39,8 +41,8 @@ public class LibraryController {
     @PostMapping("/library")
     @Permission
     @ResponseBody
-    public void scan() throws Exception {
-        libraryService.scan();
+    public void scan(@RequestBody ScanningOptions options) throws Exception {
+        libraryService.scan(options);
     }
 
     // SSE获取扫描状态
