@@ -25,7 +25,7 @@
   color: #ff8500;
 }
 
-.FAILED {
+.FAILED, .DANGER {
   color: #fa5151;
 }
 
@@ -71,8 +71,10 @@ header > main {
 }
 
 footer > main {
-  padding-top: 20px;
-  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 label {
@@ -84,7 +86,10 @@ h3 {
 }
 
 h4 {
-  font-size: 20px;
+  padding-left: 15px;
+  line-height: 1;
+  border-left: var(--primary-color) 3px solid;
+  margin: 20px 0 10px;
 }
 
 hr {
@@ -121,26 +126,23 @@ footer img.logo {
 
 section {
   margin: 20px 0;
-}
-
-section.metadata {
-  padding: 10px 20px 20px;
-  border-radius: 5px;
+  padding: 20px;
   background: #fff;
+  border-radius: 5px;
 }
 
-section .tags {
+section.tags {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  margin: 0 20px 40px;
-  gap: 20px;
+  gap: 5px 20px;
 }
 
-section h4 {
-  padding-left: 15px;
-  line-height: 1;
-  border-left: var(--primary-color) 3px solid;
+section.settings {
+  display: flex;
+  flex-direction: column;
+  padding: 5%;
+  gap: 10px;
 }
 
 input[type="file"] {
@@ -205,7 +207,7 @@ table.list .starred {
 .metafields {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 10px;
+  gap: 0 15px;
 }
 
 .pager {
@@ -521,6 +523,12 @@ main.detail .tags a {
   margin-right: 10px;
 }
 
+.footline {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
 .footnote {
   display: flex;
   font-size: 0.85rem;
@@ -547,6 +555,7 @@ main.detail .tags a {
   border-radius: var(--border-radius);
   background: #fff;
   box-shadow: 0 3px 30px 0 rgb(0 0 0 / 20%);
+  gap: 10px;
 }
 
 .front-panel.settings {
@@ -555,7 +564,6 @@ main.detail .tags a {
 }
 
 .front-panel > * {
-  margin: 5px 0;
   width: 100%;
 }
 
@@ -569,7 +577,7 @@ main.detail .tags a {
 
 .front-panel h2 {
   text-align: center;
-  margin: -10px 0 20px;
+  margin: -10px 0 15px;
 }
 
 .error-panel {

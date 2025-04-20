@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
   <script src="/assets/thyme@1.0.0.js"></script>
+  <script>Thyme.locale = 'en';</script>
   <link rel="icon" type="image/svg" href="/assets/favicon.svg"/>
   <link rel="stylesheet" href="/assets/app.css"/>
   <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">[[${appName}]]</title>
@@ -53,9 +54,9 @@
 <main layout:fragment="main"></main>
 <footer>
   <main>
-    <p><img class="logo" src="/assets/logo.svg"/></p>
-    <p>Cinemora 是一款轻量级开源视频媒体系统，旨在帮助人们更好地组织、管理、观看本地视频文件，并对浏览器不支持的视频格式进行自动转码输出，广泛适用于电影电视、个人视频、MV、AV等场景。Cinemora 基于Java、FFMPEG、HLS等技术开发，没有收费许可、没有隐藏功能、没有附加条件，只为构建一个简单、便捷、高效的媒体管理平台供大众使用。欢迎任何有兴趣的人参与优化系统功能和改善用户体验。</p>
-    <p>🄯 Copyleft <a target="_blank" href="https://github.com/metadream/cinemora">Cinemora Media System</a> is Licensed <a target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GPL 3.0</a></p>
+    <img class="logo" src="/assets/logo.svg"/>
+    <div>Cinemora 是一款轻量级开源视频媒体系统，旨在帮助人们更好地组织、管理、观看本地视频文件，并对浏览器不支持的视频格式进行自动转码输出，广泛适用于电影电视、个人视频、MV、AV等场景。Cinemora 基于Java、FFMPEG、HLS等技术开发，没有收费许可、没有隐藏功能、没有附加条件，只为构建一个简单、便捷、高效的媒体管理平台供大众使用。欢迎任何有兴趣的人参与优化系统功能和改善用户体验。</div>
+    <div>🄯 Copyleft <a target="_blank" href="https://github.com/metadream/cinemora">Cinemora Media System</a> is Licensed <a target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GPL 3.0</a></div>
   </main>
 </footer>
 </body>

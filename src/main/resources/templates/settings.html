@@ -1,0 +1,54 @@
+<html layout:decorate="~{_layout}">
+<head><title>Settings</title></head>
+<body>
+
+<main layout:fragment="main">
+  <div class="headline"><h3>Settings</h3></div>
+
+  <section class="settings">
+    <th-field style="max-width:400px" label="Username" name="username" maxlength="20" th:value="${settings.username}" required></th-field>
+    <th-field style="max-width:400px" label="Password" name="password" type="password" maxlength="20" placeholder="Leave blank if no change needed."></th-field>
+    <th-field label="Library" name="library" maxlength="120" th:value="${settings.library}" th:data-value="${settings.library}" required></th-field>
+
+    <div>
+      <h4>Metafields</h4>
+      <span class="footnote">The selected items will serve as additional metadata attributes for multi-dimensional classification and retrieval of media.</span>
+    </div>
+    <div class="metafields">
+      <th-checkbox th:each="metafield: ${Metafields}" name="metafields" th:value="${metafield.name}" th:checked="${#lists.contains(metafields, metafield.name)}">[[${metafield.label}]]</th-checkbox>
+    </div>
+    <div>
+      <th-checkbox name="autoRename" value="true" th:checked="${settings.autoRename}">Automatically Rename</th-checkbox>
+      <div class="footnote">Enable this option to automatically rename physical files on the disk using the “[No.] Title” format when saving metadata.</div>
+    </div>
+  </section>
+
+  <div class="footline">
+    <th-button onclick="update(this)">Update</th-button>
+  </div>
+</main>
+</body>
+</html>
+
+<script>
+async function update(btn) {
+  const data = Thyme.form.getJsonObject('.settings');
+  if (!data) return;
+
+  const oldLib = document.querySelector('[name="library"]').dataset.value;
+  if (data.library !== oldLib) {
+    Thyme.confirm('<b class="DANGER">Changing the library will erase all metadata and cannot be undone. <br>Are you sure you want to continue?</b>',
+    async() => await save());
+  } else {
+    await save();
+  }
+
+  async function save() {
+    btn.loading = true;
+    data.metafields = data.metafields?.split(',') || [];
+    await Thyme.http.put('/~/settings', data);
+    btn.loading = false;
+    Thyme.success('Update successful');
+  }
+}
+</script>

@@ -39,6 +39,13 @@ public class SettingController extends SecurityController {
         return settings != null ? "redirect:/" : "init";
     }
 
+    // 设置页面
+    @GetMapping("/settings")
+    @Permission
+    public String settings() {
+        return "settings";
+    }
+
     // 初始化偏好
     @PostMapping("/settings")
     @ResponseBody

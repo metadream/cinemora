@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-  <script src="//cdn.unpkg.net/assets/mod/thyme@0.1.0.js"></script>
+  <script src="/assets/thyme@1.0.0.js"></script>
   <link rel="icon" type="image/svg" href="/assets/favicon.svg"/>
   <link rel="stylesheet" href="/assets/app.css"/>
   <title>Initialization - [[${appName}]]</title>
@@ -16,17 +16,15 @@
     <th-field label="Password" name="password" type="password" maxlength="20" required></th-field>
     <th-field label="Library" name="library" maxlength="120" required></th-field>
 
-    <p></p><div>Metafields<br>
+    <div>
+      <h4>Metafields</h4>
       <span class="footnote">The selected items will serve as additional metadata attributes for multi-dimensional classification and retrieval of media.</span>
     </div>
     <div class="metafields">
-      <label th:each="metafield: ${Metafields}">
-        <input type="checkbox" name="metafields" th:value="${metafield.name}"/>
-        <span>[[${metafield.label}]]</span>
-      </label>
+      <th-checkbox th:each="metafield: ${Metafields}" name="metafields" th:value="${metafield.name}">[[${metafield.label}]]</th-checkbox>
     </div>
-    <p></p><div>
-      <label><input type="checkbox" name="autoRename" value="true"/><span>Automatically Rename</span></label>
+    <div>
+      <th-checkbox name="autoRename" value="true">Automatically Rename</th-checkbox>
       <div class="footnote">Enable this option to automatically rename physical files on the disk using the “[No.] Title” format when saving metadata.</div>
     </div>
     <th-button onclick="init(this)">Next</th-button>

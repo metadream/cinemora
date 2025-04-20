@@ -1,5 +1,5 @@
 <html layout:decorate="~{_layout}">
-<head><title>发现</title></head>
+<head><title>Explore</title></head>
 <body>
 
 <main layout:fragment="main">
@@ -7,10 +7,10 @@
     th:with="tags = ${tagCloud[metafield.name]}"
     th:if="${metafield.name != 'issueDate' && metafield.enums == null}">
 
-    <section th:if="${!#sets.isEmpty(tags)}">
-      <h4>[[${metafield.label}]]</h4>
-      <div class="tags"><a th:each="tag: ${tags}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a></div>
-    </section>
+    <th:block th:if="${!#sets.isEmpty(tags)}">
+      <div class="headline"><h3>[[${metafield.label}]]</h3></div>
+      <section class="tags"><a th:each="tag: ${tags}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a></section>
+    </th:block>
   </th:block>
 </main>
 
