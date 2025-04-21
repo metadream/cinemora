@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 public class EventLog {
 
-    private long ordinal;
+    private long count;
     private long total;
     private long progress;
 
@@ -26,13 +26,14 @@ public class EventLog {
     private long skipped;
     private long failed;
 
-    private String message;
+    private String path;
+    private String hint;
     private EventSource source;
     private EventState state;
     private LocalDateTime time = LocalDateTime.now();
 
     public long getProgress() {
-        return total > 0 && total >= ordinal ? 100 * ordinal / total : -1;
+        return total > 0 && total >= count ? 100 * count / total : -1;
     }
 
 }

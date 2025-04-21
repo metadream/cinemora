@@ -6,15 +6,19 @@
   <div class="headline"><h3>Library</h3></div>
 
   <section class="loose">
-    <div class="scan-controls">
-      <div class="scan-progress">
-        <div>Current library：[[${settings.library}]]</div>
-        <div class="progress"><div id="progress"></div></div>
-        <div class="footnote">&#8203;</div>
-      </div>
-      <div class="scan-options"><!-- TODO 扫描选项增加文字说明 -->
+    <div class="scan-progress">
+      <div>Current library：[[${settings.library}]]</div>
+      <div class="progress"><div id="progress"></div></div>
+      <div class="footnote">&#8203;</div>
+    </div>
+    <div class="scan-options">
+      <div>
         <th-checkbox name="forceReindexing" value="true">Force reindexing</th-checkbox>
+        <span class="footnote">Enable this option to rebuild indexes even if they already exist.</span>
+      </div>
+      <div>
         <th-checkbox name="cleanIndexes" value="true">Clean indexes</th-checkbox>
+        <span class="footnote">Enable this option to remove orphaned indexes (missing associated files).</span>
       </div>
     </div>
   </section>
@@ -25,9 +29,9 @@
     <th-button onclick="startScan(this)">Start Scan</th-button>
   </div>
 
-  <section class="loose">
+  <section>
     <table class="logs">
-      <tr><th width="170"></th><th width="90"></th><th width="140"></th><th></th></tr>
+      <tr><th width="170"></th><th width="90"></th><th width="170"></th><th></th></tr>
     </table>
   </section>
 </main>
@@ -44,28 +48,28 @@ channel.on('message', data => showLogs(data));
 
 function startScan() {
   Thyme.confirm('Scanning the library may take a long time. <br>Are you sure you want to continue?', async () => {
+    $progress.removeClass('finished');
     const options = Thyme.form.getJsonObject('.scan-options');
     Thyme.http.post('/~/library', options);
     // $scanBtn.innerHTML = '正在扫描';
     // $scanBtn.disabled = true;
     // $abortBtn.disabled = false;
-    setTimeout(() => {
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    }, 0);
   });
 }
 
 function showLogs(data) {
   const { source, state } = data;
-  $footnote.innerHTML = data.message;
-
   if (state.name != 'FINISHED') {
     const row = $logs.insertRow(1);
     row.insertCell().innerHTML = data.time;
-    row.insertCell().innerHTML = `<div class="number">${data.count}/${data.total}</div>`;
-    row.insertCell().innerHTML = `<div class="${state.name}">${source.label} ${state.label}</div>`;
-    row.insertCell().innerHTML = data.message;
+    row.insertCell().innerHTML = `<span class="number">${data.count}/${data.total}</span>`;
+    row.insertCell().innerHTML = `<span class="${state.name}">${source.label} ${state.label}</span>`;
+    row.insertCell().innerHTML = `<span class="${state.name}">${data.hint?data.hint+': ':''} ${data.path}</span>`;
     $progress.style.width = data.progress + '%';
+    $footnote.innerHTML = `${data.count}/${data.total} ${data.path}`;
+  } else {
+    $progress.addClass('finished');
+    $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.skipped} skipped, and ${data.failed} failed.`;
   }
 }
 </script>

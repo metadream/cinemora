@@ -52,7 +52,7 @@ public class PortalController {
     }
 
     /** 详情页 */
-    @GetMapping("/{code}") // TODO code->volume???
+    @GetMapping("/{code}")
     public String details(Model model, @PathVariable String code) {
         model.addAttribute("metadata", metadataService.getByCode(code));
         model.addAttribute("transId", KeyGenerator.nanoId()); // TODO 转码？

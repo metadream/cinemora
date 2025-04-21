@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 
@@ -21,9 +21,10 @@ import org.springframework.stereotype.Service;
 
 import com.arraywork.autumn.channel.ChannelService;
 import com.arraywork.autumn.helper.DirectoryMonitor;
+import com.arraywork.autumn.util.FileUtils;
 import com.arraywork.cinemora.entity.EventLog;
-import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.ScanningOptions;
+import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.enums.EventSource;
 import com.arraywork.cinemora.enums.EventState;
 
@@ -61,31 +62,21 @@ public class LibraryService {
         monitor = new DirectoryMonitor(5000, listener);
     }
 
-    // 随应用启动目录监听
-    //    @PostConstruct
-    //    public void scan() throws Exception {
-    //        Settings settings = settingService.getSettings();
-    //        if (settings != null) {
-    //            String library = settings.getLibrary();
-    //            scan(library, false);
-    //        }
-    //    }
-
-    // 统计所有文件总数（1000个文件以上建议使用并行流）TODO 不加并行流速度测试
-    private long countRegularFiles(Path path) {
-        AtomicLong count = new AtomicLong();
-        try (Stream<Path> paths = Files.walk(path).parallel()) {
-            count.set(paths.filter(Files::isRegularFile).count());
-        } catch (IOException e) {
-            log.error("Error counting files in directory: {}", path, e);
-            throw new RuntimeException("Error counting files in directory: " + path, e);
+    /** 随应用启动媒体库监听 */
+    @PostConstruct
+    public void scan() throws Exception {
+        Settings settings = settingService.getSettings();
+        if (settings != null) {
+            String library = settings.getLibrary();
+            monitor.start(library);
+            log.info("Library monitor started, watching {}", library);
         }
-        return count.get();
     }
 
     /** 异步扫描媒体库 */
     @Async
     public void scan(ScanningOptions options) throws IOException {
+        // TODO
         //        public void criticalMethod() {
         //            if (!isScanning.compareAndSet(false, true)) {
         //                return; // 已经有线程在执行
@@ -99,17 +90,17 @@ public class LibraryService {
         //        }
 
         Path library = settingService.getLibrary();
-        long count = countRegularFiles(library);
-        if (count == 0) {
-            EventLog log = new EventLog();
-            log.setSource(EventSource.SCAN);
-            log.setState(EventState.FINISHED);
-            log.setMessage("No files found.");
-            channelService.broadcast(CHANNEL_NAME, log);
+        long total = FileUtils.countRegularFiles(library);
+        if (total == 0) {  // TODO test
+            EventLog eventLog = new EventLog();
+            eventLog.setSource(EventSource.SCANNING);
+            eventLog.setState(EventState.FINISHED);
+            eventLog.setHint("No files found.");
+            channelService.broadcast(CHANNEL_NAME, eventLog);
             return;
         }
 
-        AtomicLong ordinal = new AtomicLong();
+        AtomicLong count = new AtomicLong();
         AtomicLong indexed = new AtomicLong();
         AtomicLong reindexed = new AtomicLong();
         AtomicLong skipped = new AtomicLong();
@@ -120,68 +111,66 @@ public class LibraryService {
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                if (isAborted.get()) {
-                    return FileVisitResult.TERMINATE;
-                }
+                //                if (isAborted.get()) {  // TODO 取消扫描
+                //                    return FileVisitResult.TERMINATE;
+                //                }
                 if (attrs.isRegularFile()) {
-                    ordinal.incrementAndGet();
-                    EventState state = process(EventSource.SCAN, path.toFile(), options.isForceReindexing());
+                    count.incrementAndGet();
+                    EventState state = process(EventSource.SCANNING,
+                        path.toFile(), count.get(), total,
+                        options.isForceReindexing());
                     switch (state) {
                         case INDEXED -> indexed.incrementAndGet();
                         case REINDEXED -> reindexed.incrementAndGet();
                         case SKIPPED -> skipped.incrementAndGet();
                         case FAILED -> failed.incrementAndGet();
                     }
-                    //                    channelService.broadcast(CHANNEL_NAME, "realtime", log);
                 }
                 return FileVisitResult.CONTINUE;
             }
         });
 
         System.out.println("ffmpeg============" + (System.currentTimeMillis() - st));
-        EventLog log = new EventLog();
-        log.setSource(EventSource.SCAN);
-        log.setState(EventState.FINISHED);
-        log.setMessage(count + " files found: " + indexed + " indexed, " + skipped + " skipped, and " + failed + " failed.");
-        channelService.broadcast(CHANNEL_NAME, log);
+        EventLog eventLog = new EventLog();
+        eventLog.setTotal(total);
+        eventLog.setIndexed(indexed.get());
+        eventLog.setReindexed(reindexed.get());
+        eventLog.setSkipped(skipped.get());
+        eventLog.setFailed(failed.get());
+        eventLog.setSource(EventSource.SCANNING);
+        eventLog.setState(EventState.FINISHED);
+        channelService.broadcast(CHANNEL_NAME, eventLog);
     }
 
-    // TODO 涵盖所有eventstate，例如reindexed
-    public synchronized EventState process(EventSource source, File file, boolean isForceReIndexing) {
+    /** 处理文件 */
+    public synchronized EventState process(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+        }
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
-        EventState state;
 
-        EventLog log = new EventLog();
-        log.setSource(source);
-        log.setMessage(relativePath);
+        EventState state;
+        EventLog eventLog = new EventLog();
+        eventLog.setSource(source);
+        eventLog.setPath(relativePath);
+        eventLog.setCount(count);
+        eventLog.setTotal(total);
 
         try {
-            Metadata metadata = metadataService.build(file, isForceReIndexing);
-            if (metadata != null) {
-                log.setState(EventState.INDEXED);
-                state = EventState.INDEXED;
-            } else {
-                log.setState(EventState.SKIPPED);
-                state = EventState.SKIPPED;
-            }
+            state = metadataService.build(file, isForceReIndexing);
         } catch (Exception e) {
-            log.setState(EventState.FAILED);
             state = EventState.FAILED;
+            eventLog.setHint(e.getMessage());
         }
 
-        channelService.broadcast(CHANNEL_NAME, log);
+        eventLog.setState(state);
+        channelService.broadcast(CHANNEL_NAME, eventLog);
         return state;
     }
 
-    // 重新扫描媒体库
-    //    public void rescan() throws Exception {
-    //        String library = settingService.getLibrary();
-    //        metadataService.clean(library);
-    //        scan(library, true);
-    //    }
-
-    // 应用销毁时停止监听进程
+    /** 应用销毁时停止监听进程 */
     @PreDestroy
     public void onDestroyed() throws Exception {
         monitor.stop();

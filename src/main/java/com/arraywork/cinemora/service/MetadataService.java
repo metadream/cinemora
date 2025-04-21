@@ -29,6 +29,7 @@ import com.arraywork.cinemora.entity.MediaInfo;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.entity.VideoInfo;
+import com.arraywork.cinemora.enums.EventState;
 import com.arraywork.cinemora.enums.Quality;
 import com.arraywork.cinemora.repo.MetadataRepo;
 import com.arraywork.cinemora.repo.MetadataSpec;
@@ -84,24 +85,33 @@ public class MetadataService {
         return metadata;
     }
 
-    // 根据文件构建元数据
+    /** 根据文件构建元数据 */
     @Transactional(rollbackFor = Exception.class)
-    public Metadata build(File file, boolean forceReindexing) {
-        // TODO 先判断数据库是否存在再提取元数据
-        MediaInfo mediaInfo = ffmpegService.extract(file);
-        Assert.notNull(mediaInfo, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-        Assert.notNull(mediaInfo.getVideo(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-
+    public EventState build(File file, boolean forceReindexing) {
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
-
         Metadata metadata = metadataRepo.findByFilePath(relativePath);
-        if (metadata == null) {
+        EventState state;
+
+        // 设置返回值
+        if (metadata != null) {
+            state = forceReindexing ? EventState.REINDEXED : EventState.SKIPPED;
+        } else {
             metadata = new Metadata();
             metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
-            forceReindexing = true;
+            state = EventState.INDEXED;
+            forceReindexing = true;  // 如果元数据不存在则无论是否强制都建立索引
         }
+
+        // 提取元数据
         if (forceReindexing) {
+            MediaInfo mediaInfo = ffmpegService.extract(file);
+            Assert.notNull(mediaInfo, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            Assert.notNull(mediaInfo.getVideo(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            if (mediaInfo == null || mediaInfo.getVideo() == null) {
+                throw new IllegalArgumentException("Unsupported media");
+            }
+
             // 保存元数据
             VideoInfo video = mediaInfo.getVideo();
             metadata.setMediaInfo(mediaInfo);
@@ -112,24 +122,12 @@ public class MetadataService {
             metadata.setLastModified(TimeUtils.toLocal(file.lastModified()));
             metadataRepo.save(metadata); // 先保存以便获取ID供截图使用
 
-            // 创建缩略图
+            // 创建缩略图（截取视频时长一半时显示的画面）
             File coverFile = getCoverPath(metadata.getId()).toFile();
             ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
             //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
-            return metadata;
         }
-
-        // 如果封面不存在、或者存在但需强制重建，则进行视频截图
-        //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
-
-        //        boolean coverExists = coverFile.exists();
-        //        if (!coverExists || (coverExists && forceReindexingCover)) {
-        //            metadata.setMediaInfo(mediaInfo);
-        //            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
-        //            metadata.setFileSize(file.length());
-        //            ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
-        //        }
-        return null;
+        return state;
     }
 
     // 根据文件删除元数据

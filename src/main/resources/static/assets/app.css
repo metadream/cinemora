@@ -7,6 +7,7 @@
 :root {
   --primary-color: #fb0 !important;
   --contrast-color: #0af;
+  --success-color: #1db164;
   --font-color: #333;
   --menu-color: #666;
   --minor-color: #999;
@@ -17,11 +18,11 @@
   --font-family: Monda, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", "SimHei", Helvetica, Tahoma, Arial, sans-serif !important;
 }
 
-.SUCCEEDED {
-  color: #1db164;
+.INDEXED, .REINDEXED {
+  color: var(--success-color);
 }
 
-.SKIPPED, .WARNING {
+.WARNING {
   color: #ff8500;
 }
 
@@ -29,11 +30,7 @@
   color: #fa5151;
 }
 
-.FINISHED {
-  color: #007bff;
-}
-
-.MINOR {
+.MINOR, .SKIPPED {
   color: var(--minor-color);
 }
 
@@ -89,7 +86,7 @@ h4 {
   padding-left: 15px;
   line-height: 1;
   border-left: var(--primary-color) 3px solid;
-  margin: 20px 0 10px;
+  margin: 20px 0 5px;
 }
 
 hr {
@@ -208,10 +205,6 @@ table.list .starred {
   padding: 0;
 }
 
-table.logs {
-  margin-top: 15px;
-}
-
 table.logs td {
   white-space: nowrap;
   overflow: hidden;
@@ -229,22 +222,11 @@ table.logs .number {
   gap: 0 15px;
 }
 
-.scan-controls {
-  display: flex;
-  gap: 5%;
-}
-
 .scan-progress {
   flex: 1;
 }
 
-.scan-options {
-  display: flex;
-  flex-direction: column;
-  width: 220px;
-}
-
-.progress {
+.scan-progress .progress {
   background: var(--line-color);
   height: 5px;
   margin: 8px 0 5px;
@@ -252,11 +234,20 @@ table.logs .number {
   overflow: hidden;
 }
 
-.progress > div {
+.scan-progress .progress > div {
   background: var(--contrast-color);
   width: 0;
   height: 100%;
   transition: .3s;
+}
+
+.scan-progress .progress > div.finished {
+  background: var(--success-color);
+}
+
+.scan-options > div > th-checkbox {
+  display: inline-block;
+  width: 160px;
 }
 
 .pager {
@@ -580,7 +571,7 @@ main.detail .tags a {
 }
 
 .footnote {
-  display: flex;
+  display: inline-flex;
   font-size: 0.85rem;
   color: var(--ignored-color);
 }

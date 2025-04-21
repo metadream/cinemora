@@ -32,7 +32,7 @@
 
 <script>
 async function update(btn) {
-  const data = Thyme.form.getJsonObject('.settings');
+  const data = Thyme.form.getJsonObject('section');
   if (!data) return;
 
   const oldLib = document.querySelector('[name="library"]').dataset.value;
