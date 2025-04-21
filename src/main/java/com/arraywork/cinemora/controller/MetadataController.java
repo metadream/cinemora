@@ -32,16 +32,16 @@ public class MetadataController {
     @Resource
     private MetadataService metadataService;
 
-    // 元数据页面
+    /** 元数据页面 */
     @GetMapping("/metadata")
     @Permission
     public String metadata(Model model, String page, Metadata condition) {
+        model.addAttribute("pagination", metadataService.getMetadata(page, condition));
         model.addAttribute("condition", condition);
-        model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
         return "metadata";
     }
 
-    // 元数据接口
+    /** 保存元数据 */
     @PutMapping("/metadata")
     @Permission
     @ResponseBody
@@ -49,7 +49,7 @@ public class MetadataController {
         return metadataService.save(metadata);
     }
 
-    // 上传封面图片
+    /** 上传封面图片 */
     @PutMapping("/metadata/{id}")
     @Permission
     @ResponseBody

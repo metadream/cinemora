@@ -9,7 +9,7 @@
     <div class="scan-controls">
       <div class="scan-progress">
         <div>Current library：[[${settings.library}]]</div>
-        <div class="progress"><div id="percent"></div></div>
+        <div class="progress"><div id="progress"></div></div>
         <div class="footnote">&#8203;</div>
       </div>
       <div class="scan-options"><!-- TODO 扫描选项增加文字说明 -->
@@ -35,7 +35,7 @@
 </html>
 
 <script>
-const $percent = document.querySelector('#percent');
+const $progress = document.querySelector('#progress');
 const $footnote = document.querySelector('.footnote');
 const $logs = document.querySelector('.logs');
 
@@ -56,16 +56,16 @@ function startScan() {
 }
 
 function showLogs(data) {
-  const { action, result } = data;
+  const { source, state } = data;
   $footnote.innerHTML = data.message;
 
-  if (result.name != 'FINISHED') {
+  if (state.name != 'FINISHED') {
     const row = $logs.insertRow(1);
     row.insertCell().innerHTML = data.time;
     row.insertCell().innerHTML = `<div class="number">${data.count}/${data.total}</div>`;
-    row.insertCell().innerHTML = `<div class="${result.name}">${action.label} ${result.label}</div>`;
+    row.insertCell().innerHTML = `<div class="${state.name}">${source.label} ${state.label}</div>`;
     row.insertCell().innerHTML = data.message;
-    $percent.style.width = data.percent + '%';
+    $progress.style.width = data.progress + '%';
   }
 }
 </script>

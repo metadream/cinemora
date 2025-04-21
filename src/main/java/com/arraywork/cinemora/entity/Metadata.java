@@ -130,7 +130,7 @@ public class Metadata {
     // 是否标星
     private boolean starred;
 
-    // 关键词搜索条件
+    // 搜索关键词
     @Transient
     private String keyword;
 

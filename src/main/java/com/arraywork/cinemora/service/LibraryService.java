@@ -21,11 +21,11 @@ import org.springframework.stereotype.Service;
 
 import com.arraywork.autumn.channel.ChannelService;
 import com.arraywork.autumn.helper.DirectoryMonitor;
+import com.arraywork.cinemora.entity.EventLog;
 import com.arraywork.cinemora.entity.Metadata;
-import com.arraywork.cinemora.entity.ScanningLog;
 import com.arraywork.cinemora.entity.ScanningOptions;
-import com.arraywork.cinemora.enums.ScanningAction;
-import com.arraywork.cinemora.enums.ScanningResult;
+import com.arraywork.cinemora.enums.EventSource;
+import com.arraywork.cinemora.enums.EventState;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryService {
 
-    private static final List<ScanningLog> scanningLogs = new CopyOnWriteArrayList<>();
+    private static final List<EventLog> APP_LOGS = new CopyOnWriteArrayList<>();
 
     private static final String CHANNEL_NAME = "library";
     private static final AtomicBoolean isAborted = new AtomicBoolean(false);
@@ -101,9 +101,9 @@ public class LibraryService {
         Path library = settingService.getLibrary();
         long count = countRegularFiles(library);
         if (count == 0) {
-            ScanningLog log = new ScanningLog();
-            log.setAction(ScanningAction.SCAN);
-            log.setResult(ScanningResult.FINISHED);
+            EventLog log = new EventLog();
+            log.setSource(EventSource.SCAN);
+            log.setState(EventState.FINISHED);
             log.setMessage("No files found.");
             channelService.broadcast(CHANNEL_NAME, log);
             return;
@@ -125,8 +125,8 @@ public class LibraryService {
                 }
                 if (attrs.isRegularFile()) {
                     ordinal.incrementAndGet();
-                    ScanningResult result = process(ScanningAction.SCAN, path.toFile(), options.isForceReindexing());
-                    switch (result) {
+                    EventState state = process(EventSource.SCAN, path.toFile(), options.isForceReindexing());
+                    switch (state) {
                         case INDEXED -> indexed.incrementAndGet();
                         case REINDEXED -> reindexed.incrementAndGet();
                         case SKIPPED -> skipped.incrementAndGet();
@@ -139,45 +139,45 @@ public class LibraryService {
         });
 
         System.out.println("ffmpeg============" + (System.currentTimeMillis() - st));
-        ScanningLog log = new ScanningLog();
-        log.setAction(ScanningAction.SCAN);
-        log.setResult(ScanningResult.FINISHED);
+        EventLog log = new EventLog();
+        log.setSource(EventSource.SCAN);
+        log.setState(EventState.FINISHED);
         log.setMessage(count + " files found: " + indexed + " indexed, " + skipped + " skipped, and " + failed + " failed.");
         channelService.broadcast(CHANNEL_NAME, log);
     }
 
-    // TODO 涵盖所有ScanningResult，例如reindexed
-    public synchronized ScanningResult process(ScanningAction action, File file, boolean isForceReIndexing) {
+    // TODO 涵盖所有eventstate，例如reindexed
+    public synchronized EventState process(EventSource source, File file, boolean isForceReIndexing) {
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
-        ScanningResult result;
+        EventState state;
 
-        ScanningLog log = new ScanningLog();
-        log.setAction(action);
+        EventLog log = new EventLog();
+        log.setSource(source);
         log.setMessage(relativePath);
 
         try {
             Metadata metadata = metadataService.build(file, isForceReIndexing);
             if (metadata != null) {
-                log.setResult(ScanningResult.INDEXED);
-                result = ScanningResult.INDEXED;
+                log.setState(EventState.INDEXED);
+                state = EventState.INDEXED;
             } else {
-                log.setResult(ScanningResult.SKIPPED);
-                result = ScanningResult.SKIPPED;
+                log.setState(EventState.SKIPPED);
+                state = EventState.SKIPPED;
             }
         } catch (Exception e) {
-            log.setResult(ScanningResult.FAILED);
-            result = ScanningResult.FAILED;
+            log.setState(EventState.FAILED);
+            state = EventState.FAILED;
         }
 
         channelService.broadcast(CHANNEL_NAME, log);
-        return result;
+        return state;
     }
 
     // 重新扫描媒体库
     //    public void rescan() throws Exception {
     //        String library = settingService.getSettings().getLibrary();
-    //        metadataService.purge(library);
+    //        metadataService.clean(library);
     //        scan(library, true);
     //    }
 

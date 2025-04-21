@@ -16,18 +16,18 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum Quality implements MetafieldEnum, GenericEnum<String> {
+public enum Quality implements MetafieldEnum, GenericEnum<Integer> {
 
-    EK("8K", "8K"),
-    FK("4K", "4K"),
-    FHD("FHD", "FHD"),
-    HD("HD", "HD"),
-    SD("SD", "SD"),
-    XX("XX", "");
+    EK(7680, "8K"),   // TODO 准确数值问AI
+    FK(4096, "4K"),
+    FHD(1080, "FHD"),
+    HD(720, "HD"),
+    SD(480, "SD"),
+    LD(0, "LD");
 
-    private final String code;
+    private final Integer code;
     private final String label;
 
-    public static class Converter extends GenericEnumConverter<Quality, String> { }
+    public static class Converter extends GenericEnumConverter<Quality, Integer> { }
 
 }

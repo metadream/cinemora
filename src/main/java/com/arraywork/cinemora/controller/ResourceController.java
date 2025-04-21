@@ -44,27 +44,28 @@ public class ResourceController {
     private MetadataService metadataService;
 
     @Value("${app.covers}")
-    private String coverBaseDir;
+    private String coversFolder;
 
-    // 封面资源
+    /** 封面图片 */
     @GetMapping("/cover/{id}")
     public void cover(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
-        Path coverPath = Path.of(coverBaseDir, id + ".jpg");
+        Path coverPath = Path.of(coversFolder, id + ".jpg");
         resourceHandler.serve(coverPath, request, response);
     }
 
-    // 视频资源
+    /** 视频资源 */
     @GetMapping("/video/{id}")
     public void video(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
-        String library = settingService.getSettings().getLibrary();
         Metadata metadata = metadataService.getById(id);
-        Path videoPath = Path.of(library, metadata.getFilePath());
+        Path library = settingService.getLibrary();
+        Path videoPath = library.resolve(metadata.getFilePath());
         resourceHandler.serve(videoPath, request, response);
     }
 
-    // 视频转码
+    /** 视频转码 */
+    // TODO 待测试
     @GetMapping("/video/{id}/{transId}")
     public void transcode(@PathVariable String id, @PathVariable String transId,
         HttpServletResponse response) {
@@ -81,7 +82,7 @@ public class ResourceController {
         }
     }
 
-    // 终止转码进程
+    /** 终止转码进程 */ // TODO 待测试
     @PostMapping("/video/{transId}")
     @ResponseBody
     public void destroy(@PathVariable String transId) {

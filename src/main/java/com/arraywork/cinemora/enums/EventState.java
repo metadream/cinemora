@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 扫描动作枚举
+ * 扫描结果枚举
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -15,13 +15,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum ScanningAction {
+public enum EventState {
 
-    SCAN("Scan"),
-    ADD("Add"),
-    MODIFY("Modify"),
-    DELETE("Delete"),
-    PURGE("Purge");
+    INDEXED("Indexed"),
+    REINDEXED("Reindexed"),
+    SKIPPED("Skipped"),
+    FAILED("Failed"), // Unsupported Media Type
+    FINISHED("Finished");
 
     private final String label;
 

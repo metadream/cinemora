@@ -62,7 +62,7 @@ public class MetadataService {
     private String coverBaseDir;
 
     // 查询分页元数据
-    public Pagination<Metadata> getMetadatas(String page, Metadata condition) {
+    public Pagination<Metadata> getMetadata(String page, Metadata condition) {
         Sort sort = Sort.by("lastModified").descending().and(Sort.by("code").descending());
         page = page != null && page.matches("\\d+") ? page : "1";
         Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize, sort);
@@ -187,7 +187,7 @@ public class MetadataService {
 
     // 清理元数据
     @Transactional(rollbackFor = Exception.class)
-    public int purge(String library) {
+    public int clean(String library) {
         List<Metadata> metadatas = metadataRepo.findAll();
         List<Metadata> toDelete = new ArrayList<>();
 
@@ -204,16 +204,16 @@ public class MetadataService {
             delete(metadata);
             count++;
 
-            //            ScanningInfo info = new ScanningInfo(ScanningAction.PURGE);
+            //            ScanningInfo info = new ScanningInfo(EventSource.PURGE);
             //            info.count = count;
             //            info.total = total;
             //            info.path = metadata.getFilePath();
-            //            info.state = ScanningResult.SUCCESS;
+            //            info.state = EventState.SUCCESS;
             //            channel.broadcast(info);
         }
 
-        //        ScanningInfo info = new ScanningInfo(ScanningAction.PURGE);
-        //        info.state = ScanningResult.FINISHED;
+        //        ScanningInfo info = new ScanningInfo(EventSource.PURGE);
+        //        info.state = EventState.FINISHED;
         //        info.message = "本次操作共清除元数据记录" + total + "条。";
         //        channel.broadcast(info);
         return total;
@@ -235,15 +235,15 @@ public class MetadataService {
         return Path.of(coverBaseDir, id + ".jpg");
     }
 
-    // 根据分辨率适配画质
+    // 根据分辨率适配画质 // TODO 考虑竖屏不能简单用height >= width判断
     private Quality adaptQuality(int width, int height) {
-        if (height >= width) return Quality.XX;
+        if (height >= width) return Quality.LD;
         if (height > 4000) return Quality.EK;   // 8192×4320
         if (height > 2000) return Quality.FK;   // 4096×2160
         if (height > 1000) return Quality.FHD;  // 1920×1080
         if (height > 700) return Quality.HD;    // 1280×720
         if (height > 400) return Quality.SD;    // 640×480
-        return Quality.XX;
+        return Quality.LD;
     }
 
 }

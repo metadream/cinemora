@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 偏好设置
+ * 系统设置（继承安全用户）
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -35,6 +35,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Settings extends Principal {
 
+    // 一个系统只有一条设置记录
     @Id
     private long settingId = Long.MAX_VALUE;
 
@@ -67,7 +68,7 @@ public class Settings extends Principal {
     @UpdateTimestamp
     private LocalDateTime lastModified;
 
-    // 本系统不使用角色控制
+    // 不使用角色控制
     @Override
     public List<SecurityRole> getSecurityRoles() {
         return null;

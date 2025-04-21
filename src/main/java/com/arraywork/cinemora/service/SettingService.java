@@ -89,7 +89,7 @@ public class SettingService implements SecurityService {
         // 变更监听目录
         String library = settings.getLibrary();
         if (!library.equals(_library)) {
-            metadataService.purge(library);
+            metadataService.clean(library);
             //            libraryService.scan(library, true); // TODO
         }
         return settingRepo.save(settings);

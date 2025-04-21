@@ -27,35 +27,35 @@ public class PortalController {
     @Resource
     private TagCloudService tagCloudService;
 
-    // 首页
+    /** 首页 */
     @GetMapping("/")
     public String index(Model model, String page, Metadata condition) {
+        model.addAttribute("pagination", metadataService.getMetadata(page, condition));
         model.addAttribute("condition", condition);
-        model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
         return "index";
     }
 
-    // 精选页
+    /** 精选页 */
     @GetMapping("/starred")
     public String starred(Model model, String page) {
         Metadata condition = new Metadata();
         condition.setStarred(true);
-        model.addAttribute("pagination", metadataService.getMetadatas(page, condition));
+        model.addAttribute("pagination", metadataService.getMetadata(page, condition));
         return "index";
     }
 
-    // 发现页
+    /** 发现页 */
     @GetMapping("/explore")
     public String explore(Model model) {
         model.addAttribute("tagCloud", tagCloudService.getTagCloud());
         return "explore";
     }
 
-    // 详情页
-    @GetMapping("/{code}")
-    public String thread(Model model, @PathVariable String code) {
+    /** 详情页 */
+    @GetMapping("/{code}") // TODO code->volume???
+    public String details(Model model, @PathVariable String code) {
         model.addAttribute("metadata", metadataService.getByCode(code));
-        model.addAttribute("transId", KeyGenerator.nanoId());
+        model.addAttribute("transId", KeyGenerator.nanoId()); // TODO 转码？
         return "thread";
     }
 

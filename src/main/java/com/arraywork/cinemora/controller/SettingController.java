@@ -19,7 +19,7 @@ import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.service.SettingService;
 
 /**
- * 偏好设置控制器
+ * 系统设置控制器（继承登录控制）
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -32,21 +32,21 @@ public class SettingController extends SecurityController {
     @Resource
     private SettingService settingService;
 
-    // 初始化页面
+    /** 初始化页面 */
     @GetMapping("/init")
     public String init() {
         Settings settings = settingService.getSettings();
         return settings != null ? "redirect:/" : "init";
     }
 
-    // 设置页面
+    /** 设置页面 */
     @GetMapping("/settings")
     @Permission
     public String settings() {
         return "settings";
     }
 
-    // 初始化偏好
+    /** 创建初始化设置 */
     @PostMapping("/settings")
     @ResponseBody
     public Settings init(
@@ -54,7 +54,7 @@ public class SettingController extends SecurityController {
         return settingService.init(settings);
     }
 
-    // 保存偏好
+    /** 更新设置 */
     @PutMapping("/settings")
     @Permission
     @ResponseBody
