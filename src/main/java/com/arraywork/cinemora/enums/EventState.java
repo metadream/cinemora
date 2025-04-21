@@ -20,6 +20,7 @@ public enum EventState {
     INDEXED("Indexed"),
     REINDEXED("Reindexed"),
     SKIPPED("Skipped"),
+    DELETED("Deleted"),
     FAILED("Failed"), // Unsupported Media Type
     FINISHED("Finished");
 
