@@ -1,11 +1,15 @@
 package com.arraywork.cinemora.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 import jakarta.annotation.PreDestroy;
@@ -36,7 +40,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryService {
 
+    private static final List<ScanningLog> scanningLogs = new CopyOnWriteArrayList<>();
+
     private static final String CHANNEL_NAME = "library";
+    private static final AtomicBoolean isAborted = new AtomicBoolean(false);
+    private static final AtomicBoolean isScanning = new AtomicBoolean(false);
     private DirectoryMonitor monitor;
 
     @Resource
@@ -63,57 +71,107 @@ public class LibraryService {
     //        }
     //    }
 
-    // 异步启动目录监听
+    // 统计所有文件总数（1000个文件以上建议使用并行流）TODO 不加并行流速度测试
+    private long countRegularFiles(Path path) {
+        AtomicLong count = new AtomicLong();
+        try (Stream<Path> paths = Files.walk(path).parallel()) {
+            count.set(paths.filter(Files::isRegularFile).count());
+        } catch (IOException e) {
+            log.error("Error counting files in directory: {}", path, e);
+            throw new RuntimeException("Error counting files in directory: " + path, e);
+        }
+        return count.get();
+    }
+
+    /** 异步扫描媒体库 */
     @Async
     public void scan(ScanningOptions options) throws IOException {
-        Path library = Path.of(settingService.getSettings().getLibrary());
-        AtomicLong count = new AtomicLong();
-        AtomicLong total = new AtomicLong();
-        AtomicLong indexed = new AtomicLong();
-        AtomicLong skipped = new AtomicLong();
-        AtomicLong failed = new AtomicLong();
+        //        public void criticalMethod() {
+        //            if (!isScanning.compareAndSet(false, true)) {
+        //                return; // 已经有线程在执行
+        //            }
+        //
+        //            try {
+        //                // 临界区代码
+        //            } finally {
+        //                isScanning.set(false);
+        //            }
+        //        }
 
-        // 统计所有文件总数
-        try (Stream<Path> paths = Files.walk(library)) {
-            total.set(paths.filter(Files::isRegularFile).count());
+        Path library = settingService.getLibrary();
+        long count = countRegularFiles(library);
+        if (count == 0) {
+            ScanningLog log = new ScanningLog();
+            log.setAction(ScanningAction.SCAN);
+            log.setResult(ScanningResult.FINISHED);
+            log.setMessage("No files found.");
+            channelService.broadcast(CHANNEL_NAME, log);
+            return;
         }
 
-        System.out.println(options);
+        AtomicLong ordinal = new AtomicLong();
+        AtomicLong indexed = new AtomicLong();
+        AtomicLong reindexed = new AtomicLong();
+        AtomicLong skipped = new AtomicLong();
+        AtomicLong failed = new AtomicLong();
         long st = System.currentTimeMillis();
+
         // 遍历文件
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                ScanningLog log = new ScanningLog(ScanningAction.SCAN);
-                log.setCount(count.incrementAndGet());
-                log.setTotal(total.get());
-                log.setMessage(library.relativize(path).toString());
-
-                try {
-                    Metadata metadata = metadataService.build(path.toFile(), options.isForceRebuild());
-                    if (metadata != null) {
-                        log.setResult(ScanningResult.SUCCEEDED);
-                        indexed.incrementAndGet();
-                    } else {
-                        log.setResult(ScanningResult.SKIPPED);
-                        skipped.incrementAndGet();
-                    }
-                } catch (Exception e) {
-                    log.setResult(ScanningResult.FAILED);
-                    failed.incrementAndGet();
+                if (isAborted.get()) {
+                    return FileVisitResult.TERMINATE;
                 }
-
-                channelService.broadcast(CHANNEL_NAME, log);
+                if (attrs.isRegularFile()) {
+                    ordinal.incrementAndGet();
+                    ScanningResult result = process(ScanningAction.SCAN, path.toFile(), options.isForceReindexing());
+                    switch (result) {
+                        case INDEXED -> indexed.incrementAndGet();
+                        case REINDEXED -> reindexed.incrementAndGet();
+                        case SKIPPED -> skipped.incrementAndGet();
+                        case FAILED -> failed.incrementAndGet();
+                    }
+                    //                    channelService.broadcast(CHANNEL_NAME, "realtime", log);
+                }
                 return FileVisitResult.CONTINUE;
             }
         });
 
         System.out.println("ffmpeg============" + (System.currentTimeMillis() - st));
-
-        ScanningLog log = new ScanningLog(ScanningAction.SCAN);
+        ScanningLog log = new ScanningLog();
+        log.setAction(ScanningAction.SCAN);
         log.setResult(ScanningResult.FINISHED);
-        log.setMessage(total + " files found: " + indexed + " indexed, " + skipped + " skipped, and " + failed + " failed.");
+        log.setMessage(count + " files found: " + indexed + " indexed, " + skipped + " skipped, and " + failed + " failed.");
         channelService.broadcast(CHANNEL_NAME, log);
+    }
+
+    // TODO 涵盖所有ScanningResult，例如reindexed
+    public synchronized ScanningResult process(ScanningAction action, File file, boolean isForceReIndexing) {
+        Path library = settingService.getLibrary();
+        String relativePath = library.relativize(file.toPath()).toString();
+        ScanningResult result;
+
+        ScanningLog log = new ScanningLog();
+        log.setAction(action);
+        log.setMessage(relativePath);
+
+        try {
+            Metadata metadata = metadataService.build(file, isForceReIndexing);
+            if (metadata != null) {
+                log.setResult(ScanningResult.INDEXED);
+                result = ScanningResult.INDEXED;
+            } else {
+                log.setResult(ScanningResult.SKIPPED);
+                result = ScanningResult.SKIPPED;
+            }
+        } catch (Exception e) {
+            log.setResult(ScanningResult.FAILED);
+            result = ScanningResult.FAILED;
+        }
+
+        channelService.broadcast(CHANNEL_NAME, log);
+        return result;
     }
 
     // 重新扫描媒体库

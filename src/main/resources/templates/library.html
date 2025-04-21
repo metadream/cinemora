@@ -12,15 +12,11 @@
         <div class="progress"><div id="percent"></div></div>
         <div class="footnote">&#8203;</div>
       </div>
-      <div class="scan-options">
-        <th-checkbox name="forceRebuild" value="true">Force rebuild metadata</th-checkbox>
-        <th-checkbox name="cleanIndexes" value="true">Clean up invalid metadata</th-checkbox>
+      <div class="scan-options"><!-- TODO 扫描选项增加文字说明 -->
+        <th-checkbox name="forceReindexing" value="true">Force reindexing</th-checkbox>
+        <th-checkbox name="cleanIndexes" value="true">Clean indexes</th-checkbox>
       </div>
     </div>
-
-    <table class="logs">
-      <tr><th width="170"></th><th width="90"></th><th width="140"></th><th></th></tr>
-    </table>
   </section>
 
   <div class="footline">
@@ -28,6 +24,12 @@
     <th-button class="outlined" variant="outlined" onclick="abortScan()">Abort Scan</th-button>
     <th-button onclick="startScan(this)">Start Scan</th-button>
   </div>
+
+  <section class="loose">
+    <table class="logs">
+      <tr><th width="170"></th><th width="90"></th><th width="140"></th><th></th></tr>
+    </table>
+  </section>
 </main>
 </body>
 </html>

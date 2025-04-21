@@ -17,9 +17,10 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ScanningResult {
 
-    SUCCEEDED("Succeeded"),
+    INDEXED("Indexed"),
+    REINDEXED("Reindexed"),
     SKIPPED("Skipped"),
-    FAILED("Failed"),
+    FAILED("Failed"), // Unsupported Media Type
     FINISHED("Finished");
 
     private final String label;

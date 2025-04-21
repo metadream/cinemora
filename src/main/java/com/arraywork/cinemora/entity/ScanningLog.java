@@ -17,22 +17,21 @@ import lombok.Data;
 @Data
 public class ScanningLog {
 
-    private long count;
+    private long ordinal;
     private long total;
+    private long indexed;
+    private long reindexed;
+    private long skipped;
+    private long failed;
     private long percent;
 
     private String message;
     private ScanningAction action;
     private ScanningResult result;
-    private LocalDateTime time;
-
-    public ScanningLog(ScanningAction action) {
-        this.action = action;
-        this.time = LocalDateTime.now();
-    }
+    private LocalDateTime time = LocalDateTime.now();
 
     public long getPercent() {
-        return total > 0 && total >= count ? 100 * count / total : -1;
+        return total > 0 && total >= ordinal ? 100 * ordinal / total : -1;
     }
 
 }

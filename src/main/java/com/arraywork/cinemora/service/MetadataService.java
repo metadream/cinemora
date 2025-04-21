@@ -86,10 +86,11 @@ public class MetadataService {
 
     // 根据文件构建元数据
     @Transactional(rollbackFor = Exception.class)
-    public Metadata build(File file, boolean forceRebuild) {
+    public Metadata build(File file, boolean forceReindexing) {
+        // TODO 先判断数据库是否存在再提取元数据
         MediaInfo mediaInfo = ffmpegService.extract(file);
-        Assert.notNull(mediaInfo, "Not a video file");
-        Assert.notNull(mediaInfo.getVideo(), "Not a video file");
+        Assert.notNull(mediaInfo, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        Assert.notNull(mediaInfo.getVideo(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
 
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
@@ -98,9 +99,9 @@ public class MetadataService {
         if (metadata == null) {
             metadata = new Metadata();
             metadata.setCode(KeyGenerator.nanoId(9, "0123456789"));
-            forceRebuild = true;
+            forceReindexing = true;
         }
-        if (forceRebuild) {
+        if (forceReindexing) {
             // 保存元数据
             VideoInfo video = mediaInfo.getVideo();
             metadata.setMediaInfo(mediaInfo);
@@ -122,7 +123,7 @@ public class MetadataService {
         //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
 
         //        boolean coverExists = coverFile.exists();
-        //        if (!coverExists || (coverExists && forceRebuildCover)) {
+        //        if (!coverExists || (coverExists && forceReindexingCover)) {
         //            metadata.setMediaInfo(mediaInfo);
         //            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
         //            metadata.setFileSize(file.length());
