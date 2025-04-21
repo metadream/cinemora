@@ -48,7 +48,7 @@
           <tr><td>Format:</td><td id="format"></td></tr>
           <tr><th colspan="2">Video</th></tr>
           <tr><td>Codec:</td><td><span id="vcodec"></span></td></tr>
-          <tr><td>Dimensions:</td><td><span id="dimension"></span></td></tr>
+          <tr><td>Resolution:</td><td><span id="resolution"></span></td></tr>
           <tr><td>Bit Rate:</td><td><span id="vBitRate"></span> kbps</td></tr>
           <tr><td>Frame Rate:</td><td><span id="frameRate"></span> fps</td></tr>
           <tr><th colspan="2">Audio</th></tr>
@@ -111,6 +111,7 @@ metaDialog.buttons = [{
 }];
 
 function openMetadata(metadata) {
+    console.log(metadata);
   metadata.region = metadata.region?.code;
   metadata.quality = metadata.quality?.code;
   metadata.censorship = metadata.censorship?.code;
@@ -118,11 +119,11 @@ function openMetadata(metadata) {
   Thyme.form.setJsonObject(metaDialog, metadata);
 
   const { video, audio } = metadata.mediaInfo;
-  cover.style.backgroundImage = `url(/cover/${metadata.id})`;
+  cover.style.backgroundImage = `url(/cover/${metadata.id}?${Date.now()})`;
   metaDialog.querySelector('#duration').innerHTML = Thyme.util.formatSeconds(metadata.mediaInfo.duration/1000);
   metaDialog.querySelector('#format').innerHTML = metadata.mediaInfo.format;
   metaDialog.querySelector('#vcodec').innerHTML = video.decoder;
-  metaDialog.querySelector('#dimension').innerHTML = video.width +' × '+ video.height;
+  metaDialog.querySelector('#resolution').innerHTML = video.width +' × '+ video.height;
   metaDialog.querySelector('#vBitRate').innerHTML = Math.round(video.bitRate/1000);
   metaDialog.querySelector('#frameRate').innerHTML = video.frameRate;
   metaDialog.querySelector('#acodec').innerHTML = audio?.decoder || '';

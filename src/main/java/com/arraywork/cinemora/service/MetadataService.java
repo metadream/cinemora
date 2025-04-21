@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.arraywork.autumn.channel.SseChannel;
 import com.arraywork.autumn.id.KeyGenerator;
 import com.arraywork.autumn.util.Assert;
 import com.arraywork.autumn.util.FileUtils;
@@ -52,17 +51,15 @@ public class MetadataService {
     @Resource
     private TagCloudService tagCloudService;
     @Resource
-    private SseChannel channel;
-    @Resource
     private MetadataRepo metadataRepo;
 
     @Value("${app.page-size}")
     private int pageSize;
 
     @Value("${app.covers}")
-    private String coverBaseDir;
+    private String coverDir;
 
-    // 查询分页元数据
+    /** 查询分页元数据 */
     public Pagination<Metadata> getMetadata(String page, Metadata condition) {
         Sort sort = Sort.by("lastModified").descending().and(Sort.by("code").descending());
         page = page != null && page.matches("\\d+") ? page : "1";
@@ -71,14 +68,29 @@ public class MetadataService {
         return new Pagination<Metadata>(pageInfo);
     }
 
-    // 根据ID获取元数据
+    /** 查询孤立无效的元数据 */
+    public List<Metadata> getOrphanedMetadata() {
+        Path library = settingService.getLibrary();
+        List<Metadata> allList = metadataRepo.findAll();
+        List<Metadata> orphanedList = new ArrayList<>();
+
+        for (Metadata metadata : allList) {
+            Path filePath = library.resolve(metadata.getFilePath());
+            if (!filePath.toFile().exists()) {
+                orphanedList.add(metadata);
+            }
+        }
+        return orphanedList;
+    }
+
+    /** 根据ID获取元数据 */
     public Metadata getById(String id) {
         Optional<Metadata> optional = metadataRepo.findById(id);
         Assert.isTrue(optional.isPresent(), HttpStatus.NOT_FOUND);
         return optional.get();
     }
 
-    // 根据编号获取元数据
+    /** 根据编号获取元数据 */
     public Metadata getByCode(String code) {
         Metadata metadata = metadataRepo.findByCode(code.toUpperCase());
         Assert.notNull(metadata, HttpStatus.NOT_FOUND);
@@ -123,26 +135,19 @@ public class MetadataService {
             metadataRepo.save(metadata); // 先保存以便获取ID供截图使用
 
             // 创建缩略图（截取视频时长一半时显示的画面）
-            File coverFile = getCoverPath(metadata.getId()).toFile();
+            File coverFile = buildCoverPath(metadata.getId()).toFile();
             ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
             //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
         }
         return state;
     }
 
-    // 根据文件删除元数据
-    @Transactional(rollbackFor = Exception.class)
-    public Metadata delete(File file) {
-        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
-        return delete(metadata);
-    }
-
-    // 保存元数据
+    /** 保存元数据 */
     @Transactional(rollbackFor = Exception.class)
     public Metadata save(Metadata metadata) {
         String code = metadata.getCode().toUpperCase();
         Metadata _metadata = metadataRepo.findByCode(code);
-        Assert.isTrue(_metadata == null || _metadata.getId().equals(metadata.getId()), "元数据编号冲突");
+        Assert.isTrue(_metadata == null || _metadata.getId().equals(metadata.getId()), "Duplicate metadata code detected.");
 
         if (_metadata == null) {
             _metadata = metadataRepo.getReferenceById(metadata.getId());
@@ -175,72 +180,45 @@ public class MetadataService {
         return metadataRepo.save(metadata);
     }
 
-    // 上传封面图片
+    /** 根据文件删除元数据 */
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(File file) {
+        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
+        delete(metadata);
+    }
+
+    /** 删除元数据 */
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Metadata metadata) {
+        if (metadata != null) {
+            metadataRepo.delete(metadata); // 删除元数据
+            File coverFile = buildCoverPath(metadata.getId()).toFile();
+            if (coverFile.exists()) coverFile.delete(); // 删除封面图片
+        }
+    }
+
+    /** 上传封面图片 */
     public String upload(String id, MultipartFile multipartFile) throws IOException {
         Metadata metadata = getById(id);
-        Path coverPath = Path.of(coverBaseDir, metadata.getId() + ".jpg");
+        Path coverPath = Path.of(coverDir, metadata.getId() + ".jpg");
         multipartFile.transferTo(coverPath);
         return coverPath.toString();
     }
 
-    // 清理元数据
-    @Transactional(rollbackFor = Exception.class)
-    public int clean(String library) {
-        List<Metadata> metadatas = metadataRepo.findAll();
-        List<Metadata> toDelete = new ArrayList<>();
-
-        for (Metadata metadata : metadatas) {
-            Path filePath = Path.of(library, metadata.getFilePath());
-            // 如果原始文件不存在则删除
-            if (!filePath.toFile().exists()) {
-                toDelete.add(metadata);
-            }
-        }
-
-        int count = 0, total = toDelete.size();
-        for (Metadata metadata : toDelete) {
-            delete(metadata);
-            count++;
-
-            //            ScanningInfo info = new ScanningInfo(EventSource.PURGE);
-            //            info.count = count;
-            //            info.total = total;
-            //            info.path = metadata.getFilePath();
-            //            info.state = EventState.SUCCESS;
-            //            channel.broadcast(info);
-        }
-
-        //        ScanningInfo info = new ScanningInfo(EventSource.PURGE);
-        //        info.state = EventState.FINISHED;
-        //        info.message = "本次操作共清除元数据记录" + total + "条。";
-        //        channel.broadcast(info);
-        return total;
+    /** 根据ID构建封面路径 */
+    public Path buildCoverPath(String id) {
+        return Path.of(coverDir, id + ".jpg");
     }
 
-    // 删除元数据
-    @Transactional(rollbackFor = Exception.class)
-    private Metadata delete(Metadata metadata) {
-        if (metadata != null) {
-            metadataRepo.delete(metadata); // 删除元数据
-            File coverFile = getCoverPath(metadata.getId()).toFile();
-            if (coverFile.exists()) coverFile.delete(); // 删除封面图片
-        }
-        return metadata;
-    }
-
-    // 根据ID获取封面路径
-    private Path getCoverPath(String id) {
-        return Path.of(coverBaseDir, id + ".jpg");
-    }
-
-    // 根据分辨率适配画质 // TODO 考虑竖屏不能简单用height >= width判断
+    /** 根据分辨率适配画质 */
+    // TODO 考虑竖屏不能简单用height >= width判断
     private Quality adaptQuality(int width, int height) {
         if (height >= width) return Quality.LD;
-        if (height > 4000) return Quality.EK;   // 8192×4320
-        if (height > 2000) return Quality.FK;   // 4096×2160
-        if (height > 1000) return Quality.FHD;  // 1920×1080
-        if (height > 700) return Quality.HD;    // 1280×720
-        if (height > 400) return Quality.SD;    // 640×480
+        if (height > 4000) return Quality.UHD_8K;
+        if (height > 2000) return Quality.UHD_4K;
+        if (height > 1000) return Quality.FHD;
+        if (height > 700) return Quality.HD;
+        if (height > 400) return Quality.SD;
         return Quality.LD;
     }
 

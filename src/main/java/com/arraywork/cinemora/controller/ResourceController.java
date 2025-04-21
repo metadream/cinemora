@@ -50,7 +50,7 @@ public class ResourceController {
     @GetMapping("/cover/{id}")
     public void cover(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
-        Path coverPath = Path.of(coversFolder, id + ".jpg");
+        Path coverPath = metadataService.buildCoverPath(id);
         resourceHandler.serve(coverPath, request, response);
     }
 

@@ -145,7 +145,7 @@ public class LibraryService {
     /** 处理文件 */
     public synchronized EventState process(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
         try {
-            Thread.sleep(300);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
         }
         Path library = settingService.getLibrary();
@@ -168,6 +168,29 @@ public class LibraryService {
         eventLog.setState(state);
         channelService.broadcast(CHANNEL_NAME, eventLog);
         return state;
+    }
+
+    /** 清理元数据 */
+    private int clean() {
+
+        //        int count = 0, total = toDelete.size();
+        //        for (Metadata metadata : toDelete) {
+        //            delete(metadata);
+        //            count++;
+
+        //            ScanningInfo info = new ScanningInfo(EventSource.PURGE);
+        //            info.count = count;
+        //            info.total = total;
+        //            info.path = metadata.getFilePath();
+        //            info.state = EventState.SUCCESS;
+        //            channel.broadcast(info);
+        //        }
+
+        //        ScanningInfo info = new ScanningInfo(EventSource.PURGE);
+        //        info.state = EventState.FINISHED;
+        //        info.message = "本次操作共清除元数据记录" + total + "条。";
+        //        channel.broadcast(info);
+        return 0;
     }
 
     /** 应用销毁时停止监听进程 */

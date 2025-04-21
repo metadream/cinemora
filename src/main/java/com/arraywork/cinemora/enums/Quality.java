@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 画质枚举
+ * 画质（分辨率）枚举
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -18,8 +18,8 @@ import lombok.Getter;
 @Getter
 public enum Quality implements MetafieldEnum, GenericEnum<Integer> {
 
-    EK(7680, "8K"),
-    FK(3840, "4K"),
+    UHD_8K(7680, "8K"),
+    UHD_4K(3840, "4K"),
     FHD(1080, "FHD"),
     HD(720, "HD"),
     SD(480, "SD"),
@@ -29,5 +29,18 @@ public enum Quality implements MetafieldEnum, GenericEnum<Integer> {
     private final String label;
 
     public static class Converter extends GenericEnumConverter<Quality, Integer> { }
+
+    public static Quality fromSize(int width, int height) {
+        int max = Math.max(width, height); // 横竖屏通用
+        for (Quality r : Quality.values()) {
+            if (max >= r.code) return r;
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        Quality r1 = Quality.fromSize(370, 480);
+        System.out.println(r1);
+    }
 
 }
