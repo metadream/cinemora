@@ -6,7 +6,7 @@ import com.arraywork.autumn.util.NumberUtils;
 import com.arraywork.autumn.util.TimeUtils;
 
 /**
- * Common Utils
+ * 全局模板工具
  *
  * @author Marco
  * @copyright arraywork.com

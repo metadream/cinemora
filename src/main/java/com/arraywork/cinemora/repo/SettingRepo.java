@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.arraywork.cinemora.entity.Settings;
 
 /**
- * 偏好持久化
+ * 设置持久化
  *
  * @author Marco
  * @copyright ArrayWork Inc.

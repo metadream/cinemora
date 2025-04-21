@@ -22,7 +22,7 @@ import ws.schild.jave.process.ProcessWrapper;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 /**
- * FFMPEG服务
+ * FFMPEG 服务
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -34,13 +34,13 @@ public class FfmpegService {
 
     private static final Map<String, ProcessWrapper> ffmpegProcesses = new HashMap<>();
 
-    // 获取媒体信息
+    /** 提取媒体信息 */
     public MediaInfo extract(File file) {
         MediaInfo mediaInfo = null;
         try {
             MultimediaInfo mInfo = new MultimediaObject(file).getInfo();
 
-            // 获取媒体信息
+            // 获取通用信息
             if (mInfo.getFormat() != null && mInfo.getDuration() > 0) {
                 mediaInfo = new MediaInfo();
                 mediaInfo.setDuration(mInfo.getDuration());
@@ -80,7 +80,7 @@ public class FfmpegService {
         return mediaInfo;
     }
 
-    // 视频截图
+    /** 视频截图（指定毫秒时长所在帧） */
     public void screenshot(File videoFile, File outputFile, long millis) {
         MultimediaObject mObject = new MultimediaObject(videoFile);
         ScreenExtractor screenExtractor = new ScreenExtractor();
@@ -92,7 +92,7 @@ public class FfmpegService {
         }
     }
 
-    // 视频转码
+    /** 视频转码输出流 */
     public InputStream transcode(String transId, String videoFile) throws IOException {
         ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
         ffmpeg.addArgument("-i");
@@ -110,7 +110,7 @@ public class FfmpegService {
         return ffmpeg.getInputStream();
     }
 
-    // 终止转码进程
+    /** 终止转码进程 */
     public void destroy(String transId) {
         ProcessWrapper ffmpeg = ffmpegProcesses.get(transId);
         if (ffmpeg != null) ffmpeg.destroy();

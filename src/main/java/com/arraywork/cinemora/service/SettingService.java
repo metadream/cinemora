@@ -19,7 +19,7 @@ import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.repo.SettingRepo;
 
 /**
- * 偏好设置服务
+ * 系统设置服务
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -38,7 +38,7 @@ public class SettingService implements SecurityService {
     @Resource
     private SettingRepo settingRepo;
 
-    // 登录
+    /** 复写登录逻辑 */
     @Override
     public Settings login(String username, String password) {
         Settings settings = getSettings();
@@ -48,30 +48,29 @@ public class SettingService implements SecurityService {
         return settings;
     }
 
-    // 获取偏好
+    /** 获取设置（缓存） */
     @Cacheable(value = "cinemora", key = "'#settings'")
     public Settings getSettings() {
         return settingRepo.findById(Long.MAX_VALUE).orElse(null);
     }
 
-    // 获取媒体库
+    /** 获取媒体库路径 */
     public Path getLibrary() {
         return Path.of(getSettings().getLibrary());
     }
 
-    // 初始化偏好
+    /** 初始化设置 */
     @CachePut(value = "cinemora", key = "'#settings'")
     @Transactional(rollbackFor = Exception.class)
     public Settings init(Settings settings) throws Exception {
         checkLibrary(settings);
         settings.setPassword(BCryptCipher.encode(settings.getPassword()));
-
         session.setPrincipal(settings);
-        //        libraryService.scan(settings.getLibrary(), true); // TODO
+        //            libraryService.scan(library, true); // TODO
         return settingRepo.save(settings);
     }
 
-    // 保存偏好
+    /** 保存设置 */
     @Transactional(rollbackFor = Exception.class)
     @CachePut(value = "cinemora", key = "'#settings'")
     public Settings save(Settings settings) throws Exception {
@@ -89,19 +88,19 @@ public class SettingService implements SecurityService {
         // 变更监听目录
         String library = settings.getLibrary();
         if (!library.equals(_library)) {
-            metadataService.clean(library);
+            //            metadataService.clean(library); // TODO
             //            libraryService.scan(library, true); // TODO
         }
         return settingRepo.save(settings);
     }
 
-    // 校验媒体库路径
+    /** 校验媒体库路径 */
     private void checkLibrary(Settings settings) {
-        String library = settings.getLibrary();
-        File entry = new File(library);
-        Assert.isTrue(entry.exists(), "The media library path does not exist.");
-        Assert.isTrue(entry.isDirectory(), "The media library path must be a directory.");
-        settings.setLibrary(Path.of(library).toString());
+        Path library = Path.of(settings.getLibrary());
+        File dir = library.toFile();
+        Assert.isTrue(dir.exists(), "The media library path does not exist.");
+        Assert.isTrue(dir.isDirectory(), "The media library path must be a directory.");
+        settings.setLibrary(library.toString());
     }
 
 }

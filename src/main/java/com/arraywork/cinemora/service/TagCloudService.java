@@ -24,13 +24,12 @@ import com.arraywork.cinemora.repo.MetadataRepo;
 public class TagCloudService {
 
     private static final String TAG_CLOUD_KEY = "TAG_CLOUD_KEY";
-
     @Resource
     private ExpiringCache<String, TagCloud> cache;
     @Resource
     private MetadataRepo metadataRepo;
 
-    // 获取标签云
+    /** 获取标签云 */
     public TagCloud getTagCloud() {
         TagCloud tagCloud = cache.get(TAG_CLOUD_KEY);
         if (tagCloud != null) return tagCloud;
@@ -49,6 +48,7 @@ public class TagCloudService {
         tagCloud.setGenres(allGenres);
         tagCloud.setTags(allTags);
 
+        // 通过Set集合过滤重复值
         List<Metadata> results = metadataRepo.findAll();
         for (Metadata metadata : results) {
             String[] producers = metadata.getProducers();
@@ -69,7 +69,7 @@ public class TagCloudService {
         return tagCloud;
     }
 
-    // 清空缓存
+    /** 清空缓存 */
     public void clearCache() {
         cache.remove(TAG_CLOUD_KEY);
     }

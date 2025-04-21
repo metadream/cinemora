@@ -18,12 +18,12 @@ import lombok.Getter;
 @Getter
 public enum Quality implements MetafieldEnum, GenericEnum<Integer> {
 
-    EK(7680, "8K"),   // TODO 准确数值问AI
-    FK(4096, "4K"),
+    EK(7680, "8K"),
+    FK(3840, "4K"),
     FHD(1080, "FHD"),
     HD(720, "HD"),
     SD(480, "SD"),
-    LD(0, "LD");
+    LD(360, "LD");
 
     private final Integer code;
     private final String label;

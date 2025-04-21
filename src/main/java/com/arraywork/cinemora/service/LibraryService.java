@@ -176,7 +176,7 @@ public class LibraryService {
 
     // 重新扫描媒体库
     //    public void rescan() throws Exception {
-    //        String library = settingService.getSettings().getLibrary();
+    //        String library = settingService.getLibrary();
     //        metadataService.clean(library);
     //        scan(library, true);
     //    }

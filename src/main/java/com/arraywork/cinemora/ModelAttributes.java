@@ -13,7 +13,7 @@ import com.arraywork.cinemora.metafield.MetafieldManager;
 import com.arraywork.cinemora.service.SettingService;
 
 /**
- * 模板全局属性
+ * 全局模板属性
  *
  * @author Marco
  * @copyright ArrayWork Inc.
@@ -47,7 +47,7 @@ public class ModelAttributes {
         return settings != null ? settings.getMetafields().stream().map(Metafield::getName).toList() : null;
     }
 
-    // 偏好设置
+    // 系统设置
     @ModelAttribute("settings")
     public Settings settings() {
         return settingService.getSettings();

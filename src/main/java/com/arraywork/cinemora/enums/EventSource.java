@@ -17,15 +17,9 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EventSource {
 
-    //    SCANNING("Scanning"),
-    //    LISTENING("Listening"),
-    //    CLEANING("Cleaning");
-
-    SCAN("Scan"),
-    ADD("Add"),
-    MODIFY("Modify"),
-    DELETE("Delete"),
-    CLEAN("Clean");
+    SCANNING("Scanning"),
+    LISTENING("Listening"),
+    CLEANING("Cleaning");
 
     private final String label;
 
