@@ -29,42 +29,41 @@ public class TagCloudService {
     @Resource
     private MetadataRepo metadataRepo;
 
-    /** 获取标签云 */  // TODO 待测试缓存
-    @Cacheable(key = "'#tagcloud'", unless = "#result.isEmpty()")
+    /** 获取标签云 */
+    @Cacheable(key = "'#tagcloud'")
     public TagCloud getTagCloud() {
+        List<Metadata> results = metadataRepo.findTags();
+        if (results.isEmpty()) return null;
+
         TagCloud tagCloud = new TagCloud();
-        List<Metadata> results = metadataRepo.findAll();
+        Set<String> allProducers = new HashSet<>();
+        Set<String> allDirectors = new HashSet<>();
+        Set<String> allStarring = new HashSet<>();
+        Set<String> allSeries = new HashSet<>();
+        Set<String> allGenres = new HashSet<>();
+        Set<String> allTags = new HashSet<>();
+        tagCloud.setProducers(allProducers);
+        tagCloud.setDirectors(allDirectors);
+        tagCloud.setStarring(allStarring);
+        tagCloud.setSeries(allSeries);
+        tagCloud.setGenres(allGenres);
+        tagCloud.setTags(allTags);
 
-        if (!results.isEmpty()) {
-            Set<String> allProducers = new HashSet<>();
-            Set<String> allDirectors = new HashSet<>();
-            Set<String> allStarring = new HashSet<>();
-            Set<String> allSeries = new HashSet<>();
-            Set<String> allGenres = new HashSet<>();
-            Set<String> allTags = new HashSet<>();
-            tagCloud.setProducers(allProducers);
-            tagCloud.setDirectors(allDirectors);
-            tagCloud.setStarring(allStarring);
-            tagCloud.setSeries(allSeries);
-            tagCloud.setGenres(allGenres);
-            tagCloud.setTags(allTags);
+        // 通过Set集合过滤重复值
+        for (Metadata metadata : results) {
+            String[] producers = metadata.getProducers();
+            String[] directors = metadata.getDirectors();
+            String[] starring = metadata.getStarring();
+            String[] series = metadata.getSeries();
+            String[] genres = metadata.getGenres();
+            String[] tags = metadata.getTags();
 
-            // 通过Set集合过滤重复值
-            for (Metadata metadata : results) {
-                String[] producers = metadata.getProducers();
-                String[] directors = metadata.getDirectors();
-                String[] starring = metadata.getStarring();
-                String[] series = metadata.getSeries();
-                String[] genres = metadata.getGenres();
-                String[] tags = metadata.getTags();
-
-                if (producers != null) allProducers.addAll(Arrays.asList(producers));
-                if (directors != null) allDirectors.addAll(Arrays.asList(directors));
-                if (starring != null) allStarring.addAll(Arrays.asList(starring));
-                if (series != null) allSeries.addAll(Arrays.asList(series));
-                if (genres != null) allGenres.addAll(Arrays.asList(genres));
-                if (tags != null) allTags.addAll(Arrays.asList(tags));
-            }
+            if (producers != null) allProducers.addAll(Arrays.asList(producers));
+            if (directors != null) allDirectors.addAll(Arrays.asList(directors));
+            if (starring != null) allStarring.addAll(Arrays.asList(starring));
+            if (series != null) allSeries.addAll(Arrays.asList(series));
+            if (genres != null) allGenres.addAll(Arrays.asList(genres));
+            if (tags != null) allTags.addAll(Arrays.asList(tags));
         }
         return tagCloud;
     }

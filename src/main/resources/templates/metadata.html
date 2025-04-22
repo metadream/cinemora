@@ -115,6 +115,7 @@ function openMetadata(metadata) {
   metadata.region = metadata.region?.code;
   metadata.quality = metadata.quality?.code;
   metadata.censorship = metadata.censorship?.code;
+  metadata.rating = metadata.rating?.code;
   metaDialog.querySelector('[name="filePath"]').title = metadata.filePath;
   Thyme.form.setJsonObject(metaDialog, metadata);
 
