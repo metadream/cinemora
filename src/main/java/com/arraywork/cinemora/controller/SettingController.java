@@ -50,7 +50,7 @@ public class SettingController extends SecurityController {
     @PostMapping("/settings")
     @ResponseBody
     public Settings init(
-        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Settings settings) throws Exception {
+        @Validated({ Default.class, Validator.Insert.class }) @RequestBody Settings settings) {
         return settingService.init(settings);
     }
 
@@ -58,7 +58,7 @@ public class SettingController extends SecurityController {
     @PutMapping("/settings")
     @Permission
     @ResponseBody
-    public Settings save(@Validated @RequestBody Settings settings) throws Exception {
+    public Settings save(@Validated @RequestBody Settings settings) {
         return settingService.save(settings);
     }
 

@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 import jakarta.annotation.Resource;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.arraywork.autumn.helper.ExpiringCache;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.TagCloud;
 import com.arraywork.cinemora.repo.MetadataRepo;
@@ -21,20 +23,21 @@ import com.arraywork.cinemora.repo.MetadataRepo;
  * @since 2024/05/02
  */
 @Service
+@CacheConfig(cacheNames = "cinemora")
 public class TagCloudService {
 
-    private static final String TAG_CLOUD_KEY = "TAG_CLOUD_KEY";
-    @Resource
-    private ExpiringCache<String, TagCloud> cache;
     @Resource
     private MetadataRepo metadataRepo;
 
-    /** 获取标签云 */
+    /** 获取标签云 */  // TODO 待测试缓存
+    @Cacheable(key = "'#tagcloud'")
     public TagCloud getTagCloud() {
-        TagCloud tagCloud = cache.get(TAG_CLOUD_KEY);
-        if (tagCloud != null) return tagCloud;
+        List<Metadata> results = metadataRepo.findAll();
+        if (results == null || results.isEmpty()) {
+            return null;
+        }
 
-        tagCloud = new TagCloud();
+        TagCloud tagCloud = new TagCloud();
         Set<String> allProducers = new HashSet<>();
         Set<String> allDirectors = new HashSet<>();
         Set<String> allStarring = new HashSet<>();
@@ -49,7 +52,6 @@ public class TagCloudService {
         tagCloud.setTags(allTags);
 
         // 通过Set集合过滤重复值
-        List<Metadata> results = metadataRepo.findAll();
         for (Metadata metadata : results) {
             String[] producers = metadata.getProducers();
             String[] directors = metadata.getDirectors();
@@ -65,13 +67,11 @@ public class TagCloudService {
             if (genres != null) allGenres.addAll(Arrays.asList(genres));
             if (tags != null) allTags.addAll(Arrays.asList(tags));
         }
-        cache.put(TAG_CLOUD_KEY, tagCloud);
         return tagCloud;
     }
 
     /** 清空缓存 */
-    public void clearCache() {
-        cache.remove(TAG_CLOUD_KEY);
-    }
+    @CacheEvict(key = "#tagcloud")
+    public void clearCache() { }
 
 }

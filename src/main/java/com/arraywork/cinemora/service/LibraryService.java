@@ -40,9 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryService {
 
-    private static final List<EventLog> EVENT_LOGS = new CopyOnWriteArrayList<>();
+    private static final List<EventLog> EVENT_LOGS = new CopyOnWriteArrayList<>();  // TODO
     private static final String CHANNEL_NAME = "library";
-    private static final AtomicBoolean isLocked = new AtomicBoolean(false);
+    private static final AtomicBoolean isThreadLocked = new AtomicBoolean(false);
     private DirectoryMonitor monitor;
 
     @Resource
@@ -68,19 +68,11 @@ public class LibraryService {
         }
     }
 
-    /** 设置异步线程锁定状态 */
-    public void setLockState(boolean newValue) {
-        boolean oldValue = isLocked.get();
-        if (isLocked.compareAndSet(oldValue, newValue)) {
-            channelService.broadcast(CHANNEL_NAME, "state", newValue);
-        }
-    }
-
     /** 异步扫描媒体库 */
     @Async
     public void scan(ScanningOptions options) throws IOException {
         // 锁定状态 TODO test
-        setLockState(true);
+        lockThreadState(true);
 
         // 统计文件总数
         Path library = settingService.getLibrary();
@@ -91,6 +83,7 @@ public class LibraryService {
             eventLog.setState(EventState.FINISHED);
             eventLog.setHint("No files found.");
             channelService.broadcast(CHANNEL_NAME, eventLog);
+            lockThreadState(false);
             return;
         }
 
@@ -106,7 +99,7 @@ public class LibraryService {
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                if (!isLocked.get()) {  // TODO 测试取消扫描
+                if (!isThreadLocked.get()) {  // TODO 测试取消扫描
                     return FileVisitResult.TERMINATE;
                 }
                 if (attrs.isRegularFile()) {
@@ -136,7 +129,7 @@ public class LibraryService {
         eventLog.setState(EventState.FINISHED);
         channelService.broadcast(CHANNEL_NAME, eventLog);
 
-        setLockState(false);
+        lockThreadState(false);
     }
 
     /** 处理文件（监听接口使用） */
@@ -172,7 +165,7 @@ public class LibraryService {
         return state;
     }
 
-    /** 清理元数据 */
+    /** 清理元数据 */  // TODO
     private int clean() {
         //        int count = 0, total = toDelete.size();
         //        for (Metadata metadata : toDelete) {
@@ -192,6 +185,14 @@ public class LibraryService {
         //        info.message = "本次操作共清除元数据记录" + total + "条。";
         //        channel.broadcast(info);
         return 0;
+    }
+
+    /** 设置异步线程锁定状态 */
+    public void lockThreadState(boolean newValue) {
+        boolean oldValue = isThreadLocked.get();
+        if (isThreadLocked.compareAndSet(oldValue, newValue)) {
+            channelService.broadcast(CHANNEL_NAME, "state", newValue);
+        }
     }
 
     /** 应用销毁时停止监听进程 */

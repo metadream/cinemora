@@ -1,5 +1,6 @@
 package com.arraywork.cinemora.controller;
 
+import java.io.IOException;
 import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,7 @@ public class LibraryController {
     @PostMapping("/library")
     @Permission
     @ResponseBody
-    public void scan(@RequestBody ScanningOptions options) throws Exception {
+    public void scan(@RequestBody ScanningOptions options) throws IOException {
         libraryService.scan(options);
     }
 
@@ -48,7 +49,7 @@ public class LibraryController {
     @Permission
     @ResponseBody
     public void abort() {
-        libraryService.setLockState(false);
+        libraryService.lockThreadState(false);
     }
 
 }

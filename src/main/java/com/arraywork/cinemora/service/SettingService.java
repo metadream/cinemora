@@ -4,9 +4,9 @@ import java.io.File;
 import java.nio.file.Path;
 import jakarta.annotation.Resource;
 
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -26,15 +26,11 @@ import com.arraywork.cinemora.repo.SettingRepo;
  * @since 2024/04/22
  */
 @Service
+@CacheConfig(cacheNames = "cinemora")
 public class SettingService implements SecurityService {
 
     @Resource
     private SecuritySession session;
-    @Resource
-    @Lazy
-    private LibraryService libraryService;
-    @Resource
-    private MetadataService metadataService;
     @Resource
     private SettingRepo settingRepo;
 
@@ -49,7 +45,7 @@ public class SettingService implements SecurityService {
     }
 
     /** 获取设置（缓存） */
-    @Cacheable(value = "cinemora", key = "'#settings'")
+    @Cacheable(key = "'#settings'")
     public Settings getSettings() {
         return settingRepo.findById(Long.MAX_VALUE).orElse(null);
     }
@@ -60,9 +56,9 @@ public class SettingService implements SecurityService {
     }
 
     /** 初始化设置 */
-    @CachePut(value = "cinemora", key = "'#settings'")
+    @CachePut(key = "'#settings'")
     @Transactional(rollbackFor = Exception.class)
-    public Settings init(Settings settings) throws Exception {
+    public Settings init(Settings settings) {
         checkLibrary(settings);
         settings.setPassword(BCryptCipher.encode(settings.getPassword()));
         session.setPrincipal(settings);
@@ -72,8 +68,8 @@ public class SettingService implements SecurityService {
 
     /** 保存设置 */
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(value = "cinemora", key = "'#settings'")
-    public Settings save(Settings settings) throws Exception {
+    @CachePut(key = "'#settings'")
+    public Settings save(Settings settings) {
         checkLibrary(settings);
 
         // 修改密码

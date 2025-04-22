@@ -127,7 +127,7 @@ public class MetadataService {
             // 保存元数据
             VideoInfo video = mediaInfo.getVideo();
             metadata.setMediaInfo(mediaInfo);
-            metadata.setQuality(adaptQuality(video.getWidth(), video.getHeight()));
+            metadata.setQuality(Quality.fromSize(video.getWidth(), video.getHeight()));
             metadata.setTitle(FileUtils.getName(file.getName()));
             metadata.setFilePath(relativePath);
             metadata.setFileSize(file.length());
@@ -135,7 +135,7 @@ public class MetadataService {
             metadataRepo.save(metadata); // 先保存以便获取ID供截图使用
 
             // 创建缩略图（截取视频时长一半时显示的画面）
-            File coverFile = buildCoverPath(metadata.getId()).toFile();
+            File coverFile = resolveCoverPath(metadata.getId()).toFile();
             ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
             //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
         }
@@ -192,7 +192,7 @@ public class MetadataService {
     public void delete(Metadata metadata) {
         if (metadata != null) {
             metadataRepo.delete(metadata); // 删除元数据
-            File coverFile = buildCoverPath(metadata.getId()).toFile();
+            File coverFile = resolveCoverPath(metadata.getId()).toFile();
             if (coverFile.exists()) coverFile.delete(); // 删除封面图片
         }
     }
@@ -206,20 +206,8 @@ public class MetadataService {
     }
 
     /** 根据ID构建封面路径 */
-    public Path buildCoverPath(String id) {
+    public Path resolveCoverPath(String id) {
         return Path.of(coverDir, id + ".jpg");
-    }
-
-    /** 根据分辨率适配画质 */
-    // TODO 考虑竖屏不能简单用height >= width判断
-    private Quality adaptQuality(int width, int height) {
-        if (height >= width) return Quality.LD;
-        if (height > 4000) return Quality.UHD_8K;
-        if (height > 2000) return Quality.UHD_4K;
-        if (height > 1000) return Quality.FHD;
-        if (height > 700) return Quality.HD;
-        if (height > 400) return Quality.SD;
-        return Quality.LD;
     }
 
 }

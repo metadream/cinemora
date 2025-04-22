@@ -50,7 +50,7 @@ public class ResourceController {
     @GetMapping("/cover/{id}")
     public void cover(HttpServletRequest request, HttpServletResponse response,
         @PathVariable String id) throws IOException {
-        Path coverPath = metadataService.buildCoverPath(id);
+        Path coverPath = metadataService.resolveCoverPath(id);
         resourceHandler.serve(coverPath, request, response);
     }
 
@@ -64,8 +64,7 @@ public class ResourceController {
         resourceHandler.serve(videoPath, request, response);
     }
 
-    /** 视频转码 */
-    // TODO 待测试
+    /** 视频转码 */ // TODO 待测试
     @GetMapping("/video/{id}/{transId}")
     public void transcode(@PathVariable String id, @PathVariable String transId,
         HttpServletResponse response) {
