@@ -37,7 +37,7 @@ function update(btn) {
 
   const library = document.querySelector('[name="library"]').dataset.value;
   if (data.library !== library) {
-    Thyme.confirm('<b class="DANGER">Changing the library will erase all metadata and cannot be undone. <br>Are you sure you want to continue?</b>',
+    Thyme.confirm('<b class="DANGER">Changing the library will automatically start scan to clear all metadata and rebuild the indexes. <br>Are you sure you want to continue?</b>',
     () => save(btn, true));
   } else {
     save(btn);
