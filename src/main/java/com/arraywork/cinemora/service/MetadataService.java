@@ -183,9 +183,9 @@ public class MetadataService {
 
     /** 根据文件删除元数据 */
     @Transactional(rollbackFor = Exception.class)
-    public Metadata delete(File file) {
+    public EventState delete(File file) {
         Metadata metadata = metadataRepo.findByFilePath(file.getPath());
-        return delete(metadata);
+        return delete(metadata) != null ? EventState.DELETED : EventState.SKIPPED;
     }
 
     /** 删除元数据 */
@@ -202,7 +202,7 @@ public class MetadataService {
     /** 上传封面图片 */
     public String upload(String id, MultipartFile multipartFile) throws IOException {
         Metadata metadata = getById(id);
-        Path coverPath = Path.of(coverDir, metadata.getId() + ".jpg");
+        Path coverPath = resolveCoverPath(metadata.getId());
         multipartFile.transferTo(coverPath);
         return coverPath.toString();
     }

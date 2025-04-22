@@ -173,14 +173,12 @@ public class LibraryService {
 
     /** 删除媒体库文件 */  // TODO test
     public EventState deleteFile(File file) {
+        Path library = settingService.getLibrary();
         EventLog eventLog = new EventLog();
         eventLog.setSource(EventSource.LISTENING);
         try {
-            Metadata metadata = metadataService.delete(file);
-            if (metadata != null) {
-                eventLog.setPath(metadata.getFilePath());
-                eventLog.setState(EventState.DELETED);
-            }
+            eventLog.setState(metadataService.delete(file));
+            eventLog.setPath(library.relativize(file.toPath()).toString());
         } catch (Exception e) {
             eventLog.setHint(e.getMessage());
             eventLog.setState(EventState.FAILED);
