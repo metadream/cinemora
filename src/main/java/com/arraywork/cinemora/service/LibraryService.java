@@ -72,6 +72,7 @@ public class LibraryService {
     public void scan(ScanningOptions options) throws IOException {
         // 锁定状态 TODO test
         if (!lockThreadState(true)) return;
+        System.out.println("=========================scanning........");
 
         // 统计文件总数
         Path library = settingService.getLibrary();
