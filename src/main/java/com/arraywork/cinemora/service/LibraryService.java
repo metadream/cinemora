@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import jakarta.annotation.PostConstruct;
@@ -41,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryService {
 
-    private static final List<EventLog> EVENT_LOGS = new CopyOnWriteArrayList<>();  // TODO
     private static final String CHANNEL_NAME = "library";
     private static final AtomicBoolean isThreadLocked = new AtomicBoolean(false);
     private DirectoryMonitor monitor;
@@ -73,7 +71,7 @@ public class LibraryService {
     @Async
     public void scan(ScanningOptions options) throws IOException {
         // 锁定状态 TODO test
-        lockThreadState(true);
+        if (!lockThreadState(true)) return;
 
         // 统计文件总数
         Path library = settingService.getLibrary();
@@ -222,12 +220,12 @@ public class LibraryService {
         emitLog(eventLog);
     }
 
-    /** 设置异步线程锁定状态 */
-    public void lockThreadState(boolean newValue) {
-        boolean oldValue = isThreadLocked.get();
-        if (isThreadLocked.compareAndSet(oldValue, newValue)) {
-            channelService.broadcast(CHANNEL_NAME, "state", newValue);
-        }
+    /** 设置异步线程锁定状态（返回状态变更是否成功） */
+    public boolean lockThreadState(boolean newState) {
+        boolean currentState = isThreadLocked.get();
+        boolean success = isThreadLocked.compareAndSet(currentState, newState);
+        if (success) channelService.broadcast(CHANNEL_NAME, "state", newState);
+        return success;
     }
 
     /** 应用销毁时停止监听进程 */
