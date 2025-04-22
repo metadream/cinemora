@@ -5,11 +5,17 @@ Cinemora 是一款轻量级开源视频媒体系统，旨在帮助人们更好�
 
 ### Deployment
 
+1. Download Executable Jar
+```
+
+```
+
+2. Create System Service
 ```
 # vi /etc/systemd/system/cinemora.service
 
 [Unit]
-Description=Cinemora Service
+Description=Cinemora Media System
 After=syslog.target
 
 [Service]
@@ -22,3 +28,12 @@ RestartSec=30
 [Install]
 WantedBy=multi-user.target
 ```
+
+3. Start Service
+```
+systemctl enable cinemora
+systemctl start cinemora
+```
+
+4. Initialization
+   Go http://localhost:9002
