@@ -7,7 +7,7 @@
   <script>Thyme.locale = 'en';</script>
   <link rel="icon" type="image/svg" href="/assets/favicon.svg"/>
   <link rel="stylesheet" href="/assets/app.css"/>
-  <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">[[${appName}]]</title>
+  <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">[[${app.name}]]</title>
 </head>
 <body>
 
@@ -55,8 +55,8 @@
 <footer>
   <main>
     <img class="logo" src="/assets/logo.svg"/>
-    <div>[[${appDescription}]]</div>
-    <div>🄯 Copyleft <a target="_blank" href="https://github.com/metadream/cinemora">[[${appDescription}]]</a> is Licensed <a target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GPL 3.0</a></div>
+    <div>[[${app.description}]]</div>
+    <div>🄯 Copyleft [[${app.version}]] <a target="_blank" href="https://github.com/metadream/cinemora">[[${app.fullname}]]</a> is Licensed <a target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GPL 3.0</a></div>
   </main>
 </footer>
 </body>
