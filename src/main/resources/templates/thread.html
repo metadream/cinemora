@@ -19,7 +19,7 @@
 
   <div class="metadata">
     <div class="prop">
-      <label>编号:</label>
+      <label>Code:</label>
       <div>[[${metadata.code}]]</div>
     </div>
 
@@ -54,11 +54,11 @@ document.addEventListener('keyup', function(e) {
 
 video.on('error', function() {
   if (this.transcoded) {
-    Thyme.error('不支持的视频格式');
+    Thyme.error('Unsupported video format');
   } else {
     this.src += '/[[${transId}]]';
     this.transcoded = true;
-    Thyme.warn('正在实时转码播放');
+    Thyme.warn('Real-time transcoding and playback.');
   }
 });
 

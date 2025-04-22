@@ -1,9 +1,11 @@
 package com.arraywork.cinemora;
 
 import java.util.List;
+import java.util.Map;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -20,7 +22,10 @@ import com.arraywork.cinemora.service.SettingService;
  * @since 2024/04/22
  */
 @ControllerAdvice
+@ConfigurationProperties(prefix = "app")
 public class ModelAttributes {
+
+    private Map<String, String> app;
 
     @Resource
     private SettingService settingService;
@@ -28,10 +33,34 @@ public class ModelAttributes {
     @Value("${app.name}")
     private String appName;
 
+    @Value("${app.fullname}")
+    private String appFullname;
+
+    @Value("${app.description}")
+    private String appDescription;
+
+    // 应用属性  // TODO test
+    @ModelAttribute("app")
+    public Map<String, String> app() {
+        return app;
+    }
+
     // 应用名
     @ModelAttribute("appName")
     public String appName() {
         return appName;
+    }
+
+    // 应用名
+    @ModelAttribute("appFullname")
+    public String appFullname() {
+        return appFullname;
+    }
+
+    // 应用名
+    @ModelAttribute("appDescription")
+    public String appDescription() {
+        return appDescription;
     }
 
     // 所有元字段实体

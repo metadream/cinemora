@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 扫描结果枚举
+ * 事件状态枚举
  *
  * @author Marco
  * @copyright ArrayWork Inc.

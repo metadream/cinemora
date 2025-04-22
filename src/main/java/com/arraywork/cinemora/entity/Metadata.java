@@ -42,13 +42,13 @@ public class Metadata {
 
     // 编号
     @Column(unique = true)
-    @NotBlank(message = "编号不能为空")
-    @Size(max = 20, message = "编号不能超过{max}个字符")
+    @NotBlank(message = "The code cannot be empty")
+    @Size(max = 20, message = "The code length cannot exceed {max} characters")
     private String code;
 
     // 标题
-    @NotBlank(message = "标题不能为空")
-    @Size(max = 255, message = "标题不能超过 {max} 个字符")
+    @NotBlank(message = "The title cannot be empty")
+    @Size(max = 255, message = "The title length cannot exceed {max} characters")
     private String title;
 
     // 制作方
@@ -118,7 +118,7 @@ public class Metadata {
 
     // 文件路径
     @Column(unique = true)
-    @NotBlank(message = "路径不能为空")
+    @NotBlank(message = "File path cannot be empty")
     private String filePath;
 
     // 文件大小

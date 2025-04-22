@@ -41,18 +41,18 @@ public class Settings extends Principal {
 
     // 用户名
     @Column(unique = true)
-    @NotBlank(message = "用户名不能为空")
-    @Size(max = 20, message = "用户名不能超过 {max} 个字符")
+    @NotBlank(message = "The username cannot be empty")
+    @Size(max = 20, message = "The username length cannot exceed {max} characters")
     private String username;
 
     // 密码
-    @NotBlank(message = "密码不能为空", groups = Validator.Insert.class)
-    @Size(max = 60, message = "密码不能超过 {max} 个字符")
+    @NotBlank(message = "The password cannot be empty", groups = Validator.Insert.class)
+    @Size(max = 60, message = "The password length cannot exceed {max} characters")
     private String password;
 
-    // 媒体库路径h
-    @NotBlank(message = "媒体库路径不能为空")
-    @Size(max = 120, message = "媒体库路径不能超过 {max} 个字符")
+    // 媒体库路径
+    @NotBlank(message = "The library cannot be empty")
+    @Size(max = 120, message = "The library length cannot exceed {max} characters")
     private String library;
 
     // 元字段

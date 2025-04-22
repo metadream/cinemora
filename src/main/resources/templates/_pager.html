@@ -1,12 +1,12 @@
 <div class="pager" th:if="${pagination.hasContent}">
   <div>
-    <span>第 <b th:text="${pagination.pageNumber}"></b>/<b th:text="${pagination.totalPages}"></b> 页</span>
-    <span>共 <b th:text="${pagination.totalRecords}"></b> 条记录</span>
+    <span>Page <b th:text="${pagination.pageNumber}"></b> of <b th:text="${pagination.totalPages}"></b></span>
+    <span><b th:text="${pagination.totalRecords}"></b> Records</span>
   </div>
 
   <div>
-    <a th:onclick="turnPage(1)">首页</a>
-    <a th:if="${pagination.hasPrevious}" th:onclick="turnPage([[${pagination.pageNumber-1}]])">上一页</a>
+    <a th:onclick="turnPage(1)">First</a>
+    <a th:if="${pagination.hasPrevious}" th:onclick="turnPage([[${pagination.pageNumber-1}]])">Prev</a>
 
     <th:block th:each="n: ${pagination.pageSet}">
       <span th:if="${n == 0}">...</span>
@@ -14,8 +14,8 @@
          th:class="${n == pagination.pageNumber ? 'active' : ''}"></a>
     </th:block>
 
-    <a th:if="${pagination.hasNext}" th:onclick="turnPage([[${pagination.pageNumber+1}]])">下一页</a>
-    <a th:onclick="turnPage([[${pagination.totalPages}]])">末页</a>
+    <a th:if="${pagination.hasNext}" th:onclick="turnPage([[${pagination.pageNumber+1}]])">Next</a>
+    <a th:onclick="turnPage([[${pagination.totalPages}]])">Last</a>
   </div>
 </div>
 
