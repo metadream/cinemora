@@ -3,6 +3,7 @@ package com.arraywork.cinemora.service;
 import java.io.File;
 import jakarta.annotation.Resource;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.arraywork.autumn.helper.DirectoryMonitor;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LibraryListener extends DirectoryMonitor.DirectoryListener {
 
     @Resource
+    @Lazy
     private LibraryService libraryService;
 
     @Override
