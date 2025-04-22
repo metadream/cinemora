@@ -38,9 +38,9 @@ public class SettingService implements SecurityService {
     @Override
     public Settings login(String username, String password) {
         Settings settings = getSettings();
-        Assert.notNull(settings, "系统尚未初始化");
+        Assert.notNull(settings, "System has not been initialized.");
         Assert.isTrue(settings.getUsername().equals(username)
-            && BCryptCipher.matches(password, settings.getPassword()), "用户名或密码错误");
+            && BCryptCipher.matches(password, settings.getPassword()), "Incorrect credentials.");
         return settings;
     }
 
@@ -65,26 +65,18 @@ public class SettingService implements SecurityService {
         return settingRepo.save(settings);
     }
 
-    /** 保存设置 */
+    /** 保存设置 */  // TODO 变更媒体库测试
     @Transactional(rollbackFor = Exception.class)
     @CachePut(key = "'#settings'")
     public Settings save(Settings settings) {
         checkLibrary(settings);
-
-        // 修改密码
-        Settings _settings = getSettings();
-        String _library = _settings.getLibrary();
-        if (StringUtils.hasText(settings.getPassword())) {
-            settings.setPassword(BCryptCipher.encode(settings.getPassword()));
+        // 变更密码
+        String password = settings.getPassword();
+        if (StringUtils.hasText(password)) {
+            settings.setPassword(BCryptCipher.encode(password));
         } else {
+            Settings _settings = getSettings();
             settings.setPassword(_settings.getPassword());
-        }
-
-        // 变更监听目录
-        String library = settings.getLibrary();
-        if (!library.equals(_library)) {
-            //            metadataService.clean(library); // TODO
-            //            libraryService.scan(library, true); // TODO
         }
         return settingRepo.save(settings);
     }
@@ -93,8 +85,8 @@ public class SettingService implements SecurityService {
     private void checkLibrary(Settings settings) {
         Path library = Path.of(settings.getLibrary());
         File dir = library.toFile();
-        Assert.isTrue(dir.exists(), "The media library path does not exist.");
-        Assert.isTrue(dir.isDirectory(), "The media library path must be a directory.");
+        Assert.isTrue(dir.exists(), "The library path does not exist.");
+        Assert.isTrue(dir.isDirectory(), "The library path must be a directory.");
         settings.setLibrary(library.toString());
     }
 

@@ -87,7 +87,6 @@ public class FfmpegService {
         try {
             screenExtractor.renderOneImage(mObject, -1, -1, millis, outputFile, 1);
         } catch (EncoderException e) {
-            e.printStackTrace();
             log.error("Screenshot error: ", e);
         }
     }
