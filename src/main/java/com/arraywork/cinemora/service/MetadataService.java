@@ -68,7 +68,7 @@ public class MetadataService {
         return new Pagination<Metadata>(pageInfo);
     }
 
-    /** 查询孤立无效的元数据 */
+    /** 查询无效的元数据 */
     public List<Metadata> getOrphanedMetadata() {
         Path library = settingService.getLibrary();
         List<Metadata> allList = metadataRepo.findAll();
@@ -137,7 +137,6 @@ public class MetadataService {
             // 创建缩略图（截取视频时长一半时显示的画面）
             File coverFile = resolveCoverPath(metadata.getId()).toFile();
             ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
-            //        OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 1920);
         }
         return state;
     }
@@ -162,20 +161,22 @@ public class MetadataService {
         if (metadata.getQuality() == null) {
             metadata.setQuality(_metadata.getQuality());
         }
+
         // 重命名文件
         Settings settings = settingService.getSettings();
         if (settings.isAutoRename()) {
-            String library = settings.getLibrary();
+            Path library = Path.of(settings.getLibrary());
             String filePath = metadata.getFilePath();
             String extension = FileUtils.getExtension(filePath);
             String newName = "[" + code + "] " + metadata.getTitle() + extension;
 
-            File oldFile = Path.of(library, filePath).toFile();
+            File oldFile = library.resolve(filePath).toFile();
             File newFile = Path.of(oldFile.getParent(), newName).toFile();
             Assert.isTrue(oldFile.exists(), "The original file does not exist");
             Assert.isTrue(oldFile.renameTo(newFile), "File renaming failed: possibly due to a name that is too long or contains reserved characters.");
-            metadata.setFilePath(newFile.getPath().substring(library.length()));
+            metadata.setFilePath(library.relativize(newFile.toPath()).toString());  // TODO test
         }
+
         tagCloudService.clearCache();
         return metadataRepo.save(metadata);
     }
