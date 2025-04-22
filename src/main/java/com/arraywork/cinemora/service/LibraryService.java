@@ -99,7 +99,7 @@ public class LibraryService {
         }
 
         // 清理无效索引
-        if (options.isCleanIndexes()) {
+        if (options.isCleanIndexes()) { // TODO test
             cleanIndexes();
         }
 
