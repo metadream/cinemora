@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import com.arraywork.autumn.channel.ChannelService;
 import com.arraywork.autumn.helper.DirectoryMonitor;
-import com.arraywork.autumn.util.FileUtils;
 import com.arraywork.cinemora.entity.EventLog;
 import com.arraywork.cinemora.entity.ScanningOptions;
 import com.arraywork.cinemora.entity.Settings;
@@ -41,17 +40,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LibraryService {
 
-    private static final List<EventLog> APP_LOGS = new CopyOnWriteArrayList<>();
-
+    private static final List<EventLog> EVENT_LOGS = new CopyOnWriteArrayList<>();
     private static final String CHANNEL_NAME = "library";
-    private static final AtomicBoolean isAborted = new AtomicBoolean(false);
-    private static final AtomicBoolean isScanning = new AtomicBoolean(false);
+    private static final AtomicBoolean isLocked = new AtomicBoolean(false);
     private DirectoryMonitor monitor;
 
     @Resource
     private ChannelService channelService;
-    @Resource
-    private FfmpegService ffmpegService;
     @Resource
     private SettingService settingService;
     @Resource
@@ -73,24 +68,23 @@ public class LibraryService {
         }
     }
 
+    /** 设置异步线程锁定状态 */
+    public void setLockState(boolean newValue) {
+        boolean oldValue = isLocked.get();
+        if (isLocked.compareAndSet(oldValue, newValue)) {
+            channelService.broadcast(CHANNEL_NAME, "state", newValue);
+        }
+    }
+
     /** 异步扫描媒体库 */
     @Async
     public void scan(ScanningOptions options) throws IOException {
-        // TODO
-        //        public void criticalMethod() {
-        //            if (!isScanning.compareAndSet(false, true)) {
-        //                return; // 已经有线程在执行
-        //            }
-        //
-        //            try {
-        //                // 临界区代码
-        //            } finally {
-        //                isScanning.set(false);
-        //            }
-        //        }
+        // 锁定状态 TODO test
+        setLockState(true);
 
+        // 统计文件总数
         Path library = settingService.getLibrary();
-        long total = FileUtils.countRegularFiles(library);
+        long total = 0;//FileUtils.countRegularFiles(library);
         if (total == 0) {  // TODO test
             EventLog eventLog = new EventLog();
             eventLog.setSource(EventSource.SCANNING);
@@ -100,6 +94,7 @@ public class LibraryService {
             return;
         }
 
+        // 统计处理结果数
         AtomicLong count = new AtomicLong();
         AtomicLong indexed = new AtomicLong();
         AtomicLong reindexed = new AtomicLong();
@@ -111,9 +106,9 @@ public class LibraryService {
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                //                if (isAborted.get()) {  // TODO 取消扫描
-                //                    return FileVisitResult.TERMINATE;
-                //                }
+                if (!isLocked.get()) {  // TODO 测试取消扫描
+                    return FileVisitResult.TERMINATE;
+                }
                 if (attrs.isRegularFile()) {
                     count.incrementAndGet();
                     EventState state = process(EventSource.SCANNING,
@@ -140,6 +135,13 @@ public class LibraryService {
         eventLog.setSource(EventSource.SCANNING);
         eventLog.setState(EventState.FINISHED);
         channelService.broadcast(CHANNEL_NAME, eventLog);
+
+        setLockState(false);
+    }
+
+    /** 处理文件（监听接口使用） */
+    public EventState process(File file) {
+        return process(EventSource.LISTENING, file, 0, 0, true);
     }
 
     /** 处理文件 */
@@ -172,7 +174,6 @@ public class LibraryService {
 
     /** 清理元数据 */
     private int clean() {
-
         //        int count = 0, total = toDelete.size();
         //        for (Metadata metadata : toDelete) {
         //            delete(metadata);

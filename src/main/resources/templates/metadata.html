@@ -9,7 +9,7 @@
     <table class="list">
       <tr>
         <th class="starred"></th>
-        <th width="11%">No.</th>
+        <th width="11%">Code</th>
         <th>Title</th>
         <th width="10%" th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}">
           [[${metafield.label}]]
@@ -61,7 +61,7 @@
 
       <div class="fields">
         <input type="hidden" name="id"/>
-        <th-field label="No." name="code" maxlength="20" required></th-field>
+        <th-field label="Code" name="code" maxlength="20" required></th-field>
         <th-field label="Starred"><th-switch name="starred"></th-switch></th-field>
         <th-field label="Title" name="title" maxlength="120" class="exclusive" required></th-field>
 

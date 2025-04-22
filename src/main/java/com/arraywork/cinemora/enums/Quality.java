@@ -20,27 +20,23 @@ public enum Quality implements MetafieldEnum, GenericEnum<Integer> {
 
     UHD_8K(7680, "8K"),
     UHD_4K(3840, "4K"),
-    FHD(1080, "FHD"),
-    HD(720, "HD"),
-    SD(480, "SD"),
-    LD(360, "LD");
+    FHD(1920, "FHD"),
+    HD(1080, "HD"),
+    SD(720, "SD"),
+    LD(480, "LD");
 
     private final Integer code;
     private final String label;
 
     public static class Converter extends GenericEnumConverter<Quality, Integer> { }
 
+    /** 根据宽高获取画质（横竖屏通用） */
     public static Quality fromSize(int width, int height) {
-        int max = Math.max(width, height); // 横竖屏通用
-        for (Quality r : Quality.values()) {
-            if (max >= r.code) return r;
+        int max = Math.max(width, height);
+        for (Quality q : Quality.values()) {
+            if (max >= q.code) return q;
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-        Quality r1 = Quality.fromSize(370, 480);
-        System.out.println(r1);
     }
 
 }
