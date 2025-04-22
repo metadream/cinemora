@@ -16,6 +16,8 @@ import jakarta.annotation.Resource;
 import jakarta.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -58,8 +60,8 @@ public class LibraryService {
         monitor = new DirectoryMonitor(5000, listener);
     }
 
-    /** 随应用启动媒体库监听 */
-    @PostConstruct
+    /** 应用启动后监听媒体库 */
+    @EventListener(ApplicationReadyEvent.class)
     public void scan() throws Exception {
         Settings settings = settingService.getSettings();
         if (settings != null) {
