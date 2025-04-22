@@ -25,8 +25,8 @@
 
   <div class="footline">
     <th-button class="outlined" variant="outlined" onclick="clearLogs(this)">Clear Logs</th-button>
-    <th-button class="outlined" variant="outlined" onclick="abortScan()">Abort Scan</th-button>
-    <th-button onclick="startScan(this)">Start Scan</th-button>
+    <th-button id="abortBtn" class="outlined" variant="outlined" onclick="abortScan()" disabled>Abort Scan</th-button>
+    <th-button id="scanBtn" onclick="startScan(this)" disabled>Start Scan</th-button>
   </div>
 
   <section>
@@ -39,25 +39,20 @@
 </html>
 
 <script>
+const autoScan = [[${autoScan}]];
 const $progress = document.querySelector('#progress');
+const $scanBtn = document.querySelector('#scanBtn');
+const $abortBtn = document.querySelector('#abortBtn');
 const $footnote = document.querySelector('.footnote');
 const $logs = document.querySelector('.logs');
 
 const channel = new Thyme.Channel('/channel/library');
-channel.on('message', data => showLogs(data));
+channel.on('state', locked => {
+  $scanBtn.disabled = locked;
+  $abortBtn.disabled = !locked;
+});
 
-function startScan() {
-  Thyme.confirm('Scanning the library may take a long time. <br>Are you sure you want to continue?', async () => {
-    $progress.removeClass('finished');
-    const options = Thyme.form.getJsonObject('.scan-options');
-    Thyme.http.post('/~/library', options);
-    // $scanBtn.innerHTML = '正在扫描';
-    // $scanBtn.disabled = true;
-    // $abortBtn.disabled = false;
-  });
-}
-
-function showLogs(data) {
+channel.on('message', data => {
   const { source, state } = data;
   if (state.name != 'FINISHED') {
     const row = $logs.insertRow(1);
@@ -71,5 +66,19 @@ function showLogs(data) {
     $progress.addClass('finished');
     $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.skipped} skipped, and ${data.failed} failed.`;
   }
+});
+
+// TODO test
+if (autoScan) {
+    Thyme.form.setJsonObject('.scan-options', { forceReindexing:true, cleanIndexes: true });
+    Thyme.http.post('/~/library', options);
+}
+
+function startScan() {
+  Thyme.confirm('Scanning the library may take a long time. <br>Are you sure you want to continue?', () => {
+    $progress.removeClass('finished');
+    const options = Thyme.form.getJsonObject('.scan-options');
+    Thyme.http.post('/~/library', options);
+  });
 }
 </script>

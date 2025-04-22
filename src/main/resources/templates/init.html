@@ -40,7 +40,7 @@ async function init(btn) {
   btn.loading = true;
   try {
     await Thyme.http.post('/~/settings', data);
-    location.href = '/~/metadata';
+    location.href = '/~/library?autoScan=true';
   } finally {
     btn.loading = false;
   }

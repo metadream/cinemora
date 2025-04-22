@@ -4,6 +4,7 @@ import java.io.IOException;
 import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,8 @@ public class LibraryController {
     /** 媒体库页面 */
     @GetMapping("/library")
     @Permission
-    public String library() {
+    public String library(Model model, boolean autoScan) {
+        model.addAttribute("autoScan", autoScan);
         return "library";
     }
 

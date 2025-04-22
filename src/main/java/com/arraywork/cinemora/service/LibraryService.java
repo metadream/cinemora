@@ -171,7 +171,7 @@ public class LibraryService {
         return state;
     }
 
-    /** 删除媒体库文件 */
+    /** 删除媒体库文件 */  // TODO test
     public EventState deleteFile(File file) {
         EventLog eventLog = new EventLog();
         eventLog.setSource(EventSource.LISTENING);

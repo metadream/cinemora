@@ -62,7 +62,6 @@ public class SettingService implements SecurityService {
         checkLibrary(settings);
         settings.setPassword(BCryptCipher.encode(settings.getPassword()));
         session.setPrincipal(settings);
-        //            libraryService.scan(library, true); // TODO
         return settingRepo.save(settings);
     }
 
