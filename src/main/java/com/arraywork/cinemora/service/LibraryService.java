@@ -110,7 +110,7 @@ public class LibraryService {
                 }
                 if (attrs.isRegularFile()) {
                     count.incrementAndGet();
-                    EventState state = process(EventSource.SCANNING,
+                    EventState state = processFile(EventSource.SCANNING,
                         path.toFile(), count.get(), total,
                         options.isForceReindexing());
                     switch (state) {
@@ -139,12 +139,12 @@ public class LibraryService {
     }
 
     /** 处理文件（监听接口使用） */
-    public EventState process(File file) {
-        return process(EventSource.LISTENING, file, 0, 0, true);
+    public EventState processFile(File file) {
+        return processFile(EventSource.LISTENING, file, 0, 0, true);
     }
 
     /** 处理文件 */
-    public synchronized EventState process(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
+    public synchronized EventState processFile(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -169,6 +169,24 @@ public class LibraryService {
         eventLog.setState(state);
         emitLog(eventLog);
         return state;
+    }
+
+    /** 删除媒体库文件 */
+    public EventState deleteFile(File file) {
+        EventLog eventLog = new EventLog();
+        eventLog.setSource(EventSource.LISTENING);
+        try {
+            Metadata metadata = metadataService.delete(file);
+            if (metadata != null) {
+                eventLog.setPath(metadata.getFilePath());
+                eventLog.setState(EventState.DELETED);
+            }
+        } catch (Exception e) {
+            eventLog.setHint(e.getMessage());
+            eventLog.setState(EventState.FAILED);
+        }
+        emitLog(eventLog);
+        return eventLog.getState();
     }
 
     /** 清理元数据 */  // TODO test

@@ -22,22 +22,20 @@ public class LibraryListener extends DirectoryMonitor.DirectoryListener {
 
     @Resource
     private LibraryService libraryService;
-    @Resource
-    private MetadataService metadataService;
 
     @Override
     public void onFileCreate(File file) {
-        libraryService.process(file);
+        libraryService.processFile(file);
     }
 
     @Override
     public void onFileChange(File file) {
-        libraryService.process(file);
+        libraryService.processFile(file);
     }
 
     @Override
     public void onFileDelete(File file) {
-        metadataService.delete(file);  // TODO 增加事件日志
+        libraryService.deleteFile(file);
     }
 
 }

@@ -182,19 +182,20 @@ public class MetadataService {
 
     /** 根据文件删除元数据 */
     @Transactional(rollbackFor = Exception.class)
-    public void delete(File file) {
+    public Metadata delete(File file) {
         Metadata metadata = metadataRepo.findByFilePath(file.getPath());
-        delete(metadata);
+        return delete(metadata);
     }
 
     /** 删除元数据 */
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Metadata metadata) {
+    public Metadata delete(Metadata metadata) {
         if (metadata != null) {
             metadataRepo.delete(metadata); // 删除元数据
             File coverFile = resolveCoverPath(metadata.getId()).toFile();
             if (coverFile.exists()) coverFile.delete(); // 删除封面图片
         }
+        return metadata;
     }
 
     /** 上传封面图片 */
