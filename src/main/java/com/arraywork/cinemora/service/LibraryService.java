@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.arraywork.autumn.channel.ChannelService;
 import com.arraywork.autumn.helper.DirectoryMonitor;
 import com.arraywork.cinemora.entity.EventLog;
+import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.ScanningOptions;
 import com.arraywork.cinemora.entity.Settings;
 import com.arraywork.cinemora.enums.EventSource;
@@ -82,12 +83,17 @@ public class LibraryService {
             eventLog.setSource(EventSource.SCANNING);
             eventLog.setState(EventState.FINISHED);
             eventLog.setHint("No files found.");
-            channelService.broadcast(CHANNEL_NAME, eventLog);
+            emitLog(eventLog);
             lockThreadState(false);
             return;
         }
 
-        // 统计处理结果数
+        // 清理无效索引
+        if (options.isCleanIndexes()) {
+            cleanIndexes();
+        }
+
+        // 统计扫描结果
         AtomicLong count = new AtomicLong();
         AtomicLong indexed = new AtomicLong();
         AtomicLong reindexed = new AtomicLong();
@@ -127,7 +133,7 @@ public class LibraryService {
         eventLog.setFailed(failed.get());
         eventLog.setSource(EventSource.SCANNING);
         eventLog.setState(EventState.FINISHED);
-        channelService.broadcast(CHANNEL_NAME, eventLog);
+        emitLog(eventLog);
 
         lockThreadState(false);
     }
@@ -161,30 +167,43 @@ public class LibraryService {
         }
 
         eventLog.setState(state);
-        channelService.broadcast(CHANNEL_NAME, eventLog);
+        emitLog(eventLog);
         return state;
     }
 
-    /** 清理元数据 */  // TODO
-    private int clean() {
-        //        int count = 0, total = toDelete.size();
-        //        for (Metadata metadata : toDelete) {
-        //            delete(metadata);
-        //            count++;
+    /** 清理元数据 */  // TODO test
+    private void cleanIndexes() {
+        List<Metadata> orphanedList = metadataService.getOrphanedMetadata();
+        int count = 0, deleted = 0, failed = 0, total = orphanedList.size();
 
-        //            ScanningInfo info = new ScanningInfo(EventSource.PURGE);
-        //            info.count = count;
-        //            info.total = total;
-        //            info.path = metadata.getFilePath();
-        //            info.state = EventState.SUCCESS;
-        //            channel.broadcast(info);
-        //        }
+        // 清理过程及日志
+        for (Metadata metadata : orphanedList) {
+            EventLog eventLog = new EventLog();
+            eventLog.setSource(EventSource.CLEANING);
+            eventLog.setPath(metadata.getFilePath());
+            eventLog.setCount(++count);
+            eventLog.setTotal(total);
 
-        //        ScanningInfo info = new ScanningInfo(EventSource.PURGE);
-        //        info.state = EventState.FINISHED;
-        //        info.message = "本次操作共清除元数据记录" + total + "条。";
-        //        channel.broadcast(info);
-        return 0;
+            try {
+                metadataService.delete(metadata);
+                eventLog.setDeleted(++deleted);
+                eventLog.setState(EventState.DELETED);
+            } catch (Exception e) {
+                eventLog.setFailed(++failed);
+                eventLog.setState(EventState.FAILED);
+                eventLog.setHint(e.getMessage());
+            }
+            emitLog(eventLog);
+        }
+
+        // 清理完成的日志
+        EventLog eventLog = new EventLog();
+        eventLog.setTotal(total);
+        eventLog.setDeleted(deleted);
+        eventLog.setFailed(failed);
+        eventLog.setSource(EventSource.CLEANING);
+        eventLog.setState(EventState.FINISHED);
+        emitLog(eventLog);
     }
 
     /** 设置异步线程锁定状态 */
@@ -199,6 +218,11 @@ public class LibraryService {
     @PreDestroy
     public void onDestroyed() throws Exception {
         monitor.stop();
+    }
+
+    /** 发送日志 */
+    private void emitLog(EventLog eventLog) {
+        channelService.broadcast(CHANNEL_NAME, eventLog);
     }
 
 }

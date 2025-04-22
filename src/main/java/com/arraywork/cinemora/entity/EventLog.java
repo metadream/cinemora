@@ -23,6 +23,7 @@ public class EventLog {
 
     private long indexed;
     private long reindexed;
+    private long deleted;
     private long skipped;
     private long failed;
 
