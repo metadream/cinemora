@@ -38,7 +38,7 @@ public class ModelAttributes {
     @Value("${app.description}")
     private String description;
 
-    // 应用属性  // TODO test
+    // 应用属性
     @ModelAttribute("app")
     public Map<String, String> app() {
         return Map.of(
