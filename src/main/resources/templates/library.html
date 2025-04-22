@@ -24,7 +24,6 @@
   </section>
 
   <div class="footline">
-    <th-button class="outlined" variant="outlined" onclick="clearLogs(this)">Clear Logs</th-button>
     <th-button id="abortBtn" class="outlined" variant="outlined" onclick="abortScan()" disabled>Abort Scan</th-button>
     <th-button id="scanBtn" onclick="startScan(this)" disabled>Start Scan</th-button>
   </div>
@@ -63,14 +62,19 @@ channel.on('message', data => {
     $progress.style.width = data.progress + '%';
     $footnote.innerHTML = `${data.count}/${data.total} ${data.path}`;
   } else {
-    $progress.addClass('finished');
-    $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.skipped} skipped, and ${data.failed} failed.`;
+    if (data.total === 0) {
+      $footnote.innerHTML = data.hint;
+    } else {
+      $progress.addClass('finished');
+      $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.skipped} skipped, and ${data.failed} failed.`;
+    }
   }
 });
 
-// TODO test
 if (autoScan) {
-    Thyme.form.setJsonObject('.scan-options', { forceReindexing:true, cleanIndexes: true });
+    const options = { forceReindexing:true, cleanIndexes: true };
+    const form = document.querySelector('.scan-options');
+    Thyme.form.setJsonObject(form, options);
     Thyme.http.post('/~/library', options);
 }
 
@@ -80,5 +84,9 @@ function startScan() {
     const options = Thyme.form.getJsonObject('.scan-options');
     Thyme.http.post('/~/library', options);
   });
+}
+
+function abortScan() {
+    Thyme.http.patch('/~/library');
 }
 </script>

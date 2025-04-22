@@ -46,12 +46,12 @@ public class LibraryController {
         libraryService.scan(options);
     }
 
-    /** 取消扫描 */ // TODO test
+    /** 取消扫描 */
     @PatchMapping("/library")
     @Permission
     @ResponseBody
     public void abort() {
-        libraryService.lockThreadState(false);
+        libraryService.unlockScanThread();
     }
 
 }

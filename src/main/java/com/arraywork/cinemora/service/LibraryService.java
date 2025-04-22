@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
+import jakarta.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.arraywork.autumn.channel.ChannelService;
 import com.arraywork.autumn.helper.DirectoryMonitor;
+import com.arraywork.autumn.util.FileUtils;
 import com.arraywork.cinemora.entity.EventLog;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.ScanningOptions;
@@ -67,23 +69,30 @@ public class LibraryService {
         }
     }
 
+    /** Send thread state when channel is opened */
+    @PostConstruct
+    public void sendThreadState() {
+        channelService.onOpen((String channel, Session session) -> {
+            channelService.sendMessage(session, "state", isThreadLocked.get());
+        });
+    }
+
     /** 异步扫描媒体库 */
     @Async
     public void scan(ScanningOptions options) throws IOException {
-        // 锁定状态 TODO test
-        if (!lockThreadState(true)) return;
-        System.out.println("=========================scanning........");
+        // 锁定线程状态防止并发
+        if (!lockScanThread()) return;
 
         // 统计文件总数
         Path library = settingService.getLibrary();
-        long total = 0;//FileUtils.countRegularFiles(library);
-        if (total == 0) {  // TODO test
+        long total = FileUtils.countRegularFiles(library);
+        if (total == 0) {
             EventLog eventLog = new EventLog();
             eventLog.setSource(EventSource.SCANNING);
             eventLog.setState(EventState.FINISHED);
             eventLog.setHint("No files found.");
             emitLog(eventLog);
-            lockThreadState(false);
+            unlockScanThread();
             return;
         }
 
@@ -98,7 +107,6 @@ public class LibraryService {
         AtomicLong reindexed = new AtomicLong();
         AtomicLong skipped = new AtomicLong();
         AtomicLong failed = new AtomicLong();
-        long st = System.currentTimeMillis();
 
         // 遍历文件
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
@@ -123,7 +131,6 @@ public class LibraryService {
             }
         });
 
-        System.out.println("ffmpeg============" + (System.currentTimeMillis() - st));
         EventLog eventLog = new EventLog();
         eventLog.setTotal(total);
         eventLog.setIndexed(indexed.get());
@@ -133,8 +140,7 @@ public class LibraryService {
         eventLog.setSource(EventSource.SCANNING);
         eventLog.setState(EventState.FINISHED);
         emitLog(eventLog);
-
-        lockThreadState(false);
+        unlockScanThread();
     }
 
     /** 处理文件（监听接口使用） */
@@ -221,12 +227,17 @@ public class LibraryService {
         emitLog(eventLog);
     }
 
-    /** 设置异步线程锁定状态（返回状态变更是否成功） */
-    public boolean lockThreadState(boolean newState) {
-        boolean currentState = isThreadLocked.get();
-        boolean success = isThreadLocked.compareAndSet(currentState, newState);
-        if (success) channelService.broadcast(CHANNEL_NAME, "state", newState);
-        return success;
+    /** 锁定扫描线程 */
+    public boolean lockScanThread() {
+        boolean locked = isThreadLocked.compareAndSet(false, true);
+        channelService.broadcast(CHANNEL_NAME, "state", true);
+        return locked;
+    }
+
+    /** 解锁扫描线程 */
+    public void unlockScanThread() {
+        isThreadLocked.set(false);
+        channelService.broadcast(CHANNEL_NAME, "state", false);
     }
 
     /** 应用销毁时停止监听进程 */
