@@ -137,6 +137,7 @@ public class MetadataService {
             // 创建缩略图（截取视频时长一半时显示的画面）
             File coverFile = resolveCoverPath(metadata.getId()).toFile();
             ffmpegService.screenshot(file, coverFile, mediaInfo.getDuration() / 2);
+            //            OpenCv.captureVideo(file.getPath(), coverFile.getPath(), 0);  // TODO 对比速度和画质
         }
         return state;
     }
