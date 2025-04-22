@@ -25,6 +25,7 @@ public class LibraryListener extends DirectoryMonitor.DirectoryListener {
     @Lazy
     private LibraryService libraryService;
 
+    // TODO 监听测试
     @Override
     public void onFileCreate(File file) {
         libraryService.processFile(file);

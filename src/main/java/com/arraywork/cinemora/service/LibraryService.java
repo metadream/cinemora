@@ -114,7 +114,7 @@ public class LibraryService {
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                if (!isThreadLocked.get()) {  // TODO 测试取消扫描
+                if (!isThreadLocked.get()) {
                     return FileVisitResult.TERMINATE;
                 }
                 if (attrs.isRegularFile()) {

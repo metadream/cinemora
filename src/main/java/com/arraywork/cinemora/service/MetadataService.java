@@ -175,7 +175,7 @@ public class MetadataService {
             File newFile = Path.of(oldFile.getParent(), newName).toFile();
             Assert.isTrue(oldFile.exists(), "The original file does not exist");
             Assert.isTrue(oldFile.renameTo(newFile), "File renaming failed: possibly due to a name that is too long or contains reserved characters.");
-            metadata.setFilePath(library.relativize(newFile.toPath()).toString());  // TODO test
+            metadata.setFilePath(library.relativize(newFile.toPath()).toString());
         }
 
         tagCloudService.clearCache();
