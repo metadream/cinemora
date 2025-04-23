@@ -49,10 +49,11 @@ async function save(btn, data, isLibraryChanged) {
   try {
     btn.loading = true;
     await Thyme.http.put('/~/settings', data);
-    Thyme.success('Update successful');
 
     if (isLibraryChanged) {
       location.href = '/~/library?autoScan=true';
+    } else {
+      Thyme.alert('Update successful', () => location.reload());
     }
   } finally {
     btn.loading = false;
