@@ -306,6 +306,7 @@ table.list .starred {
 
 .metadata-editor {
   display: flex;
+  align-items: start;
   width: 760px
 }
 
