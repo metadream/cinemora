@@ -10,8 +10,7 @@
 
     <th:block th:each="n: ${pagination.pageSet}">
       <span th:if="${n == 0}">...</span>
-      <a th:unless="${n == 0}" th:text="${n}" th:onclick="turnPage([[${n}]])"
-         th:class="${n == pagination.pageNumber ? 'active' : ''}"></a>
+      <a th:unless="${n == 0}" th:text="${n}" th:onclick="turnPage([[${n}]])" th:class="${n == pagination.pageNumber ? 'active' : ''}"></a>
     </th:block>
 
     <a th:if="${pagination.hasNext}" th:onclick="turnPage([[${pagination.pageNumber+1}]])">Next</a>
