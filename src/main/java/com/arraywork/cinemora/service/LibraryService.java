@@ -15,7 +15,6 @@ import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 import jakarta.websocket.Session;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -46,8 +45,9 @@ public class LibraryService {
 
     private static final String CHANNEL_NAME = "library";
     private static final AtomicBoolean isThreadLocked = new AtomicBoolean(false);
-    private DirectoryMonitor monitor;
 
+    @Resource
+    private DirectoryMonitor libraryMonitor;
     @Resource
     private ChannelService channelService;
     @Resource
@@ -55,18 +55,13 @@ public class LibraryService {
     @Resource
     private MetadataService metadataService;
 
-    @Autowired
-    public LibraryService(LibraryListener listener) {
-        monitor = new DirectoryMonitor(5000, listener);
-    }
-
     /** 应用启动后监听媒体库 */
     @EventListener(ApplicationReadyEvent.class)
-    public void scan() throws Exception {
+    public void listen() throws Exception {
         Settings settings = settingService.getSettings();
         if (settings != null) {
             String library = settings.getLibrary();
-            monitor.start(library);
+            libraryMonitor.start(library);
             log.info("Library monitor started, watching {}", library);
         }
     }
@@ -247,7 +242,7 @@ public class LibraryService {
     /** 应用销毁时停止监听进程 */
     @PreDestroy
     public void onDestroyed() throws Exception {
-        monitor.stop();
+        libraryMonitor.stop();
     }
 
     /** 发送日志 */

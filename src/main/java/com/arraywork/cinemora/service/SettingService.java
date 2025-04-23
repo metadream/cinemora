@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.arraywork.autumn.crypto.BCryptCipher;
+import com.arraywork.autumn.helper.DirectoryMonitor;
 import com.arraywork.autumn.security.SecurityService;
 import com.arraywork.autumn.security.SecuritySession;
 import com.arraywork.autumn.util.Assert;
@@ -31,6 +32,8 @@ public class SettingService implements SecurityService {
 
     @Resource
     private SecuritySession session;
+    @Resource
+    private DirectoryMonitor libraryMonitor;
     @Resource
     private SettingRepo settingRepo;
 
@@ -58,25 +61,32 @@ public class SettingService implements SecurityService {
     /** 初始化设置 */
     @CachePut(key = "'#settings'")
     @Transactional(rollbackFor = Exception.class)
-    public Settings init(Settings settings) {
+    public Settings init(Settings settings) throws Exception {
         checkLibrary(settings);
         settings.setPassword(BCryptCipher.encode(settings.getPassword()));
         session.setPrincipal(settings);
+        libraryMonitor.start(settings.getLibrary());
         return settingRepo.save(settings);
     }
 
     /** 保存设置 */
     @Transactional(rollbackFor = Exception.class)
     @CachePut(key = "'#settings'")
-    public Settings save(Settings settings) {
+    public Settings save(Settings settings) throws Exception {
         checkLibrary(settings);
+        Settings _settings = getSettings();
+
         // 变更密码
         String password = settings.getPassword();
         if (StringUtils.hasText(password)) {
             settings.setPassword(BCryptCipher.encode(password));
         } else {
-            Settings _settings = getSettings();
             settings.setPassword(_settings.getPassword());
+        }
+
+        // 变更媒体库
+        if (!settings.getLibrary().equals(_settings.getLibrary())) {
+            libraryMonitor.start(settings.getLibrary());
         }
         return settingRepo.save(settings);
     }
