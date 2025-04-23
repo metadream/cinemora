@@ -185,7 +185,9 @@ public class MetadataService {
     /** 根据文件删除元数据 */
     @Transactional(rollbackFor = Exception.class)
     public EventState delete(File file) {
-        Metadata metadata = metadataRepo.findByFilePath(file.getPath());
+        Path library = settingService.getLibrary();
+        String relativePath = library.relativize(file.toPath()).toString();
+        Metadata metadata = metadataRepo.findByFilePath(relativePath);
         return delete(metadata) != null ? EventState.DELETED : EventState.SKIPPED;
     }
 

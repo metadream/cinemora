@@ -22,7 +22,7 @@
   color: var(--success-color);
 }
 
-.WARNING {
+.WARNING, .DELETED {
   color: #ff8500;
 }
 
