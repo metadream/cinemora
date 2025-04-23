@@ -1,8 +1,5 @@
 package com.arraywork.cinemora;
 
-import jakarta.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -11,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.arraywork.autumn.BaseApplication;
 import com.arraywork.autumn.helper.DirectoryMonitor;
-import com.arraywork.autumn.helper.OpenCv;
 import com.arraywork.cinemora.service.LibraryListener;
 
 /**
@@ -26,16 +22,8 @@ import com.arraywork.cinemora.service.LibraryListener;
 @EnableCaching
 public class BootApplication extends BaseApplication {
 
-    @Value("${app.libopencv}")
-    private String opencvLib;
-
     public static void main(String[] args) {
         SpringApplication.run(BootApplication.class, args);
-    }
-
-    @PostConstruct
-    public void loadOpenCvLibrary() {
-        OpenCv.loadLibrary(opencvLib);
     }
 
     @Bean
