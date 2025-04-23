@@ -72,7 +72,10 @@ public class ResourceController {
 
         try {
             Metadata metadata = metadataService.getById(id);
-            InputStream input = ffmpegService.transcode(transId, metadata.getFilePath());
+            Path library = settingService.getLibrary();
+            Path videoPath = library.resolve(metadata.getFilePath());
+
+            InputStream input = ffmpegService.transcode(transId, videoPath.toString());
             OutputStream output = response.getOutputStream();
             resourceHandler.copy(input, output);
         } catch (Exception e) {
