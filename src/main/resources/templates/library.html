@@ -28,11 +28,7 @@
     <th-button id="scanBtn" onclick="startScan(this)" disabled>Start Scan</th-button>
   </div>
 
-  <section>
-    <table class="logs">
-      <tr><th width="170"></th><th width="90"></th><th width="170"></th><th></th></tr>
-    </table>
-  </section>
+  <section class="loose logs"></section>
 </main>
 </body>
 </html>
@@ -54,11 +50,12 @@ channel.on('state', locked => {
 channel.on('message', data => {
   const { source, state } = data;
   if (state.name != 'FINISHED') {
-    const row = $logs.insertRow(1);
-    row.insertCell().innerHTML = data.time;
-    row.insertCell().innerHTML = `<span class="number">${data.count}/${data.total}</span>`;
-    row.insertCell().innerHTML = `<span class="${state.name}">${source.label} ${state.label}</span>`;
-    row.insertCell().innerHTML = `<span class="${state.name}">${data.hint?data.hint+': ':''} ${data.path}</span>`;
+    const log = insertFirst(document.createElement('div'), $logs);
+    log.innerHTML = `
+      <span>${data.time}</span><span>${data.count}/${data.total}</span>
+      <span class="${state.name}">${source.label} ${state.label}</span>
+      <span class="${state.name}">${data.hint?data.hint+': ':''} ${data.path}</span>
+    `;
     $progress.style.width = data.progress + '%';
     $footnote.innerHTML = `${data.count}/${data.total} ${data.path}`;
   } else {
@@ -88,5 +85,10 @@ function startScan() {
 
 function abortScan() {
     Thyme.http.patch('/~/library');
+}
+
+function insertFirst(element, parent) {
+  parent.insertBefore(element, parent.firstChild || null);
+  return element;
 }
 </script>

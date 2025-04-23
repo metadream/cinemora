@@ -146,6 +146,23 @@ section.loose {
   gap: 10px;
 }
 
+section.logs {
+  display: flex;
+  flex-direction: column;
+  font-size: .85rem;
+  gap: 3px;
+}
+
+section.logs > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+section.logs > div > span:not(:first-child) {
+  margin-left: 10px;
+}
+
 input[type="file"] {
   display: none;
 }
@@ -203,18 +220,6 @@ table.list a.title {
 table.list .starred {
   width: 10px;
   padding: 0;
-}
-
-table.logs td {
-  font-size: .85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-table.logs .number {
-  text-align: right;
-  margin-right: 10px;
 }
 
 .metafields {
