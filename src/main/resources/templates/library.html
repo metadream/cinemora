@@ -66,7 +66,7 @@ channel.on('message', data => {
       $footnote.innerHTML = data.hint;
     } else {
       $progress.addClass('finished');
-      $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.skipped} skipped, and ${data.failed} failed.`;
+      $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.deleted} deleted, ${data.skipped} skipped, and ${data.failed} failed.`;
     }
   }
 });

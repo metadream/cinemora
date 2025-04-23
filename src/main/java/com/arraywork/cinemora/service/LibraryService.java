@@ -85,10 +85,34 @@ public class LibraryService {
         // 锁定线程状态防止并发
         if (!lockScanThread()) return;
 
-        // 统计文件总数
+        // 统计扫描结果
+        AtomicLong count = new AtomicLong();
+        AtomicLong total = new AtomicLong();
+        AtomicLong indexed = new AtomicLong();
+        AtomicLong reindexed = new AtomicLong();
+        AtomicLong skipped = new AtomicLong();
+        AtomicLong deleted = new AtomicLong();
+        AtomicLong failed = new AtomicLong();
+
+        // 清理无效索引
+        if (options.isCleanIndexes()) {
+            List<Metadata> orphanedList = metadataService.getOrphanedMetadata();
+            total.set(orphanedList.size());
+
+            for (Metadata metadata : orphanedList) {
+                count.incrementAndGet();
+                EventState state = cleanIndex(metadata, count.get(), total.get());
+                switch (state) {
+                    case DELETED -> deleted.incrementAndGet();
+                    case FAILED -> failed.incrementAndGet();
+                }
+            }
+        }
+
+        // 统计媒体库文件总数
         Path library = settingService.getLibrary();
-        long total = FileUtils.countRegularFiles(library);
-        if (total == 0) {
+        long totalFiles = FileUtils.countRegularFiles(library);
+        if (totalFiles == 0) {
             EventLog eventLog = new EventLog();
             eventLog.setSource(EventSource.SCANNING);
             eventLog.setState(EventState.FINISHED);
@@ -98,19 +122,9 @@ public class LibraryService {
             return;
         }
 
-        // 清理无效索引
-        if (options.isCleanIndexes()) { // TODO test
-            cleanIndexes();
-        }
-
-        // 统计扫描结果
-        AtomicLong count = new AtomicLong();
-        AtomicLong indexed = new AtomicLong();
-        AtomicLong reindexed = new AtomicLong();
-        AtomicLong skipped = new AtomicLong();
-        AtomicLong failed = new AtomicLong();
-
         // 遍历文件
+        count.set(0);
+        total.set(totalFiles);
         Files.walkFileTree(library, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
@@ -120,7 +134,7 @@ public class LibraryService {
                 if (attrs.isRegularFile()) {
                     count.incrementAndGet();
                     EventState state = processFile(EventSource.SCANNING,
-                        path.toFile(), count.get(), total,
+                        path.toFile(), count.get(), total.get(),
                         options.isForceReindexing());
                     switch (state) {
                         case INDEXED -> indexed.incrementAndGet();
@@ -134,9 +148,10 @@ public class LibraryService {
         });
 
         EventLog eventLog = new EventLog();
-        eventLog.setTotal(total);
+        eventLog.setTotal(total.get());
         eventLog.setIndexed(indexed.get());
         eventLog.setReindexed(reindexed.get());
+        eventLog.setFailed(deleted.get());
         eventLog.setSkipped(skipped.get());
         eventLog.setFailed(failed.get());
         eventLog.setSource(EventSource.SCANNING);
@@ -178,7 +193,29 @@ public class LibraryService {
         return state;
     }
 
-    /** 删除媒体库文件 */  // TODO test
+    /** 清理元数据 */
+    private EventState cleanIndex(Metadata metadata, long count, long total) {
+        EventState state;
+        EventLog eventLog = new EventLog();
+        eventLog.setSource(EventSource.CLEANING);
+        eventLog.setPath(metadata.getFilePath());
+        eventLog.setCount(count);
+        eventLog.setTotal(total);
+
+        try {
+            metadataService.delete(metadata);
+            state = EventState.DELETED;
+        } catch (Exception e) {
+            state = EventState.FAILED;
+            eventLog.setHint(e.getMessage());
+        }
+
+        eventLog.setState(state);
+        emitLog(eventLog);
+        return state;
+    }
+
+    /** 删除媒体库文件 */
     public EventState deleteFile(File file) {
         Path library = settingService.getLibrary();
         EventLog eventLog = new EventLog();
@@ -192,41 +229,6 @@ public class LibraryService {
         }
         emitLog(eventLog);
         return eventLog.getState();
-    }
-
-    /** 清理元数据 */  // TODO test
-    private void cleanIndexes() {
-        List<Metadata> orphanedList = metadataService.getOrphanedMetadata();
-        int count = 0, deleted = 0, failed = 0, total = orphanedList.size();
-
-        // 清理过程及日志
-        for (Metadata metadata : orphanedList) {
-            EventLog eventLog = new EventLog();
-            eventLog.setSource(EventSource.CLEANING);
-            eventLog.setPath(metadata.getFilePath());
-            eventLog.setCount(++count);
-            eventLog.setTotal(total);
-
-            try {
-                metadataService.delete(metadata);
-                eventLog.setDeleted(++deleted);
-                eventLog.setState(EventState.DELETED);
-            } catch (Exception e) {
-                eventLog.setFailed(++failed);
-                eventLog.setState(EventState.FAILED);
-                eventLog.setHint(e.getMessage());
-            }
-            emitLog(eventLog);
-        }
-
-        // 清理完成的日志
-        EventLog eventLog = new EventLog();
-        eventLog.setTotal(total);
-        eventLog.setDeleted(deleted);
-        eventLog.setFailed(failed);
-        eventLog.setSource(EventSource.CLEANING);
-        eventLog.setState(EventState.FINISHED);
-        emitLog(eventLog);
     }
 
     /** 锁定扫描线程 */
