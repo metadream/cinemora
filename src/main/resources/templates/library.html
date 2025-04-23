@@ -56,12 +56,15 @@ channel.on('message', data => {
       <span class="${state.name}">${source.label} ${state.label}</span>
       <span class="${state.name}">${data.hint?data.hint+': ':''} ${data.path}</span>
     `;
+    $progress.removeClass('finished');
+    $progress.addClass('processing');
     $progress.style.width = data.progress + '%';
     $footnote.innerHTML = `${data.count}/${data.total} ${data.path}`;
   } else {
     if (data.total === 0) {
       $footnote.innerHTML = data.hint;
     } else {
+      $progress.removeClass('processing');
       $progress.addClass('finished');
       $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.deleted} deleted, ${data.skipped} skipped, and ${data.failed} failed.`;
     }
@@ -78,6 +81,8 @@ if (autoScan) {
 function startScan() {
   Thyme.confirm('Scanning the library may take a long time. <br>Are you sure you want to continue?', () => {
     $progress.removeClass('finished');
+    $progress.removeClass('processing');
+    $progress.style.width = 0;
     const options = Thyme.form.getJsonObject('.scan-options');
     Thyme.http.post('/~/library', options);
   });

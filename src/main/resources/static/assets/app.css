@@ -241,10 +241,13 @@ table.list .starred {
 }
 
 .scan-progress .progress > div {
-  background: var(--contrast-color);
   width: 0;
   height: 100%;
-  transition: .3s;
+  transition: width .3s;
+}
+
+.scan-progress .progress > div.processing {
+  background: var(--contrast-color);
 }
 
 .scan-progress .progress > div.finished {
