@@ -34,25 +34,28 @@
 function update(btn) {
   const data = Thyme.form.getJsonObject('section');
   if (!data) return;
+  data.metafields = data.metafields?.split(',') || [];
 
   const library = document.querySelector('[name="library"]').dataset.value;
   if (data.library !== library) {
     Thyme.confirm('<b class="DANGER">Changing the library will automatically start scan to clear all metadata and rebuild the indexes. <br>Are you sure you want to continue?</b>',
-    () => save(btn, true));
+    () => save(btn, data, true));
   } else {
-    save(btn);
+    save(btn, data);
   }
 }
 
-async function save(btn, isLibraryChanged) {
-  btn.loading = true;
-  data.metafields = data.metafields?.split(',') || [];
-  await Thyme.http.put('/~/settings', data);
-  btn.loading = false;
-  Thyme.success('Update successful');
+async function save(btn, data, isLibraryChanged) {
+  try {
+    btn.loading = true;
+    await Thyme.http.put('/~/settings', data);
+    Thyme.success('Update successful');
 
-  if (isLibraryChanged) {
-    location.href = '/~/library?autoScan=true';
+    if (isLibraryChanged) {
+      location.href = '/~/library?autoScan=true';
+    }
+  } finally {
+    btn.loading = false;
   }
 }
 </script>

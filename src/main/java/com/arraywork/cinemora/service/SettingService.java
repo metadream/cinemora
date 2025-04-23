@@ -65,7 +65,7 @@ public class SettingService implements SecurityService {
         return settingRepo.save(settings);
     }
 
-    /** 保存设置 */  // TODO 变更媒体库测试
+    /** 保存设置 */
     @Transactional(rollbackFor = Exception.class)
     @CachePut(key = "'#settings'")
     public Settings save(Settings settings) {
