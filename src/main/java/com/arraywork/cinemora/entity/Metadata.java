@@ -132,6 +132,9 @@ public class Metadata {
     // 是否标星
     private boolean starred;
 
+    // 是否更新过
+    private boolean updated;
+
     // 搜索关键词
     @Transient
     private String keyword;

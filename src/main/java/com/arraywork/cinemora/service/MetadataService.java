@@ -153,6 +153,7 @@ public class MetadataService {
         metadata.setFilePath(_metadata.getFilePath());
         metadata.setFileSize(_metadata.getFileSize());
         metadata.setMediaInfo(_metadata.getMediaInfo());
+        metadata.setUpdated(true);
 
         // 如果未手动设置画质则采用自动匹配的画质
         if (metadata.getQuality() == null) {

@@ -217,7 +217,7 @@ table.list a.title {
   color: var(--contrast-color);
 }
 
-table.list .starred {
+table.list .circle {
   width: 10px;
   padding: 0;
 }

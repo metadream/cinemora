@@ -8,7 +8,7 @@
   <section>
     <table class="list">
       <tr>
-        <th class="starred"></th>
+        <th class="circle"></th>
         <th width="11%">Code</th>
         <th>Title</th>
         <th width="10%" th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}">
@@ -18,7 +18,10 @@
         <th width="9%" style="text-align:right">Duration</th>
       </tr>
       <tr th:each="metadata: ${pagination.content}">
-        <td class="starred"><img src="/assets/circle.svg" th:if="${metadata.starred}"/></td>
+        <td class="circle">
+          <img th:if="${!metadata.updated}" src="/assets/pending.svg" title="New"/>
+          <img th:if="${metadata.starred}" src="/assets/circle.svg" title="Starred"/>
+        </td>
         <td><a class="code" target="_blank" th:href="@{|/${metadata.code}|}">[[${metadata.code}]]</a></td>
         <td><a th:onclick="openMetadata([[${metadata}]])">[[${metadata.title}]]</a></td>
         <td th:each="metafield: ${settings.metafields}" th:if="${metafield.enums != null}"
