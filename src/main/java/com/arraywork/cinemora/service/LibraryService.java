@@ -126,6 +126,7 @@ public class LibraryService {
                 if (!isThreadLocked.get()) {
                     return FileVisitResult.TERMINATE;
                 }
+
                 if (attrs.isRegularFile()) {
                     count.incrementAndGet();
                     EventState state = processFile(EventSource.SCANNING,
@@ -166,6 +167,7 @@ public class LibraryService {
             Thread.sleep(200);
         } catch (InterruptedException e) {
         }
+        if (isTempFile(file)) return EventState.SKIPPED;
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
 
@@ -248,6 +250,18 @@ public class LibraryService {
     /** 发送日志 */
     private void emitLog(EventLog eventLog) {
         channelService.broadcast(CHANNEL_NAME, eventLog);
+    }
+
+    /** 判断临时文件 */
+    private boolean isTempFile(File file) {
+        String name = file.getName();
+        return name.startsWith(".goutputstream-")   // GNOME
+            || name.endsWith(".tmp")                // General
+            || name.endsWith(".part")               // KDE、wget、firefox
+            || name.endsWith(".partial")            // rsync
+            || name.endsWith(".aria2")              // aria2
+            || name.startsWith("~$")                // Windows Word
+            || name.startsWith("._");               // macOS
     }
 
 }

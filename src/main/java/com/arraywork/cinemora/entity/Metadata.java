@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Size;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.arraywork.autumn.id.NanoIdGeneration;
 import com.arraywork.cinemora.enums.Censorship;
@@ -124,7 +125,8 @@ public class Metadata {
     // 文件大小
     private long fileSize;
 
-    // 文件更新时间
+    // 最后更新时间
+    @UpdateTimestamp
     private LocalDateTime lastModified;
 
     // 是否标星

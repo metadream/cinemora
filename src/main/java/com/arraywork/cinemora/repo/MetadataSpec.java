@@ -124,7 +124,9 @@ public class MetadataSpec implements Specification<Metadata> {
         }
 
         Predicate[] p = new Predicate[predicates.size()];
-        return cb.and(predicates.toArray(p));
+        query.where(cb.and(predicates.toArray(p)));
+        query.orderBy(cb.desc(root.get("lastModified")));
+        return query.getRestriction();
     }
 
 }
