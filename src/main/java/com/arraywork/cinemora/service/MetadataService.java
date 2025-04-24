@@ -166,7 +166,7 @@ public class MetadataService {
             Path library = Path.of(settings.getLibrary());
             String filePath = metadata.getFilePath();
             String extension = FileUtils.getExtension(filePath);
-            String newName = "[" + code + "] " + metadata.getTitle() + extension;
+            String newName = metadata.getTitle() + extension;
 
             File oldFile = library.resolve(filePath).toFile();
             File newFile = Path.of(oldFile.getParent(), newName).toFile();
