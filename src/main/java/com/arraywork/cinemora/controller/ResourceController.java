@@ -64,8 +64,9 @@ public class ResourceController {
         resourceHandler.serve(videoPath, request, response);
     }
 
-    /** 视频转码 */ // TODO 待测试
+    /** 视频转码 */
     @GetMapping("/video/{id}/{transId}")
+    @Deprecated
     public void transcode(@PathVariable String id, @PathVariable String transId,
         HttpServletResponse response) {
         response.setContentType("video/mp4");
@@ -84,9 +85,10 @@ public class ResourceController {
         }
     }
 
-    /** 终止转码进程 */ // TODO 待测试
+    /** 终止转码进程 */
     @PostMapping("/video/{transId}")
     @ResponseBody
+    @Deprecated
     public void destroy(@PathVariable String transId) {
         ffmpegService.destroy(transId);
     }

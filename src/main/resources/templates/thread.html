@@ -52,16 +52,6 @@ document.addEventListener('keyup', function(e) {
 });
 
 video.on('error', function() {
-  if (this.transcoded) {
-    Thyme.error('Unsupported video format');
-  } else {
-    this.src += '/[[${transId}]]';
-    this.transcoded = true;
-    Thyme.warn('Real-time transcoding and playback.');
-  }
+  Thyme.error('Unsupported video format');
 });
-
-window.onunload = window.onpagehide = () => {
-  navigator.sendBeacon('/video/[[${transId}]]');
-}
 </script>

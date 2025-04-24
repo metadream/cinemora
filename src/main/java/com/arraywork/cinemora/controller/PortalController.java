@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.arraywork.autumn.id.KeyGenerator;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.service.MetadataService;
 import com.arraywork.cinemora.service.TagCloudService;
@@ -55,7 +54,6 @@ public class PortalController {
     @GetMapping("/{code}")
     public String details(Model model, @PathVariable String code) {
         model.addAttribute("metadata", metadataService.getByCode(code));
-        model.addAttribute("transId", KeyGenerator.nanoId()); // TODO 转码？
         return "thread";
     }
 

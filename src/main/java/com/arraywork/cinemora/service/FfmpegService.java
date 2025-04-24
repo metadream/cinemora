@@ -92,6 +92,7 @@ public class FfmpegService {
     }
 
     /** 视频转码输出流 */
+    @Deprecated
     public InputStream transcode(String transId, String videoFile) throws IOException {
         ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
         ffmpeg.addArgument("-i");
