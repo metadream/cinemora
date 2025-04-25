@@ -131,7 +131,8 @@ public class LibraryService {
 
                 if (attrs.isRegularFile()) {
                     count.incrementAndGet();
-                    EventState state = processFile(EventSource.SCANNING, path.toFile(), options.isForceReindexing());
+                    EventState state = processFile(EventSource.SCANNING, path.toFile(),
+                        count.get(), total.get(), options.isForceReindexing());
                     switch (state) {
                         case INDEXED -> indexed.incrementAndGet();
                         case REINDEXED -> reindexed.incrementAndGet();
@@ -158,11 +159,11 @@ public class LibraryService {
 
     /** 处理文件（监听接口使用） */
     public EventState processFile(File file) {
-        return processFile(EventSource.LISTENING, file, true);
+        return processFile(EventSource.LISTENING, file, 0, 0, true);
     }
 
     /** 处理文件 */
-    public synchronized EventState processFile(EventSource source, File file, boolean isForceReIndexing) {
+    public synchronized EventState processFile(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -176,6 +177,8 @@ public class LibraryService {
         EventLog eventLog = new EventLog();
         eventLog.setSource(source);
         eventLog.setPath(relativePath);
+        eventLog.setCount(count);
+        eventLog.setTotal(total);
 
         try {
             state = metadataService.build(file, isForceReIndexing);
