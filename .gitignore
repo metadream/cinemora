@@ -1,7 +1,6 @@
 logs/
 target/
 data/
-TODO.md
 .idea/
 .settings/
 .classpath
