@@ -147,10 +147,4 @@ function upload(file) {
 function toArray(str) {
   return str ? str.split(/\s*[,，]\s*/).filter(v => !!v) : null;
 }
-
-function turnPage(n) {
-  const params = new URLSearchParams(location.search);
-  params.set('page', n);
-  location.href = '?' + params.toString();
-}
 </script>

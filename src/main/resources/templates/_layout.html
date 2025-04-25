@@ -14,9 +14,19 @@
 <header>
   <main>
     <a href="/"><img class="logo" src="/assets/logo.svg"/></a>
-    <form action="" class="search-bar">
-      <input class="search-text" type="search" maxlength="30" placeholder="Search..." name="keyword" th:value="${condition?.keyword}"/>
-    </form>
+    <div class="search-bar">
+      <input type="text" enterkeyhint="search" placeholder="Search..." maxlength="30" th:value="${condition?.keyword}"/>
+      <script>
+      const input = document.querySelector('.search-bar input');
+      input.addEventListener("keydown", function(e) {
+          if (e.key === 'Enter') {
+              const keyword = input.value.trim();
+              const pathname = location.pathname === '/~/metadata' ? '/~/metadata' : '/';
+              location.href = keyword ? pathname + '?keyword=' + keyword : pathname;
+          }
+      });
+    </script>
+    </div>
 
     <nav>
       <menu>
@@ -41,13 +51,6 @@
       </menu>
     </nav>
   </main>
-
-  <script>
-    function filter(field) {
-      const keyword = field.value = field.value.trim();
-      location.href = '?keyword=' + keyword;
-    }
-  </script>
 </header>
 
 <main layout:fragment="main"></main>

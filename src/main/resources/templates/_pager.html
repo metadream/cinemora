@@ -19,5 +19,13 @@
 </div>
 
 <div class="pager" th:unless="${pagination.hasContent}">
-  <div class="noresult"><i>No related records found.</i></div>
+  <div class="noresult"><i>No videos found.</i></div>
 </div>
+
+<script>
+function turnPage(n) {
+  const params = new URLSearchParams(location.search);
+  params.set('page', n);
+  location.href = '?' + params.toString();
+}
+</script>

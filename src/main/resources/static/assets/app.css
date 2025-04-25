@@ -378,7 +378,7 @@ header {
   margin: 0 15px 0 30px;
 }
 
-.search-text {
+.search-bar input {
   outline: none;
   background: #444;
   color: inherit;
@@ -391,7 +391,7 @@ header {
   transition: all .3s;
 }
 
-.search-text:focus {
+.search-bar input:focus {
   background: #555;
 }
 
