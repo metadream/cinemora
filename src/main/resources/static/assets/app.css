@@ -268,7 +268,7 @@ table.list .circle {
   justify-content: space-between;
   align-items: center;
   color: var(--minor-color);
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .pager a, .pager span {
