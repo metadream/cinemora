@@ -27,8 +27,6 @@
     <th-button id="abortBtn" class="outlined" variant="outlined" onclick="abortScan()" disabled>Abort Scan</th-button>
     <th-button id="scanBtn" onclick="startScan(this)" disabled>Start Scan</th-button>
   </div>
-
-  <section class="loose logs"></section>
 </main>
 </body>
 </html>
@@ -39,7 +37,6 @@ const $progress = document.querySelector('#progress');
 const $scanBtn = document.querySelector('#scanBtn');
 const $abortBtn = document.querySelector('#abortBtn');
 const $footnote = document.querySelector('.footnote');
-const $logs = document.querySelector('.logs');
 
 const channel = new Thyme.Channel('/channel/library');
 channel.on('state', locked => {
@@ -48,6 +45,12 @@ channel.on('state', locked => {
 });
 
 channel.on('message', data => {
+  let $logs = document.querySelector('section.logs');
+  if (!$logs) {
+      $logs = Thyme.util.createElement('<section class="loose logs"></section>');
+      document.querySelector('body>main').append($logs);
+  }
+
   const { source, state } = data;
   if (state.name != 'FINISHED') {
     const log = insertFirst(document.createElement('div'), $logs);
