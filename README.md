@@ -40,4 +40,5 @@ systemctl start cinemora
 ```
 
 4. Initialization
-   Go http://localhost:9002
+
+Go http://localhost:8192
