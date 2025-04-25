@@ -33,4 +33,10 @@ public class EventLogService {
         return logRepo.save(log);
     }
 
+    /** 清除日志 */
+    @Transactional(rollbackFor = Exception.class)
+    public void clear() {
+        logRepo.deleteAll();
+    }
+
 }
