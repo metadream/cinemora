@@ -10,9 +10,8 @@ experience.
 ### Deployment
 
 1. Download Executable Jar
-```
 
-```
+https://github.com/metadream/cinemora/releases
 
 2. Create System Service
 ```
