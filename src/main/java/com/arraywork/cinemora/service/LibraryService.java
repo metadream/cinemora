@@ -164,11 +164,6 @@ public class LibraryService {
 
     /** 处理文件 */
     public synchronized EventState processFile(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-        }
-
         if (isTempFile(file)) return EventState.SKIPPED;
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
