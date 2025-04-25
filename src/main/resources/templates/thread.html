@@ -5,7 +5,7 @@
 <main class="detail" layout:fragment="main" th:object="${metadata.mediaInfo}">
   <div class="thread">
     <h3>[[${metadata.title}]]</h3>
-    <div class="footnote">
+    <div class="footnote has-items">
       <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd HH:mm')}]]</span>
       <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
       <span>[[*{video.width}]]×[[*{video.height}]]</span>
@@ -17,22 +17,20 @@
   </div>
 
   <div class="metadata">
-    <div class="prop">
-      <label>Code:</label>
-      <div>[[${metadata.code}]]</div>
-    </div>
-
-    <th:block th:each="metafield: ${settings.metafields}" th:with="value=${metadata[metafield.name]}">
-      <div class="prop" th:if="${value}">
-        <label>[[${metafield.label}]]:</label>
-        <div th:if="${metafield.enums}">
-          <a th:href="|/?${metafield.name}=${value.code}|">[[${value.label}]]</a>
-        </div>
-        <div th:unless="${metafield.enums}" class="tags">
-          <a th:each="tag:${value}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a>
-        </div>
-      </div>
-    </th:block>
+    <table>
+      <tr><th width="100">Code:</th><td>[[${metadata.code}]]</td></tr>
+      <th:block th:each="metafield: ${settings.metafields}" th:with="value=${metadata[metafield.name]}">
+        <tr th:if="${value}">
+          <th>[[${metafield.label}]]:</th>
+          <td th:if="${metafield.enums}">
+            <a th:href="|/?${metafield.name}=${value.code}|">[[${value.label}]]</a>
+          </td>
+          <td th:unless="${metafield.enums}" class="tags">
+            <a th:each="tag:${value}" th:href="|/?${metafield.name}=${tag}|">[[${tag}]]</a>
+          </td>
+        </tr>
+      </th:block>
+    </table>
   </div>
 </main>
 

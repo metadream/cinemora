@@ -5,14 +5,14 @@
   <div class="covers">
     <a class="cover" th:each="metadata: ${pagination.content}" th:href="|/${metadata.code}|">
       <div class="thumb" th:style="|background-image:url(/cover/${metadata.id})|">
-        <div class="quality" th:if="${metadata.quality.code!='SD' && metadata.quality.code!='LD'}">[[${metadata.quality.code}]]</div>
+        <div class="quality" th:if="${metadata.quality.code>720}">[[${metadata.quality.label}]]</div>
         <div class="duration">[[${@utils.formatDuration(metadata.mediaInfo.duration)}]]</div>
       </div>
       <div class="caption">
-        <div class="footnote">
+        <div class="footnote has-items">
           <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd')}]]</span>
           <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
-          <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
+          <span th:if="${metadata.starred}"><img src="/assets/circle.svg"/></span>
         </div>
         <div class="title">[[${metadata.title}]]</div>
       </div>

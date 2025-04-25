@@ -543,6 +543,7 @@ footer p:first-child {
 
 main.detail {
   display: flex;
+  gap: 30px;
 }
 
 main.detail .thread {
@@ -551,27 +552,18 @@ main.detail .thread {
 
 main.detail .metadata {
   flex: 1;
-  margin-left: 30px;
   padding: 20px;
-  background: #fff;
   border-radius: var(--border-radius);
+  background: #fff;
 }
 
-main.detail .prop {
-  display: flex;
-  margin: 8px 0;
+main.detail .metadata table tr > * {
+  padding: 5px;
 }
 
-main.detail .prop > label {
-  width: 75px;
-  font-weight: 700;
-  margin-right: 15px;
+main.detail .metadata table th {
   text-align: right;
-  cursor: default;
-}
-
-main.detail .prop > div {
-  flex: 1;
+  vertical-align: baseline;
 }
 
 main.detail .tags {
@@ -595,14 +587,11 @@ main.detail .tags a {
   color: var(--ignored-color);
 }
 
-.footnote > * {
-  margin-right: 10px;
-}
-
-.footnote > *.right {
-  flex: 1;
-  margin: 0;
-  text-align: right;
+.footnote.has-items {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 10px;
 }
 
 .front-panel {
@@ -653,6 +642,12 @@ main.detail .tags a {
   font-size: 10rem;
   line-height: 1.2;
   color: var(--line-color);
+}
+
+@media (max-width: 960px) {
+  .covers .cover {
+    width: calc((100% - 80px) / 4);
+  }
 }
 
 @media (max-width: 800px) {
