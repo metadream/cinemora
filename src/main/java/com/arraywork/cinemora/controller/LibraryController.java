@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.arraywork.autumn.security.Permission;
 import com.arraywork.cinemora.entity.ScanningOptions;
+import com.arraywork.cinemora.service.EventLogService;
 import com.arraywork.cinemora.service.LibraryService;
 
 /**
@@ -29,12 +30,15 @@ public class LibraryController {
 
     @Resource
     private LibraryService libraryService;
+    @Resource
+    private EventLogService logService;
 
     /** 媒体库页面 */
     @GetMapping("/library")
     @Permission
     public String library(Model model, boolean autoScan) {
         model.addAttribute("autoScan", autoScan);
+        model.addAttribute("eventLogs", logService.getLogs());
         return "library";
     }
 

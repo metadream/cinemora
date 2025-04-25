@@ -27,6 +27,23 @@
     <th-button id="abortBtn" class="outlined" variant="outlined" onclick="abortScan()" disabled>Abort Scan</th-button>
     <th-button id="scanBtn" onclick="startScan(this)" disabled>Start Scan</th-button>
   </div>
+
+  <section class="loose logs" th:if="${!#lists.isEmpty(eventLogs)}">
+    <div th:each="log: ${eventLogs}">
+      <span>[[${#temporals.format(log.time, 'yyyy-MM-dd HH:mm:ss')}]]</span>
+      <span th:class="${log.state.name}">[[${log.source.label}]] [[${log.state.label}]]</span>
+      <th:block th:if="${log.state.name != 'FINISHED'}">
+        <span th:class="${log.state.name}">[[${log.hint!=null ? log.hint+': ' : ''}]] [[${log.path}]]</span>
+      </th:block>
+      <th:block th:if="${log.state.name == 'FINISHED'}">
+        <span th:class="${log.state.name}" th:if="${log.total == 0}">[[${log.hint}]]</span>
+        <span th:class="${log.state.name}" th:if="${log.total > 0}">
+          [[${log.total}]] files found: [[${log.indexed}]] indexed, [[${log.reindexed}]] reindexed,
+          [[${log.deleted}]] deleted, [[${log.skipped}]] skipped, and [[${log.failed}]] failed.
+        </span>
+      </th:block>
+    </div>
+  </section>
 </main>
 </body>
 </html>
@@ -45,31 +62,32 @@ channel.on('state', locked => {
 });
 
 channel.on('message', data => {
-  let $logs = document.querySelector('section.logs');
-  if (!$logs) {
-      $logs = Thyme.util.createElement('<section class="loose logs"></section>');
-      document.querySelector('body>main').append($logs);
+  let $section = document.querySelector('section.logs');
+  if (!$section) {
+      $section = Thyme.util.createElement('<section class="loose logs"></section>');
+      document.querySelector('body>main').append($section);
   }
 
   const { source, state } = data;
+  const $log = insertFirst(document.createElement('div'), $section);
+  const prefixText = `<span>${data.time}</span><span class="${state.name}">${source.label} ${state.label}</span>`;
+
   if (state.name != 'FINISHED') {
-    const log = insertFirst(document.createElement('div'), $logs);
-    log.innerHTML = `
-      <span>${data.time}</span><span>${data.count}/${data.total}</span>
-      <span class="${state.name}">${source.label} ${state.label}</span>
-      <span class="${state.name}">${data.hint?data.hint+': ':''} ${data.path}</span>
-    `;
+    $footnote.innerHTML = data.path;
+    $log.innerHTML = `${prefixText}<span class="${state.name}">${data.hint?data.hint+': ':''} ${data.path}</span>`;
     $progress.removeClass('finished');
     $progress.addClass('processing');
     $progress.style.width = data.progress + '%';
-    $footnote.innerHTML = `${data.count}/${data.total} ${data.path}`;
   } else {
     if (data.total === 0) {
       $footnote.innerHTML = data.hint;
+      $log.innerHTML = `${prefixText}<span class="${state.name}">${data.hint}</span>`;
     } else {
+      const statText = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.deleted} deleted, ${data.skipped} skipped, and ${data.failed} failed.`;
+      $footnote.innerHTML = statText;
+      $log.innerHTML = `${prefixText}<span class="${state.name}">${statText}</span>`;
       $progress.removeClass('processing');
       $progress.addClass('finished');
-      $footnote.innerHTML = `${data.total} files found: ${data.indexed} indexed, ${data.reindexed} reindexed, ${data.deleted} deleted, ${data.skipped} skipped, and ${data.failed} failed.`;
     }
   }
 });

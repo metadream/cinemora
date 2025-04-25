@@ -54,6 +54,8 @@ public class LibraryService {
     private SettingService settingService;
     @Resource
     private MetadataService metadataService;
+    @Resource
+    private EventLogService logService;
 
     /** 应用启动后监听媒体库 */
     @EventListener(ApplicationReadyEvent.class)
@@ -129,9 +131,7 @@ public class LibraryService {
 
                 if (attrs.isRegularFile()) {
                     count.incrementAndGet();
-                    EventState state = processFile(EventSource.SCANNING,
-                        path.toFile(), count.get(), total.get(),
-                        options.isForceReindexing());
+                    EventState state = processFile(EventSource.SCANNING, path.toFile(), options.isForceReindexing());
                     switch (state) {
                         case INDEXED -> indexed.incrementAndGet();
                         case REINDEXED -> reindexed.incrementAndGet();
@@ -158,15 +158,16 @@ public class LibraryService {
 
     /** 处理文件（监听接口使用） */
     public EventState processFile(File file) {
-        return processFile(EventSource.LISTENING, file, 0, 0, true);
+        return processFile(EventSource.LISTENING, file, true);
     }
 
     /** 处理文件 */
-    public synchronized EventState processFile(EventSource source, File file, long count, long total, boolean isForceReIndexing) {
+    public synchronized EventState processFile(EventSource source, File file, boolean isForceReIndexing) {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
         }
+
         if (isTempFile(file)) return EventState.SKIPPED;
         Path library = settingService.getLibrary();
         String relativePath = library.relativize(file.toPath()).toString();
@@ -175,8 +176,6 @@ public class LibraryService {
         EventLog eventLog = new EventLog();
         eventLog.setSource(source);
         eventLog.setPath(relativePath);
-        eventLog.setCount(count);
-        eventLog.setTotal(total);
 
         try {
             state = metadataService.build(file, isForceReIndexing);
@@ -249,6 +248,7 @@ public class LibraryService {
 
     /** 发送日志 */
     private void emitLog(EventLog eventLog) {
+        logService.save(eventLog);
         channelService.broadcast(CHANNEL_NAME, eventLog);
     }
 

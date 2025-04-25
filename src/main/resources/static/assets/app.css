@@ -19,6 +19,10 @@
 }
 
 .INDEXED, .REINDEXED {
+  color: var(--contrast-color);
+}
+
+.FINISHED {
   color: var(--success-color);
 }
 
@@ -158,13 +162,11 @@ section.logs {
 }
 
 section.logs > div {
+  display: flex;
+  gap: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-section.logs > div > span:not(:first-child) {
-  margin-left: 10px;
 }
 
 input[type="file"] {
