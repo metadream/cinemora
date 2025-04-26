@@ -58,20 +58,28 @@ public class FfmpegService {
                 }
 
                 // 获取视频信息（有些图片也会被提取为视频，所以增加BitRate和FrameRate校验）
+                // 某些图片也会被提取出视频元数据，bitRate=-1, frameRate通常为25, duration可能是40
+                // 某些视频如某些wmv提取元数据后，bitRate也可能为-1, frameRate>0, duration>0
+                // 因此需要忽略bitRate参数增加decoder来区分图片还是视频，图片的解码器通常为mjpeg
+                // 但无法得知是否还有其他未验证的情况
                 ws.schild.jave.info.VideoInfo vInfo = mInfo.getVideo();
-                if (vInfo != null && vInfo.getBitRate() > 0 && vInfo.getFrameRate() > 0) {
-                    VideoInfo video = new VideoInfo();
-                    video.setDecoder(vInfo.getDecoder().replaceAll(" \\(.+", ""));
-                    video.setBitRate(vInfo.getBitRate());
-                    video.setFrameRate(vInfo.getFrameRate());
+                if (vInfo != null && vInfo.getFrameRate() > 0 && mediaInfo.getDuration() > 0) {
+                    String decoder = vInfo.getDecoder().replaceAll(" \\(.+", ""); // 去掉空格及后面的括号
 
-                    // 视频尺寸
-                    VideoSize vSize = vInfo.getSize();
-                    if (vSize != null) {
-                        video.setWidth(vSize.getWidth());
-                        video.setHeight(vSize.getHeight());
+                    if (!"mjpeg".equalsIgnoreCase(decoder)) {
+                        VideoInfo video = new VideoInfo();
+                        video.setDecoder(decoder);
+                        video.setBitRate(vInfo.getBitRate());
+                        video.setFrameRate(vInfo.getFrameRate());
+
+                        // 视频尺寸
+                        VideoSize vSize = vInfo.getSize();
+                        if (vSize != null) {
+                            video.setWidth(vSize.getWidth());
+                            video.setHeight(vSize.getHeight());
+                        }
+                        mediaInfo.setVideo(video);
                     }
-                    mediaInfo.setVideo(video);
                 }
             }
         } catch (EncoderException e) {
