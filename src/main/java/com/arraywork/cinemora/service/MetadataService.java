@@ -148,7 +148,7 @@ public class MetadataService {
         Assert.isTrue(_metadata == null || _metadata.getId().equals(metadata.getId()), "Duplicate metadata code detected.");
 
         if (_metadata == null) {
-            _metadata = metadataRepo.getReferenceById(metadata.getId());
+            _metadata = getById(metadata.getId());
         }
         metadata.setCode(code);
         metadata.setFilePath(_metadata.getFilePath());
