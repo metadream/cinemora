@@ -6,7 +6,7 @@
   <div class="thread">
     <h3>[[${metadata.title}]]</h3>
     <div class="footnote has-items">
-      <span>[[${#temporals.format(metadata.fileTime, 'yyyy-MM-dd HH:mm')}]]</span>
+      <span>[[${#dates.format(metadata.fileTime, 'yyyy-MM-dd HH:mm')}]]</span>
       <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
       <span>[[*{video.width}]]×[[*{video.height}]]</span>
       <span>[[${@utils.formatDuration(metadata.mediaInfo.duration)}]]</span>

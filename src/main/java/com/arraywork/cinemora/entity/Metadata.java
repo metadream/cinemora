@@ -1,7 +1,6 @@
 package com.arraywork.cinemora.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -125,7 +124,7 @@ public class Metadata {
     private long fileSize;
 
     // 文件创建时间
-    private LocalDateTime fileTime;
+    private long fileTime;
 
     // 是否标星
     private boolean starred;

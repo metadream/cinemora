@@ -23,7 +23,6 @@ import com.arraywork.autumn.id.KeyGenerator;
 import com.arraywork.autumn.util.Assert;
 import com.arraywork.autumn.util.FileUtils;
 import com.arraywork.autumn.util.Pagination;
-import com.arraywork.autumn.util.TimeUtils;
 import com.arraywork.cinemora.entity.MediaInfo;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.Settings;
@@ -131,7 +130,7 @@ public class MetadataService {
             metadata.setTitle(FileUtils.getName(file.getName()));
             metadata.setFilePath(relativePath);
             metadata.setFileSize(file.length());
-            metadata.setFileTime(TimeUtils.toLocal(file.lastModified()));
+            metadata.setFileTime(FileUtils.getEarliestFileTime(file));
             metadataRepo.save(metadata); // 先保存以便获取ID供截图使用
 
             // 创建缩略图（截取视频时长一半时显示的画面）

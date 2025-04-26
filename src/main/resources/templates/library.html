@@ -93,6 +93,7 @@ channel.on('message', data => {
 });
 
 if (autoScan) {
+    history.replaceState(null, "", window.location.pathname);
     const options = { forceReindexing:true, cleanIndexes: true };
     const form = document.querySelector('.scan-options');
     Thyme.form.setJsonObject(form, options);
