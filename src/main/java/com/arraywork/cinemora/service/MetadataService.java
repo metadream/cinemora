@@ -23,6 +23,7 @@ import com.arraywork.autumn.id.KeyGenerator;
 import com.arraywork.autumn.util.Assert;
 import com.arraywork.autumn.util.FileUtils;
 import com.arraywork.autumn.util.Pagination;
+import com.arraywork.autumn.util.TimeUtils;
 import com.arraywork.cinemora.entity.MediaInfo;
 import com.arraywork.cinemora.entity.Metadata;
 import com.arraywork.cinemora.entity.Settings;
@@ -60,7 +61,7 @@ public class MetadataService {
 
     /** 查询分页元数据 */
     public Pagination<Metadata> getMetadata(String page, Metadata condition) {
-        Sort sort = Sort.by("lastModified").descending().and(Sort.by("code").descending());
+        Sort sort = Sort.by("fileTime").descending().and(Sort.by("code").descending());
         page = page != null && page.matches("\\d+") ? page : "1";
         Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, pageSize, sort);
         Page<Metadata> pageInfo = metadataRepo.findAll(new MetadataSpec(condition), pageable);
@@ -130,6 +131,7 @@ public class MetadataService {
             metadata.setTitle(FileUtils.getName(file.getName()));
             metadata.setFilePath(relativePath);
             metadata.setFileSize(file.length());
+            metadata.setFileTime(TimeUtils.toLocal(file.lastModified()));
             metadataRepo.save(metadata); // 先保存以便获取ID供截图使用
 
             // 创建缩略图（截取视频时长一半时显示的画面）
@@ -152,6 +154,7 @@ public class MetadataService {
         metadata.setCode(code);
         metadata.setFilePath(_metadata.getFilePath());
         metadata.setFileSize(_metadata.getFileSize());
+        metadata.setFileTime(_metadata.getFileTime());
         metadata.setMediaInfo(_metadata.getMediaInfo());
         metadata.setUpdated(true);
 

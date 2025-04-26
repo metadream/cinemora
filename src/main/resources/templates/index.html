@@ -10,7 +10,7 @@
       </div>
       <div class="caption">
         <div class="footnote has-items">
-          <span>[[${#temporals.format(metadata.lastModified, 'yyyy-MM-dd')}]]</span>
+          <span>[[${#temporals.format(metadata.fileTime, 'yyyy-MM-dd')}]]</span>
           <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
           <span th:if="${metadata.starred}"><img src="/assets/circle.svg"/></span>
         </div>

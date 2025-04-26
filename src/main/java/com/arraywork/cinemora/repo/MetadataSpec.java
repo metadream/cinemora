@@ -125,7 +125,7 @@ public class MetadataSpec implements Specification<Metadata> {
 
         Predicate[] p = new Predicate[predicates.size()];
         query.where(cb.and(predicates.toArray(p)));
-        query.orderBy(cb.desc(root.get("lastModified")));
+        query.orderBy(cb.desc(root.get("fileTime")));
         return query.getRestriction();
     }
 
