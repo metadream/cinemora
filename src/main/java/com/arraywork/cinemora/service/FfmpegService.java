@@ -63,7 +63,6 @@ public class FfmpegService {
                 // 某些视频如avi提起元数据后，decoder是mjpeg，但bitRate==-1
                 // 但无法得知是否还有其他未验证的情况
                 ws.schild.jave.info.VideoInfo vInfo = mInfo.getVideo();
-                System.out.println(vInfo);
                 if (vInfo != null && vInfo.getFrameRate() > 0 && mediaInfo.getDuration() > 0) {
                     String decoder = vInfo.getDecoder().replaceAll(" \\(.+", ""); // 去掉空格及后面的括号
 
