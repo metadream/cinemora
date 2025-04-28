@@ -40,15 +40,6 @@
 <script>
 const video = document.querySelector('video');
 video.setAttribute('preload', 'auto');
-
-document.addEventListener('keyup', function(e) {
-  switch(e.keyCode) {
-    case 37: video.currentTime -= 5; e.preventDefault(); break;
-    case 39: video.currentTime += 5; e.preventDefault(); break;
-    default: break;
-  }
-});
-
 video.on('error', function() {
   Thyme.error('Unsupported video format');
 });
