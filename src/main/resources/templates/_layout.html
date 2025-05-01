@@ -6,7 +6,7 @@
   <script src="/assets/thyme@1.0.0.js"></script>
   <script>Thyme.locale = 'en';</script>
   <link rel="icon" type="image/svg" href="/assets/favicon.svg"/>
-  <link rel="stylesheet" href="/assets/app.min.css"/>
+  <link rel="stylesheet" th:href="|/assets/app.min.css?${app.version}|"/>
   <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">[[${app.name}]]</title>
 </head>
 <body>
