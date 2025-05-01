@@ -174,15 +174,19 @@ input[type="file"] {
   display: none;
 }
 
-video {
-  display: block;
+.fluid_video_wrapper {
+  width: 100% !important;
+  height: auto !important;
+}
+
+.fluid_video_wrapper video {
   outline: 0;
-  width: 100%;
-  aspect-ratio: 16/9;
-  margin-top: 15px;
-  border-radius: var(--border-radius);
-  background: #000;
-  cursor: pointer;
+  margin: 15px 0 0 0 !important;
+  aspect-ratio: 16/9 !important;
+}
+
+.fluid_fluid_control_duration {
+  font-family: Monda !important;
 }
 
 table {
@@ -557,11 +561,11 @@ main.detail {
 }
 
 main.detail .thread {
-  flex: 2.5;
+  flex: 1;
 }
 
 main.detail .metadata {
-  flex: 1;
+  width: 30%;
   padding: 20px;
   border-radius: var(--border-radius);
   background: #fff;
@@ -663,11 +667,11 @@ main.detail .tags a {
 @media (max-width: 800px) {
   main.detail {
     flex-direction: column;
+    gap: 15px;
   }
 
   main.detail .metadata {
-    margin-left: 0;
-    margin-top: 20px;
+    width: 100%;
   }
 
   .covers .cover {
