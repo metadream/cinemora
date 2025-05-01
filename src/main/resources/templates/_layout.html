@@ -13,7 +13,7 @@
 
 <header>
   <main>
-    <a href="/"><img class="logo" src="/assets/logo.svg"/></a>
+    <a href="/"><img class="logo" th:src="${app.logo}"/></a>
     <div class="search-bar">
       <input type="text" enterkeyhint="search" placeholder="Search..." maxlength="30" th:value="${condition?.keyword}"/>
       <script>
@@ -56,9 +56,9 @@
 <main layout:fragment="main"></main>
 <footer>
   <main>
-    <img class="logo" src="/assets/logo.svg"/>
-    <div>[[${app.description}]]</div>
-    <div>🄯 Copyleft <a target="_blank" href="https://github.com/metadream/cinemora">[[${app.fullname}]]</a> v[[${app.version}]] is Licensed <a target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GPL 3.0</a></div>
+    <img class="logo" th:src="${app.logo}"/>
+    <div th:utext="${app.description}"></div>
+    <div th:utext="${app.copyright}"></div>
   </main>
 </footer>
 </body>

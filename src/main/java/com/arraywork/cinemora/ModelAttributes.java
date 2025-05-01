@@ -35,15 +35,21 @@ public class ModelAttributes {
     @Value("${app.fullname}")
     private String fullname;
 
+    @Value("${app.logo}")
+    private String logo;
+
     @Value("${app.description}")
     private String description;
+
+    @Value("${app.copyright}")
+    private String copyright;
 
     // 应用属性
     @ModelAttribute("app")
     public Map<String, String> app() {
         return Map.of(
-            "name", appName, "fullname", fullname,
-            "version", version, "description", description
+            "name", appName, "fullname", fullname, "version", version,
+            "logo", logo, "description", description, "copyright", copyright
         );
     }
 
