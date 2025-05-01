@@ -36,6 +36,7 @@ public class MetadataController {
     @GetMapping("/metadata")
     @Permission
     public String metadata(Model model, String page, Metadata condition) {
+        condition.setHidden(true);
         model.addAttribute("pagination", metadataService.getMetadata(page, condition));
         model.addAttribute("condition", condition);
         return "metadata";

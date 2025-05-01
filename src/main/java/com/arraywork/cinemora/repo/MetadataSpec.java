@@ -34,7 +34,7 @@ public class MetadataSpec implements Specification<Metadata> {
 
     @Override
     public Predicate toPredicate(Root<Metadata> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
 
         String keyword = condition.getKeyword();
         if (StringUtils.hasText(keyword)) {
@@ -121,6 +121,11 @@ public class MetadataSpec implements Specification<Metadata> {
         boolean starred = condition.isStarred();
         if (starred) {
             predicates.add(cb.isTrue(root.get("starred")));
+        }
+
+        boolean hidden = condition.isHidden();
+        if (!hidden) {
+            predicates.add(cb.isFalse(root.get("hidden")));
         }
 
         Predicate[] p = new Predicate[predicates.size()];
