@@ -8,6 +8,7 @@
   --primary-color: #fb0 !important;
   --contrast-color: #0af;
   --success-color: #1db164;
+  --danger-color: #f6c;
   --font-color: #333;
   --menu-color: #666;
   --minor-color: #999;
@@ -31,10 +32,10 @@
 }
 
 .FAILED, .DANGER {
-  color: #fa5151;
+  color: var(--danger-color);
 }
 
-.MINOR, .SKIPPED {
+.MINOR, .MINOR *, .SKIPPED {
   color: var(--minor-color);
 }
 
@@ -366,6 +367,15 @@ table.list .circle {
 
 .metadata-editor .fields > .exclusive {
   width: 100%;
+}
+
+th-field.switches::part(field-body) {
+  display: flex;
+  justify-content: space-around;
+}
+
+th-field.switches th-switch {
+  margin-left: 10px;
 }
 
 header {

@@ -12,7 +12,7 @@
         <div class="footnote has-items">
           <span>[[${#dates.format(metadata.fileTime, 'yyyy-MM-dd')}]]</span>
           <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
-          <span th:if="${metadata.starred}"><img src="/assets/circle.svg"/></span>
+          <span th:if="${metadata.starred}"><img src="/assets/circle-orange.svg"/></span>
         </div>
         <div class="title">[[${metadata.title}]]</div>
       </div>

@@ -10,7 +10,7 @@
       <span>[[${@utils.formatSiBytes(metadata.fileSize)}]]</span>
       <span>[[*{video.width}]]×[[*{video.height}]]</span>
       <span>[[${@utils.formatDuration(metadata.mediaInfo.duration)}]]</span>
-      <span th:if="${metadata.starred}" class="right"><img src="/assets/circle.svg"/></span>
+      <span th:if="${metadata.starred}" class="right"><img src="/assets/circle-orange.svg"/></span>
     </div>
 
     <video th:src="|/video/${metadata.id}|" th:poster="|/cover/${metadata.id}|" controlslist="nodownload" controls muted autoplay autofocus></video>

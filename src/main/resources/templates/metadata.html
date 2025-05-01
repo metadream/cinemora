@@ -17,10 +17,10 @@
         <th width="9%" style="text-align:right">Size</th>
         <th width="9%" style="text-align:right">Duration</th>
       </tr>
-      <tr th:each="metadata: ${pagination.content}">
+      <tr th:each="metadata: ${pagination.content}" th:class="${metadata.hidden?'MINOR':''}">
         <td class="circle">
-          <img th:if="${!metadata.updated}" src="/assets/pending.svg" title="New"/>
-          <img th:if="${metadata.starred}" src="/assets/circle.svg" title="Starred"/>
+          <img th:if="${!metadata.updated}" src="/assets/circle-pink.svg" title="New"/>
+          <img th:if="${metadata.starred}" src="/assets/circle-orange.svg" title="Starred"/>
         </td>
         <td><a class="code" target="_blank" th:href="@{|/${metadata.code}|}">[[${metadata.code}]]</a></td>
         <td><a th:onclick="openMetadata([[${metadata}]])">[[${metadata.title}]]</a></td>
@@ -65,7 +65,10 @@
       <div class="fields">
         <input type="hidden" name="id"/>
         <th-field label="Code" name="code" maxlength="20" required></th-field>
-        <th-field label="Starred"><th-switch name="starred"></th-switch></th-field>
+        <th-field class="switches">
+          <div>Starred<th-switch name="starred"></th-switch></div>
+          <div>Hidden<th-switch name="hidden"></th-switch></div>
+        </th-field>
         <th-field label="Title" name="title" maxlength="120" class="exclusive" required></th-field>
 
         <th:block th:each="metafield: ${settings.metafields}">

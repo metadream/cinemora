@@ -132,6 +132,9 @@ public class Metadata {
     // 是否更新过
     private boolean updated;
 
+    // 是否隐藏
+    private boolean hidden;
+
     // 搜索关键词
     @Transient
     private String keyword;
