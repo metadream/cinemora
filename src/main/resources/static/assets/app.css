@@ -70,6 +70,7 @@ header > main {
   justify-content: space-between;
   align-items: center;
   height: 100%;
+  gap: 20px;
 }
 
 footer > main {
@@ -79,9 +80,9 @@ footer > main {
   gap: 20px;
 }
 
-footer > main > *:last-child {
-  margin: -5px 0 -10px;
-}
+/*footer > main > *:last-child {*/
+/*  margin: -5px 0 -10px;*/
+/*}*/
 
 label {
   cursor: pointer;
@@ -120,6 +121,7 @@ th-button.outlined::part(button) {
 
 img {
   display: block;
+  max-width: unset;
 }
 
 img.logo {
@@ -391,7 +393,6 @@ header {
 
 .search-bar {
   flex: 1;
-  margin: 0 15px 0 30px;
 }
 
 .search-bar input {
@@ -414,12 +415,12 @@ header {
 nav {
   display: flex;
   align-items: center;
+  gap: 20px;
 }
 
 menu {
   position: relative;
   padding: 0;
-  margin: 0 0 0 20px;
 }
 
 menu > a {
@@ -699,14 +700,30 @@ main.detail .tags a {
   .thread .thumb {
     width: calc((100% - 30px) / 3);
   }
+
+  .pager {
+    justify-content: center;
+  }
+
+  .pager .stat {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
+  img.logo {
+    height: 24px;
+  }
+
   .covers .cover {
     width: 100%;
   }
 
   .thread .thumb {
     width: calc((100% - 20px) / 2);
+  }
+
+  .pager .first, .pager .previous, .pager .next, .pager .last {
+    display: none;
   }
 }

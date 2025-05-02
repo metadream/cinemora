@@ -1,20 +1,20 @@
 <div class="pager" th:if="${pagination.hasContent}">
-  <div>
+  <div class="stat">
     <span>Page <b th:text="${pagination.pageNumber}"></b> of <b th:text="${pagination.totalPages}"></b></span>
-    <span><b th:text="${pagination.totalRecords}"></b> Records</span>
+    <span>Total <b th:text="${pagination.totalRecords}"></b> videos</span>
   </div>
 
   <div>
-    <a th:onclick="turnPage(1)">First</a>
-    <a th:if="${pagination.hasPrevious}" th:onclick="turnPage([[${pagination.pageNumber-1}]])">Prev</a>
+    <a class="first" th:onclick="turnPage(1)">First</a>
+    <a class="previous" th:if="${pagination.hasPrevious}" th:onclick="turnPage([[${pagination.pageNumber-1}]])">Previous</a>
 
     <th:block th:each="n: ${pagination.pageSet}">
       <span th:if="${n == 0}">...</span>
       <a th:unless="${n == 0}" th:text="${n}" th:onclick="turnPage([[${n}]])" th:class="${n == pagination.pageNumber ? 'active' : ''}"></a>
     </th:block>
 
-    <a th:if="${pagination.hasNext}" th:onclick="turnPage([[${pagination.pageNumber+1}]])">Next</a>
-    <a th:onclick="turnPage([[${pagination.totalPages}]])">Last</a>
+    <a class="next" th:if="${pagination.hasNext}" th:onclick="turnPage([[${pagination.pageNumber+1}]])">Next</a>
+    <a class="last" th:onclick="turnPage([[${pagination.totalPages}]])">Last</a>
   </div>
 </div>
 
