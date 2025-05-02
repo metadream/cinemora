@@ -44,12 +44,20 @@ public class ModelAttributes {
     @Value("${app.copyright}")
     private String copyright;
 
+    @Value("${app.hide-login}")
+    private boolean hideLogin;
+
     // 应用属性
     @ModelAttribute("app")
-    public Map<String, String> app() {
+    public Map<String, Object> app() {
         return Map.of(
-            "name", appName, "fullname", fullname, "version", version,
-            "logo", logo, "description", description, "copyright", copyright
+            "name", appName,
+            "fullname", fullname,
+            "version", version,
+            "logo", logo,
+            "description", description,
+            "copyright", copyright,
+            "hideLogin", hideLogin
         );
     }
 

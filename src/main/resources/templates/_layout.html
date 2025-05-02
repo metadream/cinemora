@@ -46,7 +46,7 @@
           <hr><a class="tag-item" href="/~/logout">Logout</a>
         </div>
       </menu>
-      <menu th:unless="${principal}">
+      <menu th:unless="${principal != null || app.hideLogin}">
         <a href="/~/login"><img src="/assets/circle-orange.svg"/><span>Login</span></a>
       </menu>
     </nav>
