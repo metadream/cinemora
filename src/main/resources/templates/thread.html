@@ -16,7 +16,7 @@
       <span th:if="${metadata.starred}" class="right"><img src="/assets/circle-orange.svg"/></span>
     </div>
 
-    <video id="vid" th:poster="|/cover/${metadata.id}|" controlslist="nodownload" controls muted autoplay autofocus>
+    <video id="vid" th:poster="|/cover/${metadata.id}|" controlslist="nodownload" controls muted>
       <source th:src="|/video/${metadata.id}|" type="video/mp4">
     </video>
   </div>
@@ -44,18 +44,19 @@
 
 <script>
 fluidPlayer('vid',	{
-  "layoutControls": {
+  layoutControls: {
     primaryColor: 'var(--primary-color)',
     roundedCorners: 'var(--border-radius)',
     allowTheatre: false,
+    preload: true,
 	},
-  "vastOptions": {
-    "adList": [{
-      "roll": "preRoll",
-      "vastTag": "https://s.magsrv.com/v1/vast.php?idzone=5596784",
-    }]
+  vastOptions: {
+    adList: [{
+      roll: "preRoll",
+      vastTag: "https://s.magsrv.com/v1/vast.php?idzone=5596784",
+    }],
   }
-});
+}).play();
 
 const source = document.querySelector('source');
 source.on('error', function() {
