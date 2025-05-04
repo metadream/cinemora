@@ -129,7 +129,7 @@ img.logo {
 }
 
 header img.logo {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 footer img.logo {
@@ -385,6 +385,9 @@ th-field.switches th-switch {
 }
 
 header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
   height: 70px;
   font-size: 1.2rem;
   color: var(--placeholder-color);

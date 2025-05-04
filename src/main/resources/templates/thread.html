@@ -43,6 +43,7 @@
 </html>
 
 <script>
+const appVast = '[[${app.vast}]]';
 fluidPlayer('vid',	{
   layoutControls: {
     primaryColor: 'var(--primary-color)',
@@ -50,12 +51,12 @@ fluidPlayer('vid',	{
     allowTheatre: false,
     preload: true,
 	},
-  vastOptions: {
+  vastOptions: appVast ? {
     adList: [{
       roll: "preRoll",
-      vastTag: "https://s.magsrv.com/v1/vast.php?idzone=5596784",
+      vastTag: appVast,
     }],
-  }
+  } : undefined
 }).play();
 
 const source = document.querySelector('source');

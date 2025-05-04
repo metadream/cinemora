@@ -38,6 +38,9 @@ public class ModelAttributes {
     @Value("${app.logo}")
     private String logo;
 
+    @Value("${app.vast:}")
+    private String vast;
+
     @Value("${app.description}")
     private String description;
 
@@ -55,6 +58,7 @@ public class ModelAttributes {
             "fullname", fullname,
             "version", version,
             "logo", logo,
+            "vast", vast,
             "description", description,
             "copyright", copyright,
             "hideLogin", hideLogin
